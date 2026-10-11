@@ -23,7 +23,8 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | **I0** | **Checkpoint — handoff to B + FE** | ✅ **REACHED** | |
 | A8 | MerchantRegistry | ✅ | `c7ebc36` |
 | A9 | Mock tokens + MockSwapAdapter | ✅ | `cf25271` |
-| A10 | Registry + mock token tests | 🔜 | |
+| A10 | Registry + mock token tests | ✅ | `93c37f4` |
+| A11 | DepositForwarder | 🔜 | |
 
 **Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
@@ -401,3 +402,52 @@ Rationale: AUSD is the most differentiated part of the submission (Agora bounty,
 | AUSD on testnet | testnet 10143 | `tAUSD` | mock |
 
 Every stablecoin a judge sees moving is real. Only the swap *input* token is mocked, and only on testnet. README states that testnet AUSD is mocked because Agora operates no testnet faucet — verified in the addendum to `docs/address-verification-20261011.txt`.
+
+---
+
+## SWAP + CROSSCHAIN reality check (asked during A10)
+
+Verified rather than trusted, since the doc had already been wrong twice.
+
+**Kuru (SWAP):** both Flow addresses have code on mainnet and **no code on testnet**. The mock adapter is the only option on 10143, not a convenience.
+
+| Address | mainnet 143 | testnet 10143 |
+|---|---|---|
+| Flow entrypoint `0xb3e6…13cb` | code (6,504) | **NO CODE** |
+| Flow router `0x0d3a…FFa2` | code (12,764) | **NO CODE** |
+
+**Aurora (CROSSCHAIN):** queried the live 1Click `/v0/tokens` API — **204 tokens across 37 chains, zero testnets**. So cross-chain cannot exist on 10143 at all; the route is kept there only so the "fake provider success" attack test can run.
+
+Two findings worth carrying forward:
+
+1. **The doc undersells cross-chain.** It names 6 source chains; the live API supports **37**, including `btc`, `sol`, `xrp`, `ton`, `sui`, `aptos`, `near`, `tron`, `cardano` alongside the EVM set. A customer can pay a Monad merchant **from Bitcoin or Solana**. Stronger Aurora-bounty claim — use it in the A26 README.
+2. **Asset IDs confirmed live.** `USDC on Monad = nep245:v2_1.omni.hot.tg:143_2dmLwYWkCQKyTjeUPAsGJuiVLbFx`, exactly as the doc states. Aurora also carries MON and USDT0 on Monad but **no AUSD** — confirming why the vault must swap arriving USDC into AUSD for AUSD merchants.
+
+### Agreed strategy
+
+- **testnet** = end-to-end testing and re-shootable footage (real Circle USDC + mocks for AUSD/MON/swap)
+- **mainnet** = the demo of every capability for real: USDC, AUSD, Kuru swap, Aurora cross-chain
+
+---
+
+## A10 — Registry + mock token tests · `93c37f4`
+
+`test/utils/RegistryBase.sol` (101 lines, shared fixture — A13's vault fixture extends it), `test/MerchantRegistry.t.sol` (285), `test/MockStableToken.t.sol` (91).
+
+**Exit checks:** ✅ 26 registry tests (needed ≥ 24) · ✅ 7 mock-token tests (doc said 6) · ✅ `MerchantRegistry.sol` **100.00% lines (80/80)**, gate was ≥ 95%
+
+**33 tests, 0 failed.** Coverage detail for the registry: 100% lines, 100% functions (16/16), 66.67% branches (16/24 — branches are not gated by the doc, which asks for lines only).
+
+`MockStableToken.sol` reaches 90% lines; `MockSwapAdapter.sol` is 0% and gets covered in A14 with the SWAP-route tests.
+
+### Deviation — `forge coverage` needs `--ir-minimum`
+
+`forge coverage` disables the optimizer and via-IR for accurate reports, which makes `GoldenVectors.t.sol` fail to compile with **stack too deep**. The doc's exit-check command therefore does not work as written.
+
+Fix: add `--ir-minimum` (Foundry's own suggested flag — enables via-IR at minimum optimization). Working command:
+
+```bash
+forge coverage --ir-minimum --match-contract 'MerchantRegistryTest|MockStableTokenTest' --report summary
+```
+
+This applies to every later coverage run, including the Part VI final checklist (Registry ≥ 95%, Vault ≥ 95%).
