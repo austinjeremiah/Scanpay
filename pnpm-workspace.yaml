@@ -1,6 +1,6 @@
 packages:
-  - "contracts"
-  - "indexer"
-  - "packages/*"
-  - "services/*"
-  - "apps/*"
+  - "backend/contracts"
+  - "backend/indexer"
+  - "backend/packages/*"
+  - "backend/services/*"
+  - "frontend"

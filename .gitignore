@@ -6,20 +6,20 @@ node_modules/
 .DS_Store
 
 # foundry
-contracts/out/
-contracts/cache/
-contracts/broadcast/*/31337/
-contracts/broadcast/**/dry-run/
+backend/contracts/out/
+backend/contracts/cache/
+backend/contracts/broadcast/*/31337/
+backend/contracts/broadcast/**/dry-run/
 
 # envio
-indexer/generated/
-indexer/.envio/
-indexer/build/
+backend/indexer/generated/
+backend/indexer/.envio/
+backend/indexer/build/
 
 # next
-apps/web/.next/
-apps/web/out/
+frontend/.next/
+frontend/out/
 
 # local deployments (anvil changes every restart) — testnet/mainnet ARE committed
-deployments/31337.json
-deployments/raw/31337.json
+backend/deployments/31337.json
+backend/deployments/raw/31337.json

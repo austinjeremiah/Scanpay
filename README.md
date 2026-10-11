@@ -4,11 +4,13 @@ QR payments on Monad with three proofs: proof of merchant, proof of intent, proo
 Monad Metropolis · Track 02 Consumer Products & Payments.
 
 ## Repo map
-- `contracts/` — Solidity (Foundry): MerchantRegistry, IntentVault, DepositForwarder, swap adapters
-- `indexer/` — Envio HyperIndex (Monad testnet + mainnet)
-- `packages/shared/` — typed-data, ABIs, deployments shared by every app
-- `services/api/` — API + relayer + settlement watcher
-- `apps/web/` — Mera passkey PWA (customer + merchant terminal)
+- `backend/contracts/` — Solidity (Foundry): MerchantRegistry, IntentVault, DepositForwarder, swap adapters
+- `backend/indexer/` — Envio HyperIndex (Monad testnet + mainnet)
+- `backend/packages/shared/` — typed-data, ABIs, deployments shared by every app
+- `backend/services/api/` — API + relayer + settlement watcher
+- `backend/deployments/` — generated per-chain address files
+- `frontend/` — Mera passkey PWA (customer + merchant terminal)
+- `docs/` — build docs for each layer
 
 ## Deployments
 (filled in Phase A26)
