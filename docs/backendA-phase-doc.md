@@ -17,7 +17,7 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A2 | On-chain address verification | ✅ | `b8c1bf1` |
 | A3 | Foundry project | ✅ | `9d5d8b3` |
 | A4 | ScanPayTypes.sol | ✅ | `260b7ed` |
-| A5 | Interfaces | ✅ | `56878e8` |
+| A5 | Interfaces | ✅ | `e8d4002` |
 | A6 | `@scanpay/shared` package | 🔜 | |
 
 **Checkpoints:** I0 (after A7) · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23) — none reached yet.
@@ -137,7 +137,7 @@ No deviations — ICD §0.7.1 was correct.
 
 ---
 
-## A5 — Interfaces · `56878e8`
+## A5 — Interfaces · `e8d4002`
 
 Six interface files in `src/interfaces/`, extracted programmatically from ICD §0.7.2–§0.7.4:
 
