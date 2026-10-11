@@ -25,7 +25,9 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A9 | Mock tokens + MockSwapAdapter | ✅ | `cf25271` |
 | A10 | Registry + mock token tests | ✅ | `93c37f4` |
 | A11 | DepositForwarder | ✅ | `63bcb6a` |
-| A12 | **IntentVault** (core) | 🔜 | |
+| A12 | **IntentVault** (core) | ✅ | `b45c335` |
+| A13 | Vault fixture + DIRECT tests | ✅ | `72e1bb3` |
+| A14 | KuruFlowAdapter + SWAP tests | 🔜 | |
 
 **Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
@@ -489,3 +491,79 @@ No deviations.
 ### Note — frontend work landed on main
 
 `sylesh7` pushed 158 files under `frontend/` (commits `dcad335`, `ef0100a`, `90e76a1`) while this phase was in progress. No overlap with `backend/` or `docs/`; rebased cleanly. The `frontend/` directory deleted earlier in the session is back, now owned by the frontend engineer.
+
+---
+
+## A12 — IntentVault · `b45c335`
+
+`src/IntentVault.sol` — **439 lines**, the core contract. Proof of intent + proof of settlement.
+
+**Exit checks:** ✅ compiles under via-IR, no stack-too-deep · ✅ **19,237 B** runtime (< 24 KB portable limit; 111,835 B margin against Monad's 128 KB) · ✅ 17 events (needed ≥ 11) · ✅ every `IIntentVault` function implemented — enforced by the compiler, since an unimplemented one would make the contract abstract
+
+ABI: 17 events, 35 errors, 44 functions. Full suite still **38 passed, 0 failed** (vault tests arrive in A13–A15).
+
+### `_verify` check order matches the spec exactly
+
+The doc fixes a precise order because B's error mapping and the A13–A16 tests both depend on which error fires first. Verified line by line — all six groups in sequence:
+
+| Group | Order in code |
+|---|---|
+| 1 shape | `RouteMismatch` → `InvoiceMismatch` → `PayoutTokenMismatch` → `AmountMismatch` → `ZeroAddress` |
+| 2 time | `InvoiceExpired` → `IntentExpired` |
+| 3 merchant | `MerchantNotActive` → `KeyVersionMismatch`(invoice) → `KeyVersionMismatch`(intent) → `PayoutTokenMismatch`(vs registry) → `PayoutTokenNotAllowed` → `AmountAboveCap` |
+| 4 input | `InputTokenNotAllowed` → `InputTokenNotAllowed`(DIRECT needs input==payout) → `AmountMismatch`(maxAmountIn rule) |
+| 5 sigs | `InvalidMerchantSignature` → `InvalidPayerSignature` |
+| 6 one-time | `NonceAlreadyUsed` → `InvoiceNotOpen` → `IntentAlreadyExists` |
+
+### Money movement review (`_settle`)
+
+- Destination is `r.payoutWallet`, snapshotted from **the registry** at verify time (`payoutWallet = m.payoutWallet`, line 350) — never from the intent or the caller.
+- **The entire contract contains exactly three `safeTransfer` destinations:** `r.payoutWallet` (registry snapshot), `feeRecipient` (admin config), `r.refundTo` (inside the payer-signed intent). **No caller-controlled destination exists anywhere** — threat **T2** holds structurally, not just by convention.
+- Accounting balances exactly: `(amountOut − fee) + fee + excess == available`. The vault transfers out precisely what it took in, which is what makes the A17 "never holds funds" invariant (**T17**) provable.
+- State is written **before** transfers (CEI), and `invoiceState` moves to `PAID` in the same step.
+- Fee is floor division from `amountOut`, so the merchant receives `amountOut − fee`.
+
+### Pause semantics — verified, not assumed
+
+| Entry point | Modifiers |
+|---|---|
+| `payDirect` / `paySwap` / `commitCrossChain` / `settleCrossChain` | `whenNotPaused nonReentrant` |
+| **`refundCrossChain`** / **`rescue`** | `nonReentrant` **only** |
+
+Pausing halts new payments but **can never trap user funds** — threat **T12**. 6 `nonReentrant` guards total (**T16**).
+
+No deviations.
+
+---
+
+## A13 — Vault fixture + DIRECT route tests · `72e1bb3`
+
+`test/utils/VaultBase.sol` (128 lines, extends `RegistryBase` — live merchant, funded payer, configured vault) and `test/IntentVault.Direct.t.sol` (340 lines).
+
+**Exit checks:** ✅ **30 DIRECT tests** pass (needed ≥ 28) · ✅ gas recorded in `docs/gas.md`
+
+Full suite: **68 tests, 0 failed** across 5 suites. The vault now has real coverage for the first time.
+
+Threats exercised here: **T1** tampered amount, **T2** redirect attempt, **T3** replay, **T4** invoice paid twice, **T5** unregistered merchant, **T6** key rotation invalidating old invoices, **T8** expiry, **T18** fee cap, **T19** amount cap + pause.
+
+### Finding — the gas-report median is a trap for Backend B
+
+`forge test --gas-report` aggregates **every** call to a function, and most DIRECT tests are deliberate reverts, which are cheap. The raw report for `payDirect`:
+
+| | Min | Avg | Median | Max | Calls |
+|---|---|---|---|---|---|
+| all 29 calls (mostly reverts) | 44,720 | 221,909 | **108,604** | 554,084 | 29 |
+
+Filtering to calls that actually settle:
+
+| | Min | Avg | Max |
+|---|---|---|---|
+| successful settlements only | **505,484** | **529,784** | **554,084** |
+
+The doc's exit check says to record "the `payDirect` median" in `docs/gas.md`. Recording 108,604 would be actively harmful: **Monad bills the gas limit**, B sets `gas = estimate × 1.2`, and a 108k fallback would make every real payment run out of gas.
+
+`docs/gas.md` therefore records the **successful-path** figures, with the trap written out explicitly, and recommends a **700,000** fallback for `payDirect` (554,084 × 1.2 ≈ 665k, rounded up). `paySwap` and the cross-chain calls get measured in A14/A15.
+
+### Deviation
+
+The doc asks for the median; recorded the successful-path max/avg instead, with the reasoning in `docs/gas.md`. Recording the literal median would have handed B a number that breaks payments.
