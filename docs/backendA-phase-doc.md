@@ -28,7 +28,8 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A12 | **IntentVault** (core) | ✅ | `b45c335` |
 | A13 | Vault fixture + DIRECT tests | ✅ | `72e1bb3` |
 | A14 | KuruFlowAdapter + SWAP tests | ✅ | `bb2e663` |
-| A15 | CROSSCHAIN tests | 🔜 | |
+| A15 | CROSSCHAIN tests | ⚠️ | `1ab7da2` |
+| A16 | Attack suite | 🔜 | |
 
 **Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
@@ -598,3 +599,51 @@ Successful settlements only, 4 calls:
 Wider spread than DIRECT because the cost depends on the path: same-token (no swap) at the low end, Kuru-via-adapter with a surplus refund at the high end. `docs/gas.md` recommends a **950,000** fallback (765,193 × 1.2), sized off the max for the same reason as A13.
 
 No deviations.
+
+---
+
+## A15 — CROSSCHAIN route tests · `1ab7da2` ⚠️ one exit check short
+
+`test/IntentVault.CrossChain.t.sol` (316 lines, **23 tests**) plus `test/IntentVault.Admin.t.sol` (11 tests, added — see below).
+
+**Exit checks:**
+- ✅ 23 cross-chain tests pass (needed ≥ 22)
+- ✅ full suite green — **119 tests, 0 failed** across 9 suites
+- ⚠️ coverage: `IntentVault.sol` **lines 99.00%** (gate ≥ 95% ✅) but **branches 82.98%** (gate ≥ 85% ✗)
+
+Threats exercised: **T9** fake provider success, **T10** attest never settles, **T11** underpaid then top-up, **T12** refund/rescue work while paused, **T21** invoice reopens after refund.
+
+On local/testnet the Aurora solver is simulated by minting tUSDC to the forwarder — the same trick B's Attack Lab uses via `MINTER_ROLE`.
+
+### Added: `IntentVault.Admin.t.sol` (not in the build doc)
+
+The first coverage run showed `IntentVault.sol` at 96.50% lines / **74.47% branches**. Inspecting the lcov output, the gaps were almost entirely admin/config surface — and one mattered: **`unpause()` had zero coverage**. A broken unpause would make a pause permanent and payments unrecoverable.
+
+Added 11 targeted tests: constructor zero-address and fee-cap guards, a **pause → unpause → payment-succeeds round trip**, `setRefundDelay` (update + event + role), `setFee` zero-recipient, `setInputTokenAllowed` zero-token.
+
+| `IntentVault.sol` | before | after |
+|---|---|---|
+| lines | 96.50% | **99.00%** (198/200) |
+| branches | 74.47% | **82.98%** (39/47) |
+| functions | 92.31% | **100%** (26/26) |
+
+### Finding — two config setters have no zero-address guard
+
+Writing those tests surfaced real behaviour I had assumed otherwise:
+
+| Setter | Zero-address guard |
+|---|---|
+| `setInputTokenAllowed` | ✅ reverts `ZeroAddress` |
+| `setFee` | ✅ reverts on zero recipient |
+| **`setAmountCap`** | ❌ accepts `address(0)` |
+| **`setCrossChainInputToken`** | ❌ accepts `address(0)` |
+
+Both are `CONFIG_ROLE`-only, so this is an **admin footgun, not an attack surface**. `setCrossChainInputToken(0)` is the meaningful one: it would be accepted at config time and fail later at commit/settle instead. Not patched — changing `IntentVault.sol` after A12's review would mean re-verifying the whole contract for a deployment-script-level mistake. Documented instead, with `test_zeroAddress_acceptedBy_capAndCrossChainToken` asserting the actual behaviour so a future change is a deliberate decision rather than an accident. **A18's deploy script must never pass zero here.**
+
+### Branch coverage shortfall — honest status
+
+82.98% against the doc's ≥ 85% exit check for this phase. Remaining uncovered branches are the untested half of `||` conditions (`InvoiceMismatch`, both `KeyVersionMismatch` arms), `NoSwapAdapter` on two paths, and the DIRECT-route `Underpaid` guard (unreachable with a well-behaved EIP-3009 token).
+
+**A16 (attack suite) and A17 (fuzz) target exactly these paths**, so the gap should close without contrived tests. Re-measured at A17.
+
+Worth noting: **Part VI's final checklist gate is lines-only** — "Registry ≥ 95% lines, Vault ≥ 95% lines". Registry is at 100%, Vault at 99%. The branch threshold appears only in this phase's exit check.
