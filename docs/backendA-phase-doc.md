@@ -22,7 +22,8 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A7 | Golden vectors → **I0** | ✅ | `16fd7ee` |
 | **I0** | **Checkpoint — handoff to B + FE** | ✅ **REACHED** | |
 | A8 | MerchantRegistry | ✅ | `c7ebc36` |
-| A9 | Mock tokens + MockSwapAdapter | 🔜 | |
+| A9 | Mock tokens + MockSwapAdapter | ✅ | `cf25271` |
+| A10 | Registry + mock token tests | 🔜 | |
 
 **Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
@@ -298,5 +299,38 @@ Foundry 1.8 emits 8 **lint** warnings (not compiler warnings; the build succeeds
 The `reentrancy-events` case was traced properly. A malicious ERC-1271 owner contract could reenter `registerMerchant` during its own signature check. The reentrant call cannot forge another merchant: `merchantId = keccak(owner, salt)` binds to the owner, and `_useNonce` has already consumed the nonce. The worst outcome is a duplicate `MerchantRegistered` log for the attacker's **own** merchantId, with last-write-wins state. The A21 indexer is idempotent on merchantId, so it converges. Not worth contorting the code for.
 
 Left verbatim rather than adding `forge-lint: disable` comments — the warnings are informational, and the exit check concerns shadowing/unreachable code, of which there are none.
+
+No deviations.
+
+---
+
+## A9 — Mock tokens + MockSwapAdapter · `cf25271`
+
+Three contracts: `mocks/MockStableToken.sol` (125 lines, tUSDC/tAUSD), `mocks/MockERC20.sol` (25, tMON 18-dec), `adapters/MockSwapAdapter.sol` (67).
+
+**Exit checks:** ✅ compiles · ✅ all 4 required functions in the ABI · ✅ 3009 typehash == `0xd099cc98…13de8`
+
+### Scope reminder (asked during this phase)
+
+These exist on **local (31337) and testnet (10143) only**. Mainnet (143) uses the real Circle USDC and real Agora AUSD verified in A2 — we deploy no tokens there. They are labelled `isMock: true` in `deployments/10143.json`, carry `t`-prefixed symbols, and get stated in the README.
+
+They exist because Circle's testnet USDC cannot be minted by us, so a freshly-created passkey wallet could never be funded — making the demo unrecordable. `MINTER_ROLE` on our own token solves that.
+
+### Verified: the mock behaves like real USDC
+
+The point of the mock is that it is **not** a stub — if it faked EIP-3009, the vault's DIRECT route tests would prove nothing. Smoke-tested the security-relevant behaviour (scratch test, removed afterwards; A10 writes the committed suite):
+
+| Property | Result |
+|---|---|
+| domain separator reconstructs from `(name, "1", chainId, address)` | ✅ — same method used against live mainnet USDC in A2 |
+| happy-path `receiveWithAuthorization` moves funds, marks nonce used | ✅ |
+| replay of the same nonce reverts | ✅ **T3** |
+| caller other than the payee reverts | ✅ **T22** (front-running protection) |
+| expired `validBefore` reverts | ✅ |
+
+### MockSwapAdapter review
+
+- `onlyVault` guard present (`msg.sender != vault` → `OnlyVault`) — **T15**
+- `quoteIn` rounds **up** (`(amountOut * 1e18 + rate - 1) / rate`) while `quoteOut` floors, so `quoteOut(quoteIn(x)) >= x` — the swap can never under-deliver to the merchant
 
 No deviations.
