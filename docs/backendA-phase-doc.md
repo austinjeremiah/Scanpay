@@ -284,7 +284,7 @@ Design rules confirmed present in the implementation:
 
 - one nonce counter per **owner**, shared by Registration / SignerRotation / PayoutUpdate (`_useNonce` reverts `BadNonce(expected, provided)`)
 - registration requires owner **and** payout-wallet signatures over the **same** digest — threat **T7**, nobody can name someone else's wallet as payout
-- new merchants start `PENDING` with `keyVersion = 1`
+- new merchants start `e26dbc3` with `keyVersion = 1`
 - both rotation paths bump `keyVersion`, so old invoices die — threat **T6**
 - `_live()` permits `SUSPENDED` merchants to rotate keys / fix payout, but blocks `REVOKED` (terminal, `_validTransition` returns false from `REVOKED`)
 - `getMerchant` on an unknown id returns the zero struct rather than reverting
