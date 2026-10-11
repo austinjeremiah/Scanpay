@@ -21,7 +21,8 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A6 | `@scanpay/shared` package | ✅ | `5de4058` |
 | A7 | Golden vectors → **I0** | ✅ | `16fd7ee` |
 | **I0** | **Checkpoint — handoff to B + FE** | ✅ **REACHED** | |
-| A8 | MerchantRegistry | 🔜 | |
+| A8 | MerchantRegistry | ✅ | `c7ebc36` |
+| A9 | Mock tokens + MockSwapAdapter | 🔜 | |
 
 **Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
@@ -251,3 +252,51 @@ I0 READY (ICD v1)
   name is "Agora Dollar", NOT "AUSD". Use deployments.tokens.AUSD.eip712.
 B: you can now write against intentVaultAbi / merchantRegistryAbi. Local chain (I1) next.
 ```
+
+---
+
+## A8 — MerchantRegistry · `c7ebc36`
+
+`src/MerchantRegistry.sol`, 170 lines. First real contract. Roles: `DEFAULT_ADMIN_ROLE`, `CONFIG_ROLE` (payout-token allowlist), `VERIFIER_ROLE` (status).
+
+**Exit checks:** ✅ no shadowing/unreachable warnings · ✅ 7,388 B runtime (limit 128 KB) · ✅ 22 functions (needed ≥ 12)
+
+Side evidence: `forge build --sizes` reports a **runtime margin of 123,684 B**, i.e. 128 KB − 7,388. That confirms `network = "monad"` is genuinely applying Monad's 128 KB contract limit rather than Ethereum's 24 KB — the A3 config is live, not merely accepted.
+
+### Cross-language check
+
+A **deployed** registry's `hashRegistration()` was compared against TypeScript's `registrationDigest()` for the same Registration and the same contract address:
+
+```
+0x536a5b01609eccfeec2ea002c2cbc9ad87dec4e2359d56ea27a89f5f941e8a33   (both)
+```
+
+Its EIP-712 domain reads `name = "ScanPayRegistry"`, `version = "1"` — matching `REGISTRY_DOMAIN_NAME` / `DOMAIN_VERSION` in the shared constants. This goes beyond A7's golden vectors, which used a hardcoded placeholder address; here the verifying contract is a real deployment.
+
+### Code review notes
+
+Design rules confirmed present in the implementation:
+
+- one nonce counter per **owner**, shared by Registration / SignerRotation / PayoutUpdate (`_useNonce` reverts `BadNonce(expected, provided)`)
+- registration requires owner **and** payout-wallet signatures over the **same** digest — threat **T7**, nobody can name someone else's wallet as payout
+- new merchants start `PENDING` with `keyVersion = 1`
+- both rotation paths bump `keyVersion`, so old invoices die — threat **T6**
+- `_live()` permits `SUSPENDED` merchants to rotate keys / fix payout, but blocks `REVOKED` (terminal, `_validTransition` returns false from `REVOKED`)
+- `getMerchant` on an unknown id returns the zero struct rather than reverting
+- authority comes only from signatures, never `msg.sender` — any relayer can submit
+
+### forge lint warnings — reviewed, not silenced
+
+Foundry 1.8 emits 8 **lint** warnings (not compiler warnings; the build succeeds). All reviewed and benign:
+
+| Lint | Count | Assessment |
+|---|---|---|
+| `block-timestamp` | 3 | deadline comparisons. Monad has 1-second granularity and deadlines are minutes out; validator skew is irrelevant at this scale |
+| `reentrancy-events` | 3 | events emitted after `SignatureChecker.isValidSignatureNow`, which makes an external call only for ERC-1271 contract signers |
+| `unsafe-typecast` | 2 | `uint64(block.timestamp)` — overflows in the year ~584 billion |
+
+The `reentrancy-events` case was traced properly. A malicious ERC-1271 owner contract could reenter `registerMerchant` during its own signature check. The reentrant call cannot forge another merchant: `merchantId = keccak(owner, salt)` binds to the owner, and `_useNonce` has already consumed the nonce. The worst outcome is a duplicate `MerchantRegistered` log for the attacker's **own** merchantId, with last-write-wins state. The A21 indexer is idempotent on merchantId, so it converges. Not worth contorting the code for.
+
+Left verbatim rather than adding `forge-lint: disable` comments — the warnings are informational, and the exit check concerns shadowing/unreachable code, of which there are none.
+
+No deviations.
