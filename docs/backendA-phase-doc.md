@@ -29,7 +29,8 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A13 | Vault fixture + DIRECT tests | ✅ | `72e1bb3` |
 | A14 | KuruFlowAdapter + SWAP tests | ✅ | `bb2e663` |
 | A15 | CROSSCHAIN tests | ⚠️ | `1ab7da2` |
-| A16 | Attack suite | 🔜 | |
+| A16 | Attack suite | ✅ | `38fbafc` |
+| A17 | Fuzz + invariants | 🔜 | |
 
 **Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
@@ -41,6 +42,7 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 |---|---|---|
 | `OPERATOR_ADDRESS` from Backend B | A19 testnet deploy | ⏸ not received |
 | B to add 2 rows to ICD §0.8 (see A5) | I0 handoff | ⏸ raise at I0 |
+| Send B the A16 attack-scenario id table | B's Attack Lab | ⏸ table is in the A16 entry |
 | Faucet real testnet USDC into operator wallet | A19 demo funding | ⏸ faucet.circle.com, 10/24h |
 | Deployer keystore (`cast wallet import scanpay-deployer`) | A19 | ⏸ not created |
 | Funded testnet MON | A19 | ⏸ |
@@ -647,3 +649,42 @@ Both are `CONFIG_ROLE`-only, so this is an **admin footgun, not an attack surfac
 **A16 (attack suite) and A17 (fuzz) target exactly these paths**, so the gap should close without contrived tests. Re-measured at A17.
 
 Worth noting: **Part VI's final checklist gate is lines-only** — "Registry ≥ 95% lines, Vault ≥ 95% lines". Registry is at 100%, Vault at 99%. The branch threshold appears only in this phase's exit check.
+
+---
+
+## A16 — Attack suite · `38fbafc`
+
+`test/utils/ReentrantAdapter.sol` (29 lines), `test/Attacks.t.sol` (142 lines, **10 tests**).
+
+**Exit checks:** ✅ 10 attack tests pass · ⏸ send B the scenario-id table (below)
+
+Full suite: **129 tests, 0 failed** across 10 suites.
+
+Each test name matches a Backend B Attack Lab scenario id, so the demo can claim "this exact attack is a passing test in our repo" and point at a file.
+
+| Attack Lab id (B) | Stopped by | Test |
+|---|---|---|
+| `tamper_amount` | `AmountMismatch` / `InvalidMerchantSignature` / `InvalidPayerSignature` | `test_attack_tamper_amount` |
+| `tamper_destination` | destination read from registry; attacker receives 0 | `test_attack_tamper_destination` |
+| `replay` | `NonceAlreadyUsed` | `test_attack_replay` |
+| `expired` | `InvoiceExpired` | `test_attack_expired` |
+| `unregistered_qr` | `MerchantNotActive(id, 0)` | `test_attack_unregistered_qr` |
+| `fake_provider_success` | `Underpaid(0, required)` | `test_attack_fake_provider_success` |
+| `forged_settlement_hash` | only vault `PaymentSettled` counts; `attestSource` is role-gated and never settles | `test_attack_forged_settlement_hash` |
+| `wrong_token` | `PayoutTokenMismatch` | `test_attack_wrong_token` |
+| `stolen_signature_other_merchant` | `InvalidPayerSignature` | `test_attack_cross_merchant_signature` |
+| `reentrancy` | `ReentrancyGuardReentrantCall` | `test_attack_reentrancy` |
+
+### Best demo material — `test_attack_tamper_destination`
+
+The only scenario where the attack **is not rejected** and still fails. The attacker relays the payment themselves (`vm.prank(attacker)`); the transaction succeeds, and the money lands in the registered payout wallet with `usdc.balanceOf(attacker) == 0`.
+
+That is a stronger claim than "the attack reverts": the intent struct has no destination field at all, so there is nothing to tamper with. A hostile relayer can submit payments all day and can never redirect one — **T2**, shown rather than asserted.
+
+`test_attack_reentrancy` is the other notable one: a malicious swap adapter re-enters `settleCrossChain` mid-swap and hits `ReentrancyGuardReentrantCall` — **T16**.
+
+### Coverage unchanged
+
+Still `IntentVault.sol` 99.00% lines / **82.98% branches**. The attack tests exercise paths the route suites already covered, so the A15 branch gap did not close here. A17's fuzz tests (notably `testFuzz_tamperAnyIntentField`) target the remaining `||` arms directly.
+
+No deviations.
