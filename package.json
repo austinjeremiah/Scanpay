@@ -1,0 +1,17 @@
+{
+  "name": "scanpay-guard",
+  "private": true,
+  "packageManager": "pnpm@9.12.0",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "chain:anvil": "bash backend/contracts/script/anvil.sh",
+    "chain:deploy-local": "bash backend/contracts/script/deploy-local.sh",
+    "chain:local": "bash backend/contracts/script/local-chain.sh",
+    "contracts:build": "cd backend/contracts && forge build",
+    "contracts:test": "cd backend/contracts && forge test -vv",
+    "abis:export": "pnpm --filter @scanpay/contracts export:abis",
+    "deployments:build": "pnpm --filter @scanpay/contracts build:deployments",
+    "shared:test": "pnpm --filter @scanpay/shared test",
+    "indexer:config": "pnpm --filter @scanpay/indexer gen:config"
+  }
+}

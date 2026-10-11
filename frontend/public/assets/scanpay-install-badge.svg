@@ -1,0 +1,8 @@
+<svg width="540" height="155" viewBox="0 0 540 155" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="3" y="3" width="534" height="149" rx="30" fill="#FFFFFF" stroke="#9A9A9A" stroke-width="5"/>
+<rect x="46" y="34" width="62" height="88" rx="12" stroke="#000" stroke-width="7"/>
+<path d="M77 54 V92 M62 79 L77 94 L92 79" stroke="#000" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M62 108 H92" stroke="#000" stroke-width="7" stroke-linecap="round"/>
+<text x="140" y="68" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#000">Install the</text>
+<text x="140" y="118" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="56" fill="#000">ScanPay App</text>
+</svg>

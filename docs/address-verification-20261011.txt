@@ -1,0 +1,87 @@
+=== Monad mainnet (143) chainId: 143 ===
+✅ USDC 0x754704Bc059F8C67012fEd69BC8A327a5aafb603  (3598 hex chars)
+   USDC name → "USDC"
+   USDC version → "2"
+   USDC decimals → 6
+   USDC RWA_TYPEHASH → 0xd099cc98ef71107a616c4f0f941f04c322d8e254fe26b3c6668db87aae413de8
+   USDC authState(0x..01, 0x..01) → false
+✅ AUSD 0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a  (11876 hex chars)
+   AUSD name → "AUSD"
+   AUSD decimals → 6
+   AUSD RWA_TYPEHASH → 0xd099cc98ef71107a616c4f0f941f04c322d8e254fe26b3c6668db87aae413de8
+   AUSD eip712Domain → 0x0f
+"Agora Dollar"
+"1"
+143
+0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a
+0x0000000000000000000000000000000000000000000000000000000000000000
+[]
+   AUSD authState(0x..01, 0x..01) → false
+✅ WMON 0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A  (6500 hex chars)
+✅ WETH 0xEE8c0E9f1BFFb4Eb878d8f15f368A02a35481242  (356 hex chars)
+✅ KuruFlowEntrypoint 0xb3e6778480b2E488385E8205eA05E20060B813cb  (6504 hex chars)
+✅ KuruFlowRouter 0x0d3a1BE29E9dEd63c7a5678b31e847D68F71FFa2  (12764 hex chars)
+✅ Permit2 0x000000000022d473030f116ddee9f6b43ac78ba3  (18306 hex chars)
+
+=== Monad testnet (10143) chainId: 10143 ===
+(informational only — testnet uses our own mock tokens)
+✅ CircleTestUSDC 0x534b2f3A21130d7a60830c2Df862319e593943A3  (3598 hex chars)
+✅ AgoraTestAUSD 0xa9012a055bd4e0eDfF8Ce09f960291C09D5322dC  (11876 hex chars)
+✅ WMON_test 0xFb8bf4c1CC7a94c73D209a149eA2AbEa852BC541  (6500 hex chars)
+
+=== EIP-712 domain separator cross-check (reconstructed, not assumed) ===
+USDC DOMAIN_SEPARATOR on-chain  0xfe22123edc0dd4aeb912eb7948c5f0e531592c2053b3067612f427db342c93c6
+USDC computed name="USDC" v="2" 0xfe22123edc0dd4aeb912eb7948c5f0e531592c2053b3067612f427db342c93c6  MATCH
+AUSD DOMAIN_SEPARATOR on-chain  0x995063441ebf2219c94dce05014a545da4390d2362f99b3d7ad456046678cafe
+AUSD computed name="Agora Dollar" v="1" 0x995063441ebf2219c94dce05014a545da4390d2362f99b3d7ad456046678cafe  MATCH
+
+Standard EIP-3009 typehash for reference:
+keccak256("ReceiveWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)")
+= 0xd099cc98ef71107a616c4f0f941f04c322d8e254fe26b3c6668db87aae413de8
+Both USDC and AUSD return exactly this value => both are standard EIP-3009.
+
+=== CONFIG DECISIONS for contracts/config/143.json (Phase A18) ===
+1. tokens.USDC.supports3009 = true
+   tokens.USDC.eip712 = { "name": "USDC", "version": "2" }       (domain separator verified)
+   tokens.USDC.decimals = 6 ; inputAllow.DIRECT includes USDC
+2. tokens.AUSD.supports3009 = true                                (doc hedged this; it DOES support 3009)
+   tokens.AUSD.eip712 = { "name": "Agora Dollar", "version": "1" } (NOT "AUSD" - domain separator verified)
+   tokens.AUSD.decimals = 6 ; inputAllow.DIRECT includes AUSD
+3. external.kuruTargets = [
+     "0xb3e6778480b2E488385E8205eA05E20060B813cb",  (Flow entrypoint, has code)
+     "0x0d3a1BE29E9dEd63c7a5678b31e847D68F71FFa2"   (Flow router, has code)
+   ]  => KuruFlowAdapter IS deployed on mainnet; mainnet SWAP enabled
+4. WMON 0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A has code => stays in inputAllow.SWAP
+   WETH 0xEE8c0E9f1BFFb4Eb878d8f15f368A02a35481242 has code => stays in inputAllow.SWAP
+5. Permit2 0x000000000022d473030f116ddee9f6b43ac78ba3 present on 143 (not required by our path)
+6. Testnet (10143) external tokens all have code, but we still deploy our own mocks per the doc:
+   MockStableToken tUSDC/tAUSD + MockERC20 tMON + MockSwapAdapter. No dependency on these addresses.
+
+=== ADDENDUM 2026-10-11: testnet token re-investigation ===
+Triggered by the question "why not use official testnet tokens?". The doc's premise
+("no AUSD on testnet", "Circle testnet USDC unusable") turned out to be partly WRONG.
+
+Circle USDC  0x534b2f3A21130d7a60830c2Df862319e593943A3  (10143)
+  name "USDC"  symbol "USDC"  version "2"  decimals 6  totalSupply 9.227e15
+  RECEIVE_WITH_AUTHORIZATION_TYPEHASH = 0xd099cc98...13de8  (standard EIP-3009)
+  DOMAIN_SEPARATOR on-chain 0xf1090f5a61ddee19528cecc447be0f91c7205fc2b34dd271fc0de87809a0a48d
+  computed (name="USDC", version="2", chainId=10143)  MATCH
+  masterMinter 0x87f2e95621D8f12b83bb4a3E9975c0eAd524D437 ; our minterAllowance = 0 -> CANNOT MINT
+  OBTAINABLE: faucet.circle.com, 10 USDC / 24h / testnet, no account required
+
+Agora AUSD   0xa9012a055bd4e0eDfF8Ce09f960291C09D5322dC  (10143)
+  name "AUSD"  symbol "AUSD"  decimals 6  totalSupply 1.302e15
+  RECEIVE_WITH_AUTHORIZATION_TYPEHASH = 0xd099cc98...13de8  (standard EIP-3009)
+  eip712Domain name = "Agora Dollar", version = "1"   <-- SAME TRAP AS MAINNET
+  DOMAIN_SEPARATOR on-chain 0x7ff7d6b4bdc3e260c85cf89f8779b1ac80120e3c277f7db4900739a507f03ea1
+  computed (name="Agora Dollar", version="1", chainId=10143)  MATCH
+  no owner()/admin() ; CANNOT MINT ; NO FAUCET FOUND -> unobtainable on testnet
+
+=== DECISION (Austin, 2026-10-11): testnet token mix for config/10143.json ===
+  USDC -> 0x534b2f3A21130d7a60830c2Df862319e593943A3  REAL Circle, isMock:false,
+          eip712 {name:"USDC", version:"2"}, supports3009:true, roles [payout,direct,swapIn,crosschainIn]
+          funding: faucet.circle.com -> operator wallet -> backend drips per demo wallet
+  AUSD -> our MockStableToken tAUSD, isMock:true   (no faucet exists for real testnet AUSD)
+  MON  -> our MockERC20 tMON, isMock:true          (SWAP route input)
+  local 31337 stays ALL mocks (no Circle USDC on anvil)
+  mainnet 143 stays ALL REAL (unchanged)
