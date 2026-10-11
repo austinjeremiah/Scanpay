@@ -1,0 +1,41 @@
+ScanPay Guard — contract test summary
+Generated: 2026-10-11T17:36:28Z
+forge 1.8.5  solc 0.8.28  via-IR  optimizer 200
+
+Suite result: ok. 4 passed; 0 failed; 0 skipped; finished in 4.12ms (2.60ms CPU time)
+Suite result: ok. 10 passed; 0 failed; 0 skipped; finished in 7.60ms (3.93ms CPU time)
+Suite result: ok. 6 passed; 0 failed; 0 skipped; finished in 2.14ms (389.46µs CPU time)
+Suite result: ok. 30 passed; 0 failed; 0 skipped; finished in 11.42ms (9.24ms CPU time)
+Suite result: ok. 11 passed; 0 failed; 0 skipped; finished in 10.91ms (3.87ms CPU time)
+Suite result: ok. 26 passed; 0 failed; 0 skipped; finished in 9.59ms (6.63ms CPU time)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 1.54ms (620.83µs CPU time)
+Suite result: ok. 23 passed; 0 failed; 0 skipped; finished in 181.25ms (16.18ms CPU time)
+Suite result: ok. 11 passed; 0 failed; 0 skipped; finished in 182.31ms (8.02ms CPU time)
+Suite result: ok. 4 passed; 0 failed; 0 skipped; finished in 177.93ms (685.17ms CPU time)
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 183.13ms (182.90ms CPU time)
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 865.13ms (860.61ms CPU time)
+Ran 12 test suites in 867.02ms (1.64s CPU time): 134 tests passed, 0 failed, 0 skipped (134 total tests)
+
+=== coverage (forge coverage --ir-minimum --report summary) ===
+| Contract     | Selector  | Calls | Reverts | Discards |
+| VaultHandler | commit    | 685   | 0       | 0        |
+| VaultHandler | deposit   | 684   | 0       | 0        |
+| VaultHandler | payDirect | 712   | 0       | 0        |
+| VaultHandler | refund    | 647   | 0       | 0        |
+| VaultHandler | settle    | 688   | 0       | 0        |
+| VaultHandler | warp      | 680   | 0       | 0        |
+| File                             | % Lines          | % Statements     | % Branches     | % Funcs          |
+| src/DepositForwarder.sol         | 100.00% (6/6)    | 100.00% (6/6)    | 100.00% (2/2)  | 100.00% (2/2)    |
+| src/IntentVault.sol              | 99.00% (198/200) | 97.35% (257/264) | 89.36% (42/47) | 100.00% (26/26)  |
+| src/MerchantRegistry.sol         | 100.00% (80/80)  | 91.74% (100/109) | 66.67% (16/24) | 100.00% (16/16)  |
+| src/adapters/KuruFlowAdapter.sol | 90.00% (27/30)   | 95.00% (38/40)   | 85.71% (6/7)   | 75.00% (3/4)     |
+| src/adapters/MockSwapAdapter.sol | 100.00% (23/23)  | 88.89% (24/27)   | 40.00% (2/5)   | 100.00% (5/5)    |
+| src/libraries/ScanPayTypes.sol   | 100.00% (14/14)  | 100.00% (14/14)  | N/A (0/0)      | 100.00% (7/7)    |
+| src/mocks/MockERC20.sol          | 100.00% (8/8)    | 100.00% (5/5)    | N/A (0/0)      | 100.00% (3/3)    |
+| src/mocks/MockStableToken.sol    | 90.00% (27/30)   | 88.46% (23/26)   | 80.00% (4/5)   | 88.89% (8/9)     |
+| test/Invariant.t.sol             | 100.00% (71/71)  | 100.00% (80/80)  | 100.00% (7/7)  | 100.00% (10/10)  |
+| test/utils/FakeRouter.sol        | 100.00% (10/10)  | 100.00% (6/6)    | N/A (0/0)      | 100.00% (4/4)    |
+| test/utils/ReentrantAdapter.sol  | 75.00% (6/8)     | 60.00% (3/5)     | N/A (0/0)      | 100.00% (3/3)    |
+| test/utils/RegistryBase.sol      | 88.57% (31/35)   | 84.85% (28/33)   | N/A (0/0)      | 100.00% (6/6)    |
+| test/utils/VaultBase.sol         | 93.33% (42/45)   | 90.48% (38/42)   | 0.00% (0/2)    | 100.00% (9/9)    |
+| Total                            | 96.96% (543/560) | 94.67% (622/657) | 79.80% (79/99) | 98.08% (102/104) |
