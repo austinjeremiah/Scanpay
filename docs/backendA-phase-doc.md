@@ -19,9 +19,11 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A4 | ScanPayTypes.sol | ✅ | `260b7ed` |
 | A5 | Interfaces | ✅ | `e8d4002` |
 | A6 | `@scanpay/shared` package | ✅ | `5de4058` |
-| A7 | Golden vectors → **I0** | 🔜 | |
+| A7 | Golden vectors → **I0** | ✅ | `16fd7ee` |
+| **I0** | **Checkpoint — handoff to B + FE** | ✅ **REACHED** | |
+| A8 | MerchantRegistry | 🔜 | |
 
-**Checkpoints:** I0 (after A7) · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23) — none reached yet.
+**Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
 ---
 
@@ -200,3 +202,52 @@ intentId    0x9f27f3e7a9b29bd9062e88c6aa3d6251792a4817f5efe0d62d222a830d86a45e  
 ### Deviation
 
 `out/IERC20.sol/IERC20.json` did not exist, because nothing in our source imported OZ's `IERC20` — the doc predicted this and sanctions adding the import to `IMockStableToken.sol`. Done. Confirmed `IMockStableToken`'s own ABI is **unchanged** before and after (`authorizationState, balanceOf, decimals, mint, receiveWithAuthorization`), so the verbatim ICD extraction from A5 stays sound.
+
+---
+
+## A7 — Golden vectors · `16fd7ee` → **CHECKPOINT I0**
+
+`contracts/test/GoldenVectors.t.sol` (123 lines) generates `packages/shared/test-vectors/eip712.json`; `packages/shared/test/golden.test.ts` (101 lines) re-derives everything in TypeScript and asserts equality.
+
+**Exit checks:** ✅ fixture exists and is committed · ✅ `pnpm shared:test` → **5 passed** · ✅ keys are test-only constants
+
+### What the 5 tests actually prove
+
+They assert **signatures**, not merely digests — the full signing path agrees across languages, which is stronger than the doc's framing:
+
+| # | Test | Asserts |
+|---|---|---|
+| 1 | merchantId | `computeMerchantId` == Solidity |
+| 2 | invoice | struct hash + digest + **merchant signature** |
+| 3 | intent | struct hash + digest + intentId + **payer signature** |
+| 4 | registration | digest + **owner signature** |
+| 5 | EIP-3009 | digest + signature + v/r/s split, nonce bound to intent digest |
+
+Test 5 is the important one. It confirms in both languages that the authorization carries `nonce = intentDigest`, `to = vault`, `value = amountOut`, `validAfter = 0`, `validBefore = intent.expiresAt` — exactly ICD §0.5. That nonce binding is replay defense **T3**: the authorization is worthless for any other payment.
+
+### Verification beyond the doc
+
+**The fixture is deterministic.** Regenerated it and compared SHA-256 — byte-identical (`d5dc8aa5…`). A drifting fixture would cause mysterious failures in B's and FE's test suites later.
+
+**Keys are safe to publish.** `payerKey=0xa11ce`, `ownerKey=0xc0ffee`, `merchantSignerKey=0xb0b` — tiny constants, verified numerically rather than by eyeballing.
+
+**I0 acceptance run from a clean install.** Deleted all `node_modules`, ran `pnpm install && pnpm shared:test` — the exact command B and FE will run. 5 passed.
+
+No deviations.
+
+### I0 handoff message (for team chat)
+
+```
+I0 READY (ICD v1)
+- contracts/src/libraries/ScanPayTypes.sol + 6 interfaces committed
+- @scanpay/shared: constants, types, eip712, ids, wire, generated ABIs, golden vectors
+- verify: pnpm install && pnpm shared:test   -> 5 passed
+- NOTE paths: repo is restructured, backend code lives under backend/
+  (shared = backend/packages/shared, contracts = backend/contracts)
+- NOTE for B: ICD §0.8 is missing 2 error mappings that exist in the ABIs:
+  ZeroAddress (reachable via registerMerchant) and InvalidFee (admin-only).
+  Suggest ZERO_ADDRESS (422) and INVALID_FEE (422). Needs ICD_VERSION bump if adopted.
+- NOTE for B+FE: AUSD mainnet DOES support EIP-3009, and its EIP-712 domain
+  name is "Agora Dollar", NOT "AUSD". Use deployments.tokens.AUSD.eip712.
+B: you can now write against intentVaultAbi / merchantRegistryAbi. Local chain (I1) next.
+```
