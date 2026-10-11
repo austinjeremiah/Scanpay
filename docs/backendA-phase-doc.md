@@ -27,7 +27,8 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A11 | DepositForwarder | ✅ | `63bcb6a` |
 | A12 | **IntentVault** (core) | ✅ | `b45c335` |
 | A13 | Vault fixture + DIRECT tests | ✅ | `72e1bb3` |
-| A14 | KuruFlowAdapter + SWAP tests | 🔜 | |
+| A14 | KuruFlowAdapter + SWAP tests | ✅ | `bb2e663` |
+| A15 | CROSSCHAIN tests | 🔜 | |
 
 **Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
@@ -567,3 +568,33 @@ The doc's exit check says to record "the `payDirect` median" in `docs/gas.md`. R
 ### Deviation
 
 The doc asks for the median; recorded the successful-path max/avg instead, with the reasoning in `docs/gas.md`. Recording the literal median would have handed B a number that breaks payments.
+
+---
+
+## A14 — KuruFlowAdapter + SWAP tests · `bb2e663`
+
+`src/adapters/KuruFlowAdapter.sol` (75 lines, the **mainnet** swap adapter), `test/utils/FakeRouter.sol` (34), `test/IntentVault.Swap.t.sol` (227).
+
+**Exit checks:** ✅ 11 SWAP tests + 6 Kuru adapter tests = **17** · ✅ `test_swap_revert_allowanceUnusableWithoutPayerSig` passes
+
+Full suite: **85 tests, 0 failed** across 7 suites.
+
+### The two tests that carry the security story
+
+**`test_swap_revert_allowanceUnusableWithoutPayerSig`** — the README's answer to "isn't an unlimited approve dangerous?". The payer approves `type(uint256).max` to the vault, then an attacker crafts an intent naming that payer and signs it themselves. Result: `InvalidPayerSignature`. The allowance is inert without the payer's signature, because the vault pulls funds only against a verified intent — threat **T13**.
+
+**`test_swap_revert_shortChangingAdapterCaught`** — a deliberately malicious adapter delivers `AMOUNT - 1`. The vault catches it with `SwapOutputTooLow(AMOUNT-1, AMOUNT)` because it does its **own balance-delta check** rather than trusting the adapter's return value — threat **T14**. This matters on mainnet, where the adapter calls a third-party aggregator.
+
+Also covered: **T15** (`test_swap_revert_targetNotAllowed`, `test_swap_revert_onlyVault` — the adapter can only be driven by the vault and only into allow-listed targets).
+
+### Gas — `paySwap` recorded
+
+Successful settlements only, 4 calls:
+
+| Min | Avg | Median | Max |
+|---|---|---|---|
+| 550,887 | 638,768 | 619,497 | **765,193** |
+
+Wider spread than DIRECT because the cost depends on the path: same-token (no swap) at the low end, Kuru-via-adapter with a surplus refund at the high end. `docs/gas.md` recommends a **950,000** fallback (765,193 × 1.2), sized off the max for the same reason as A13.
+
+No deviations.
