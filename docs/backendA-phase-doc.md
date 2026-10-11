@@ -26,7 +26,8 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A10 | Registry + mock token tests | ✅ | `93c37f4` |
 | A11 | DepositForwarder | ✅ | `63bcb6a` |
 | A12 | **IntentVault** (core) | ✅ | `b45c335` |
-| A13 | Vault fixture + DIRECT tests | 🔜 | |
+| A13 | Vault fixture + DIRECT tests | ✅ | `72e1bb3` |
+| A14 | KuruFlowAdapter + SWAP tests | 🔜 | |
 
 **Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
@@ -532,3 +533,37 @@ The doc fixes a precise order because B's error mapping and the A13–A16 tests 
 Pausing halts new payments but **can never trap user funds** — threat **T12**. 6 `nonReentrant` guards total (**T16**).
 
 No deviations.
+
+---
+
+## A13 — Vault fixture + DIRECT route tests · `72e1bb3`
+
+`test/utils/VaultBase.sol` (128 lines, extends `RegistryBase` — live merchant, funded payer, configured vault) and `test/IntentVault.Direct.t.sol` (340 lines).
+
+**Exit checks:** ✅ **30 DIRECT tests** pass (needed ≥ 28) · ✅ gas recorded in `docs/gas.md`
+
+Full suite: **68 tests, 0 failed** across 5 suites. The vault now has real coverage for the first time.
+
+Threats exercised here: **T1** tampered amount, **T2** redirect attempt, **T3** replay, **T4** invoice paid twice, **T5** unregistered merchant, **T6** key rotation invalidating old invoices, **T8** expiry, **T18** fee cap, **T19** amount cap + pause.
+
+### Finding — the gas-report median is a trap for Backend B
+
+`forge test --gas-report` aggregates **every** call to a function, and most DIRECT tests are deliberate reverts, which are cheap. The raw report for `payDirect`:
+
+| | Min | Avg | Median | Max | Calls |
+|---|---|---|---|---|---|
+| all 29 calls (mostly reverts) | 44,720 | 221,909 | **108,604** | 554,084 | 29 |
+
+Filtering to calls that actually settle:
+
+| | Min | Avg | Max |
+|---|---|---|---|
+| successful settlements only | **505,484** | **529,784** | **554,084** |
+
+The doc's exit check says to record "the `payDirect` median" in `docs/gas.md`. Recording 108,604 would be actively harmful: **Monad bills the gas limit**, B sets `gas = estimate × 1.2`, and a 108k fallback would make every real payment run out of gas.
+
+`docs/gas.md` therefore records the **successful-path** figures, with the trap written out explicitly, and recommends a **700,000** fallback for `payDirect` (554,084 × 1.2 ≈ 665k, rounded up). `paySwap` and the cross-chain calls get measured in A14/A15.
+
+### Deviation
+
+The doc asks for the median; recorded the successful-path max/avg instead, with the reasoning in `docs/gas.md`. Recording the literal median would have handed B a number that breaks payments.
