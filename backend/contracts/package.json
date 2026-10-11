@@ -1,0 +1,21 @@
+{
+  "name": "@scanpay/contracts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "forge build",
+    "test": "forge test -vv",
+    "export:abis": "forge build && tsx scripts/export-abis.ts",
+    "build:deployments": "tsx scripts/build-deployments.ts",
+    "kuru:quote": "tsx scripts/kuru-quote.ts"
+  },
+  "dependencies": {
+    "@scanpay/shared": "workspace:*",
+    "viem": "^2.40.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

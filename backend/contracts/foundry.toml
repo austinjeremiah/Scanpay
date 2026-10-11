@@ -1,0 +1,37 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+test = "test"
+script = "script"
+solc_version = "0.8.28"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 200
+via_ir = true
+# Monad execution environment (gas model, 128KB size limit, precompiles) — Foundry >= 1.8
+network = "monad"
+# Verification-friendly metadata (per docs.monad.xyz verify guide)
+cbor_metadata = true
+extra_output = ["metadata"]
+bytecode_hash = "none"
+use_literal_content = true
+fs_permissions = [
+  { access = "read", path = "./config" },
+  { access = "read", path = "./broadcast" },
+  { access = "read-write", path = "../deployments" },
+  { access = "read-write", path = "../packages/shared/test-vectors" },
+]
+
+[profile.default.fuzz]
+runs = 512
+
+[profile.default.invariant]
+runs = 64
+depth = 64
+fail_on_revert = false
+
+[rpc_endpoints]
+local = "http://127.0.0.1:8545"
+monad_testnet = "${MONAD_TESTNET_RPC}"
+monad_mainnet = "${MONAD_MAINNET_RPC}"
