@@ -56,3 +56,32 @@ Both USDC and AUSD return exactly this value => both are standard EIP-3009.
 5. Permit2 0x000000000022d473030f116ddee9f6b43ac78ba3 present on 143 (not required by our path)
 6. Testnet (10143) external tokens all have code, but we still deploy our own mocks per the doc:
    MockStableToken tUSDC/tAUSD + MockERC20 tMON + MockSwapAdapter. No dependency on these addresses.
+
+=== ADDENDUM 2026-10-11: testnet token re-investigation ===
+Triggered by the question "why not use official testnet tokens?". The doc's premise
+("no AUSD on testnet", "Circle testnet USDC unusable") turned out to be partly WRONG.
+
+Circle USDC  0x534b2f3A21130d7a60830c2Df862319e593943A3  (10143)
+  name "USDC"  symbol "USDC"  version "2"  decimals 6  totalSupply 9.227e15
+  RECEIVE_WITH_AUTHORIZATION_TYPEHASH = 0xd099cc98...13de8  (standard EIP-3009)
+  DOMAIN_SEPARATOR on-chain 0xf1090f5a61ddee19528cecc447be0f91c7205fc2b34dd271fc0de87809a0a48d
+  computed (name="USDC", version="2", chainId=10143)  MATCH
+  masterMinter 0x87f2e95621D8f12b83bb4a3E9975c0eAd524D437 ; our minterAllowance = 0 -> CANNOT MINT
+  OBTAINABLE: faucet.circle.com, 10 USDC / 24h / testnet, no account required
+
+Agora AUSD   0xa9012a055bd4e0eDfF8Ce09f960291C09D5322dC  (10143)
+  name "AUSD"  symbol "AUSD"  decimals 6  totalSupply 1.302e15
+  RECEIVE_WITH_AUTHORIZATION_TYPEHASH = 0xd099cc98...13de8  (standard EIP-3009)
+  eip712Domain name = "Agora Dollar", version = "1"   <-- SAME TRAP AS MAINNET
+  DOMAIN_SEPARATOR on-chain 0x7ff7d6b4bdc3e260c85cf89f8779b1ac80120e3c277f7db4900739a507f03ea1
+  computed (name="Agora Dollar", version="1", chainId=10143)  MATCH
+  no owner()/admin() ; CANNOT MINT ; NO FAUCET FOUND -> unobtainable on testnet
+
+=== DECISION (Austin, 2026-10-11): testnet token mix for config/10143.json ===
+  USDC -> 0x534b2f3A21130d7a60830c2Df862319e593943A3  REAL Circle, isMock:false,
+          eip712 {name:"USDC", version:"2"}, supports3009:true, roles [payout,direct,swapIn,crosschainIn]
+          funding: faucet.circle.com -> operator wallet -> backend drips per demo wallet
+  AUSD -> our MockStableToken tAUSD, isMock:true   (no faucet exists for real testnet AUSD)
+  MON  -> our MockERC20 tMON, isMock:true          (SWAP route input)
+  local 31337 stays ALL mocks (no Circle USDC on anvil)
+  mainnet 143 stays ALL REAL (unchanged)

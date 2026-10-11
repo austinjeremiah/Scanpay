@@ -35,6 +35,7 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 |---|---|---|
 | `OPERATOR_ADDRESS` from Backend B | A19 testnet deploy | ⏸ not received |
 | B to add 2 rows to ICD §0.8 (see A5) | I0 handoff | ⏸ raise at I0 |
+| Faucet real testnet USDC into operator wallet | A19 demo funding | ⏸ faucet.circle.com, 10/24h |
 | Deployer keystore (`cast wallet import scanpay-deployer`) | A19 | ⏸ not created |
 | Funded testnet MON | A19 | ⏸ |
 | `ENVIO_API_TOKEN` | A22 | ⏸ |
@@ -334,3 +335,41 @@ The point of the mock is that it is **not** a stub — if it faked EIP-3009, the
 - `quoteIn` rounds **up** (`(amountOut * 1e18 + rate - 1) / rate`) while `quoteOut` floors, so `quoteOut(quoteIn(x)) >= x` — the swap can never under-deliver to the merchant
 
 No deviations.
+
+---
+
+## DECISION — testnet uses REAL Circle USDC (supersedes part of A9)
+
+Raised by Austin: *"why don't we use the official testnet tokens?"* Re-investigated on-chain rather than trusting the doc. **The doc's premise was partly wrong, and so was my restatement of it.**
+
+| Testnet token | Exists | EIP-3009 | Obtainable |
+|---|---|---|---|
+| Circle USDC `0x534b…43A3` | ✅ 9.2B supply | ✅ standard typehash | ✅ **faucet.circle.com, 10 / 24 h, no account** |
+| Agora AUSD `0xa901…22dC` | ✅ 1.3B supply | ✅ standard typehash | ❌ no faucet, no mint path |
+
+Corrections to the record:
+- A9's note "there is no AUSD on testnet" (repeated from doc §A9) is **false** — it exists and works.
+- "Circle's testnet USDC can't be minted by our faucet" is true (masterMinter `0x87f2…D437`, our allowance `0`) but **misleading**: Circle runs a public faucet that covers Monad testnet.
+
+Both domain separators verified by reconstruction, as in A2:
+
+| Token | eip712 name | version | separator | match |
+|---|---|---|---|---|
+| testnet USDC | `USDC` | `2` | `0xf1090f5a…a48d` | ✅ |
+| testnet AUSD | `Agora Dollar` | `1` | `0x7ff7d6b4…3ea1` | ✅ |
+
+Note testnet AUSD carries the **same `"Agora Dollar"` trap** as mainnet.
+
+### Decision → drives `config/10143.json` in A18
+
+| Chain | USDC | AUSD | MON |
+|---|---|---|---|
+| local 31337 | mock | mock | mock |
+| **testnet 10143** | **REAL Circle `0x534b…43A3`** | mock `tAUSD` | mock `tMON` |
+| mainnet 143 | REAL | REAL | — |
+
+Testnet USDC entry: `isMock: false`, `eip712 {name:"USDC", version:"2"}`, `supports3009: true`, roles `[payout, direct, swapIn, crosschainIn]`.
+
+**Funding model changes for A18/A19 and for Backend B:** the operator cannot mint USDC on testnet. Faucet 10 USDC / 24 h into the operator wallet; B's faucet endpoint **transfers** a small amount per demo wallet instead of minting. Minting still applies to `tAUSD` and `tMON`, where the operator holds `MINTER_ROLE`.
+
+The mock contracts from A9 all stay — they are still used for AUSD, MON, and the whole of local 31337.
