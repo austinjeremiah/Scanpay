@@ -25,7 +25,8 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A9 | Mock tokens + MockSwapAdapter | ✅ | `cf25271` |
 | A10 | Registry + mock token tests | ✅ | `93c37f4` |
 | A11 | DepositForwarder | ✅ | `63bcb6a` |
-| A12 | **IntentVault** (core) | 🔜 | |
+| A12 | **IntentVault** (core) | ✅ | `b45c335` |
+| A13 | Vault fixture + DIRECT tests | 🔜 | |
 
 **Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
@@ -489,3 +490,45 @@ No deviations.
 ### Note — frontend work landed on main
 
 `sylesh7` pushed 158 files under `frontend/` (commits `dcad335`, `ef0100a`, `90e76a1`) while this phase was in progress. No overlap with `backend/` or `docs/`; rebased cleanly. The `frontend/` directory deleted earlier in the session is back, now owned by the frontend engineer.
+
+---
+
+## A12 — IntentVault · `b45c335`
+
+`src/IntentVault.sol` — **439 lines**, the core contract. Proof of intent + proof of settlement.
+
+**Exit checks:** ✅ compiles under via-IR, no stack-too-deep · ✅ **19,237 B** runtime (< 24 KB portable limit; 111,835 B margin against Monad's 128 KB) · ✅ 17 events (needed ≥ 11) · ✅ every `IIntentVault` function implemented — enforced by the compiler, since an unimplemented one would make the contract abstract
+
+ABI: 17 events, 35 errors, 44 functions. Full suite still **38 passed, 0 failed** (vault tests arrive in A13–A15).
+
+### `_verify` check order matches the spec exactly
+
+The doc fixes a precise order because B's error mapping and the A13–A16 tests both depend on which error fires first. Verified line by line — all six groups in sequence:
+
+| Group | Order in code |
+|---|---|
+| 1 shape | `RouteMismatch` → `InvoiceMismatch` → `PayoutTokenMismatch` → `AmountMismatch` → `ZeroAddress` |
+| 2 time | `InvoiceExpired` → `IntentExpired` |
+| 3 merchant | `MerchantNotActive` → `KeyVersionMismatch`(invoice) → `KeyVersionMismatch`(intent) → `PayoutTokenMismatch`(vs registry) → `PayoutTokenNotAllowed` → `AmountAboveCap` |
+| 4 input | `InputTokenNotAllowed` → `InputTokenNotAllowed`(DIRECT needs input==payout) → `AmountMismatch`(maxAmountIn rule) |
+| 5 sigs | `InvalidMerchantSignature` → `InvalidPayerSignature` |
+| 6 one-time | `NonceAlreadyUsed` → `InvoiceNotOpen` → `IntentAlreadyExists` |
+
+### Money movement review (`_settle`)
+
+- Destination is `r.payoutWallet`, snapshotted from **the registry** at verify time (`payoutWallet = m.payoutWallet`, line 350) — never from the intent or the caller.
+- **The entire contract contains exactly three `safeTransfer` destinations:** `r.payoutWallet` (registry snapshot), `feeRecipient` (admin config), `r.refundTo` (inside the payer-signed intent). **No caller-controlled destination exists anywhere** — threat **T2** holds structurally, not just by convention.
+- Accounting balances exactly: `(amountOut − fee) + fee + excess == available`. The vault transfers out precisely what it took in, which is what makes the A17 "never holds funds" invariant (**T17**) provable.
+- State is written **before** transfers (CEI), and `invoiceState` moves to `PAID` in the same step.
+- Fee is floor division from `amountOut`, so the merchant receives `amountOut − fee`.
+
+### Pause semantics — verified, not assumed
+
+| Entry point | Modifiers |
+|---|---|
+| `payDirect` / `paySwap` / `commitCrossChain` / `settleCrossChain` | `whenNotPaused nonReentrant` |
+| **`refundCrossChain`** / **`rescue`** | `nonReentrant` **only** |
+
+Pausing halts new payments but **can never trap user funds** — threat **T12**. 6 `nonReentrant` guards total (**T16**).
+
+No deviations.
