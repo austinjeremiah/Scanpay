@@ -28,9 +28,10 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A12 | **IntentVault** (core) | ✅ | `b45c335` |
 | A13 | Vault fixture + DIRECT tests | ✅ | `72e1bb3` |
 | A14 | KuruFlowAdapter + SWAP tests | ✅ | `bb2e663` |
-| A15 | CROSSCHAIN tests | ⚠️ | `1ab7da2` |
+| A15 | CROSSCHAIN tests | ✅ | `1ab7da2` (branch gate met at A17) |
 | A16 | Attack suite | ✅ | `38fbafc` |
-| A17 | Fuzz + invariants | 🔜 | |
+| A17 | Fuzz + invariants | ✅ | `c077141` |
+| A18 | Deploy script + local chain → **I1** | 🔜 | |
 
 **Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
@@ -688,3 +689,62 @@ That is a stronger claim than "the attack reverts": the intent struct has no des
 Still `IntentVault.sol` 99.00% lines / **82.98% branches**. The attack tests exercise paths the route suites already covered, so the A15 branch gap did not close here. A17's fuzz tests (notably `testFuzz_tamperAnyIntentField`) target the remaining `||` arms directly.
 
 No deviations.
+
+---
+
+## A17 — Fuzz + invariants · `c077141`
+
+`test/Fuzz.t.sol` (81 lines, 4 fuzz tests) and `test/Invariant.t.sol` (162 lines, 3 invariants).
+
+**Exit checks:** ✅ 4 fuzz tests at **512 runs** each · ✅ 3 invariants hold (64 runs × depth 64) · ✅ `forge test` → **134 passed, 0 failed**, summary in `docs/test-summary.txt`
+
+### The two money properties, now randomised
+
+| Invariant | Meaning | Threat |
+|---|---|---|
+| `invariant_vaultNeverHoldsFunds` | vault USDC balance is always 0 between transactions | **T17** |
+| `invariant_conservation` | everything in == merchant net + fees + refunds | — |
+| `invariant_merchantPlusFeeEqualsSettled` | payout wallet + fee recipient == total settled | — |
+
+The handler ran **~4,100 randomised calls** across `payDirect`, `commit`, `deposit`, `settle`, `refund`, `warp` with **0 reverts and 0 discards** — the sequences were all valid, so the invariants were tested against real state transitions rather than mostly-rejected noise.
+
+Fuzz tests: `testFuzz_direct_anyAmount_feeSplitExact`, `testFuzz_tamperAnyIntentField`, `testFuzz_crossChain_anyOverDeposit`, `testFuzz_crossChain_underDepositAlwaysReverts`.
+
+### A15's branch shortfall is resolved
+
+As predicted, `testFuzz_tamperAnyIntentField` hit the `||` arms the route suites missed:
+
+| `IntentVault.sol` | A15 | A16 | **A17** |
+|---|---|---|---|
+| lines | 99.00% | 99.00% | **99.00%** |
+| branches | 82.98% | 82.98% | **89.36%** ✅ |
+| functions | 100% | 100% | **100%** |
+
+Branches now clear the ≥ 85% gate, so A15 is marked ✅ retroactively. Final gate position:
+
+| Contract | Lines | Part VI gate (≥95% lines) |
+|---|---|---|
+| `IntentVault.sol` | 99.00% | ✅ |
+| `MerchantRegistry.sol` | 100.00% | ✅ |
+| `DepositForwarder.sol` | 100.00% | ✅ |
+
+### Deviation — bug in the doc's `Invariant.t.sol`
+
+`setUp()` as written fails with `AccessControlUnauthorizedAccount`:
+
+```solidity
+vm.prank(admin);
+usdc.grantRole(usdc.MINTER_ROLE(), address(handler));   // BROKEN
+```
+
+`vm.prank` applies to the **next call only**, and the inner `usdc.MINTER_ROLE()` view call consumes it — so `grantRole` executes as the test contract, which has no admin role. The whole invariant suite failed at setup.
+
+Fixed by hoisting the role lookup out of the argument list:
+
+```solidity
+bytes32 minterRole = usdc.MINTER_ROLE();
+vm.prank(admin);
+usdc.grantRole(minterRole, address(handler));
+```
+
+Comment added in-file so it is not reintroduced.
