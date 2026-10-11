@@ -27,13 +27,22 @@ actually settle:
 | Operation | Observed max | × 1.2 | Suggested fallback |
 |---|---|---|---|
 | `payDirect` (DIRECT route, full settle) | 554,084 | 664,901 | **700,000** |
-| `paySwap` | — | — | measured in A14 |
+| `paySwap` (SWAP route, full settle) | 765,193 | 918,232 | **950,000** |
 | `commitCrossChain` | — | — | measured in A15 |
 | `settleCrossChain` | — | — | measured in A15 |
 
 The successful path is dominated by: EIP-3009 `receiveWithAuthorization` on the token (signature recovery +
 balance writes), two ECDSA recoveries in `_verify`, the `IntentRecord` storage write, and up to three ERC-20
 transfers in `_settle`.
+
+### paySwap detail (A14, successful settlements only, 4 calls)
+
+| Min | Avg | Median | Max |
+|---|---|---|---|
+| 550,887 | 638,768 | 619,497 | **765,193** |
+
+The spread is wider than DIRECT because cost depends on the swap path: same-token (no swap) at the low end,
+Kuru-via-adapter with a surplus refund at the high end. Size the fallback off the **max**.
 
 ## Other vault functions (A13)
 
