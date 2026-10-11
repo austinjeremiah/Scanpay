@@ -5,7 +5,7 @@ export default function About() {
         <div className="container title-container top-border">
           <div className="section-title-flex">
             <h2 className="section-title">
-              ABOUT US
+              ABOUT SCANPAY
             </h2>
             <div className="section-title section-number">
               001
@@ -38,7 +38,7 @@ export default function About() {
                   </div>
                 </div>
                 <div className="section-info-card-text">
-                  GET START
+                  SCAN & PAY
                 </div>
                 <div className="section-info-card-shape" />
               </div>
@@ -47,9 +47,9 @@ export default function About() {
               <div className="home-about-content-wrap">
                 <div fade-anim="True" className="home-about-content-title-box">
                   <div className="home-about-content-title">
-                    {"Innovative AI Agency\u2028building smart automation solutions powered by Advanded AI\u2028"}
+                    {"QR payments you can verify\u2028built on Monad, powered by passkeys and stablecoins\u2028"}
                     <br />
-                    Technology for modern business
+                    Proof of merchant, intent and settlement
                   </div>
                 </div>
                 <div fade-anim="True" className="home-about-author-wrap">
@@ -58,10 +58,10 @@ export default function About() {
                   </div>
                   <div className="home-about-author-info-box">
                     <div className="home-about-author-name">
-                      JOSH WARD
+                      SCANPAY GUARD
                     </div>
                     <p className="home-about-author-designation">
-                      FOUNDER
+                      MONAD METROPOLIS · TRACK 02
                     </p>
                   </div>
                 </div>
@@ -72,10 +72,10 @@ export default function About() {
                     <div className="primary-button-text-items">
                       <div className="primary-button-text-wrap">
                         <div className="primary-button-text one">
-                          GET STARTED
+                          TRY SCANPAY
                         </div>
                         <div className="primary-button-text two">
-                          GET STARTED
+                          TRY SCANPAY
                         </div>
                       </div>
                     </div>
@@ -103,10 +103,10 @@ export default function About() {
                     </div>
                     <div className="home-about-card-box">
                       <div className="home-about-card-title">
-                        Material
+                        Verified merchant
                       </div>
                       <p className="home-about-card-text">
-                        We build intelligent AI systems that streamline operations, automate repetitive workflows, and help businesses scale faster with reliable, data-driven solutions.
+                        Merchants register on-chain with owner and payout-wallet signatures, so you always know exactly who you are paying.
                       </p>
                     </div>
                   </div>
@@ -117,10 +117,10 @@ export default function About() {
                     </div>
                     <div className="home-about-card-box">
                       <div className="home-about-card-title">
-                        Material
+                        Signed intent
                       </div>
                       <p className="home-about-card-text">
-                        From AI strategy and custom model development to seamless workflow integration
+                        You sign exactly what you approve. The vault only pays if the amount, token and merchant match your signed intent.
                       </p>
                     </div>
                   </div>

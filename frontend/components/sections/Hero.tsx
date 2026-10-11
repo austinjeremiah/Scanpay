@@ -6,25 +6,25 @@ export default function Hero() {
           <div className="hero-banner-wrapper">
             <div className="hero-banner-title-box">
               <h1 className="hero-banner-title">
-                Build for Business Growth
+                Scan. Verify. Pay.
               </h1>
               <div className="hero-banner-title bg">
-                Revenues
+                Arrived.
               </div>
             </div>
             <div className="hero-banner-line" />
             <p className="hero-banner-description">
-              Automatically detect focal points and crop images perfectly for any layout using AI vision.
+              QR payments on Monad with three proofs: who you are paying, what you approved, and where the money went, all enforced on-chain.
             </p>
             <div className="hero-banner-button-box">
               <a data-wf--primary-button--variant="3rd-button" href="/contact" className="primary-button w-variant-5c198abb-72b9-9083-ac28-2758d34ab69e w-inline-block">
                 <div className="primary-button-text-items w-variant-5c198abb-72b9-9083-ac28-2758d34ab69e">
                   <div className="primary-button-text-wrap w-variant-5c198abb-72b9-9083-ac28-2758d34ab69e">
                     <div className="primary-button-text one">
-                      GET STARTED
+                      TRY SCANPAY
                     </div>
                     <div className="primary-button-text two">
-                      GET STARTED
+                      TRY SCANPAY
                     </div>
                   </div>
                 </div>
@@ -73,15 +73,15 @@ export default function Hero() {
           <div className="hero-banner-info-flex">
             <div className="hero-banner-info-tag-flex">
               <div className="hero-banner-info-tag">
-                MODERATE
+                MERCHANT
               </div>
               <div className="hero-banner-info-tag-line" />
               <div className="hero-banner-info-tag">
-                INNOVATE
+                INTENT
               </div>
               <div className="hero-banner-info-tag-line" />
               <div className="hero-banner-info-tag">
-                INTERACTIVE
+                SETTLEMENT
               </div>
             </div>
             <div className="hero-banner-shape-box">
@@ -94,11 +94,11 @@ export default function Hero() {
                   <rect width="324" height="228" fill="#2A2A2A" />
                   <rect x="8" y="8" width="308" height="29.85" fill="#fff" />
                   <text x="20" y="27" fill="#1F1F21" fillOpacity=".74" fontFamily="Arial, sans-serif" fontSize="8" letterSpacing="1">
-                    AI AUTOMATIONS
+                    SCANPAY GUARD
                   </text>
                   <rect x="209.8" y="12" width="69.2" height="21.85" rx="10.9" fill="#D3FB43" />
                   <text x="219" y="26" fill="#1F1F21" fillOpacity=".74" fontFamily="Arial, sans-serif" fontSize="8">
-                    This Month
+                    Per payment
                   </text>
                   <path d="M266 22.3L268.6 25L271.3 22.3" stroke="#1F1F21" strokeOpacity=".74" strokeWidth=".8" strokeLinecap="round" strokeLinejoin="round" />
                   <circle cx="293" cy="22.9" r="10.9" fill="#1F1F21" fillOpacity=".04" />
@@ -149,23 +149,23 @@ export default function Hero() {
                     <use className="circle-dot" href="#inner-dot" transform="rotate(84 161.5 181)" opacity=".08" />
                   </g>
                   <text className="circle-label" x="162" y="143" textAnchor="middle" fill="#FAFAFA" fillOpacity=".56" fontFamily="Arial, sans-serif" fontSize="8">
-                    Tasks automated
+                    Proofs verified
                   </text>
                   <text className="circle-counter" x="162" y="166" textAnchor="middle" fill="#FAFAFA" fontFamily="Arial, sans-serif" fontSize="18" fontWeight="600">
-                    3,254
+                    3
                   </text>
                   <g fontFamily="Arial, sans-serif" fontSize="8" fill="#FAFAFA" fillOpacity=".56">
                     <circle cx="20.3" cy="212" r="3" fill="none" stroke="#D3FB43" strokeWidth="2" />
                     <text x="29" y="215">
-                      Customer Support
+                      Merchant
                     </text>
                     <circle cx="131.8" cy="212" r="3" fill="none" stroke="#D7FD41" strokeOpacity=".5" strokeWidth="2" />
                     <text x="141" y="215">
-                      Content Creation
+                      Intent
                     </text>
                     <circle cx="239.3" cy="212" r="3" fill="none" stroke="#D7FD41" strokeOpacity=".1" strokeWidth="2" />
                     <text x="248" y="215">
-                      Workflow Auto
+                      Settlement
                     </text>
                   </g>
                 </svg>
@@ -188,13 +188,13 @@ export default function Hero() {
               </div>
               <div className="hero-banner-img-text-flex">
                 <div className="hero-banner-info-tag">
-                  TRUST BY
+                  BUILT FOR
                 </div>
                 <div className="hero-banner-info-tag color">
-                  5K+
+                  MONAD
                 </div>
                 <div className="hero-banner-info-tag">
-                  BUSINESSES
+                  METROPOLIS
                 </div>
               </div>
             </div>

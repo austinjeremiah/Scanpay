@@ -10,7 +10,7 @@ export default function Blogs() {
         <div className="container title-container top-border">
           <div className="section-title-flex">
             <h2 className="section-title">
-              BLOG
+              DOCS
             </h2>
             <div className="section-title section-number">
               008
@@ -28,7 +28,7 @@ export default function Blogs() {
           <div className="home-blogs-flex">
             <div fade-anim="True" className="home-blogs-section-title-wrap">
               <div className="home-blogs-section-title">
-                Featured AI solutions for modern businesses.
+                Real stablecoins, real on-chain proof.
               </div>
               <div className="home-blogs-section-icon-box">
                 <img src="/assets/6a9c01468728423935f18cd1_blogs_arrow.svg" loading="lazy" alt="Arrow" className="home-blogs-section-icon" />
@@ -45,21 +45,21 @@ export default function Blogs() {
                       <a href="/post/ai-workflow-automation" className="blogs-collection-box height w-inline-block">
                         <div className="blogs-collection-title-box">
                           <div className="paragraph-small blogs-collection-date">
-                            September 2026
+                            October 2026
                           </div>
                           <div className="blogs-collection-title">
-                            AI Workflow Automation
+                            USDC and AUSD on Monad
                           </div>
                         </div>
                         <div className="blogs-collection-content-flex">
                           <div className="paragraph-small blogs-collection-content-category">
-                            Success stories
+                            Stablecoins
                           </div>
                           <div>
-                            <img src="/assets/6a9940ff24dccd963980ad93_blog_01.avif" loading="lazy" alt="AI Workflow Automation" />
+                            <img src="/assets/6a9940ff24dccd963980ad93_blog_01.avif" loading="lazy" alt="USDC and AUSD on Monad" />
                           </div>
                           <div className="paragraph-small blogs-collection-content-text">
-                            Discover how we help businesses streamline operations, automate repetitive work, and scale faster with custom AI solutions.
+                            Circle USDC and Agora AUSD both support EIP-3009 on Monad, so a payment is one gasless transaction.
                           </div>
                         </div>
                         <div className="display-none">
@@ -80,21 +80,21 @@ export default function Blogs() {
                       <a href="/post/ai-agent-development" className="blogs-collection-box height w-inline-block">
                         <div className="blogs-collection-title-box">
                           <div className="paragraph-small blogs-collection-date">
-                            September 2026
+                            October 2026
                           </div>
                           <div className="blogs-collection-title">
-                            AI Agent Development
+                            Why Monad
                           </div>
                         </div>
                         <div className="blogs-collection-content-flex">
                           <div className="paragraph-small blogs-collection-content-category">
-                            Client results
+                            Network
                           </div>
                           <div>
-                            <img src="/assets/6a99441ad6c253a6c88fb8b2_blog_02.avif" loading="lazy" alt="AI Agent Development" />
+                            <img src="/assets/6a99441ad6c253a6c88fb8b2_blog_02.avif" loading="lazy" alt="Why Monad" />
                           </div>
                           <div className="paragraph-small blogs-collection-content-text">
-                            From intelligent assistants to enterprise automation, explore projects that deliver measurable efficiency and long-term impact.
+                            Sub-second blocks and cheap transactions make a scan-to-receipt payment feel instant at the counter.
                           </div>
                         </div>
                         <div className="display-none">
@@ -109,7 +109,7 @@ export default function Blogs() {
             <div className="home-blogs-link-box">
               <a href="/case-study" className="home-blogs-link w-inline-block">
                 <div className="home-blogs-link-text">
-                  Case Studies
+                  Read the docs
                 </div>
               </a>
             </div>

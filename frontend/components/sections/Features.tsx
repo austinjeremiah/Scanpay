@@ -23,19 +23,19 @@ export default function Features() {
           <div className="feature-flex">
             <div className="feature-banner-wrap">
               <div scale-up="True" className="feature-banner-box">
-                <img src="/assets/6abe03000d733204a18ca8ac_deploy_agent.webp" loading="lazy" sizes="100vw" srcSet="/assets/6abe03000d733204a18ca8ac_deploy_agent_p_500.webp 500w, /assets/6abe03000d733204a18ca8ac_deploy_agent_p_800.webp 800w, /assets/6abe03000d733204a18ca8ac_deploy_agent.webp 824w" alt="Banner" className="feature-banner" />
+                <img src="/assets/scanpay-pay-card.svg" loading="lazy" alt="Banner" className="feature-banner" />
               </div>
             </div>
             <div className="feature-content-wrap">
               <div fade-anim="True" className="feature-content-flex">
                 <div className="feature-content-tag">
-                  AI AGENT
+                  PASSKEY
                 </div>
                 <div className="feature-content-title">
-                  AI Solutions Built For Modern Teams
+                  Payments Built For Real Checkouts
                 </div>
                 <p className="feature-content-description paragraph-small">
-                  We build intelligent AI systems that streamline operations, automate repetitive workflows, and help businesses scale faster with reliable, data-driven solutions.
+                  Customers approve with Face ID using a Mera passkey: no seed phrase, no extension, no gas. Merchants get a signed invoice QR and a receipt anyone can verify.
                 </p>
               </div>
               <div fade-anim="True" className="feature-content-slider-wrap">
@@ -52,11 +52,11 @@ export default function Features() {
                             <rect width="324" height="228" fill="#2A2A2A" />
                             <rect x="8" y="8" width="308" height="29.85" fill="#fff" />
                             <text x="20" y="27" fill="#1F1F21" fillOpacity=".74" fontFamily="Arial, sans-serif" fontSize="8" letterSpacing="1">
-                              AI AUTOMATIONS
+                              SCANPAY GUARD
                             </text>
                             <rect x="209.8" y="12" width="69.2" height="21.85" rx="10.9" fill="#D3FB43" />
                             <text x="219" y="26" fill="#1F1F21" fillOpacity=".74" fontFamily="Arial, sans-serif" fontSize="8">
-                              This Month
+                              Per payment
                             </text>
                             <path d="M266 22.3L268.6 25L271.3 22.3" stroke="#1F1F21" strokeOpacity=".74" strokeWidth=".8" strokeLinecap="round" strokeLinejoin="round" />
                             <circle cx="293" cy="22.9" r="10.9" fill="#1F1F21" fillOpacity=".04" />
@@ -107,23 +107,23 @@ export default function Features() {
                               <use className="circle-dot" href="#inner-dot" transform="rotate(84 161.5 181)" opacity=".08" />
                             </g>
                             <text className="circle-label" x="162" y="143" textAnchor="middle" fill="#FAFAFA" fillOpacity=".56" fontFamily="Arial, sans-serif" fontSize="8">
-                              Tasks automated
+                              Proofs verified
                             </text>
                             <text className="circle-counter" x="162" y="166" textAnchor="middle" fill="#FAFAFA" fontFamily="Arial, sans-serif" fontSize="18" fontWeight="600">
-                              3,254
+                              3
                             </text>
                             <g fontFamily="Arial, sans-serif" fontSize="8" fill="#FAFAFA" fillOpacity=".56">
                               <circle cx="20.3" cy="212" r="3" fill="none" stroke="#D3FB43" strokeWidth="2" />
                               <text x="29" y="215">
-                                Customer Support
+                                Merchant
                               </text>
                               <circle cx="131.8" cy="212" r="3" fill="none" stroke="#D7FD41" strokeOpacity=".5" strokeWidth="2" />
                               <text x="141" y="215">
-                                Content Creation
+                                Intent
                               </text>
                               <circle cx="239.3" cy="212" r="3" fill="none" stroke="#D7FD41" strokeOpacity=".1" strokeWidth="2" />
                               <text x="248" y="215">
-                                Workflow Auto
+                                Settlement
                               </text>
                             </g>
                           </svg>
@@ -163,11 +163,11 @@ export default function Features() {
                       <img src="/assets/6a956fdc4b11fafb9e205d0b_a65a14e44ff8ce5dfd08cda012f31563_vector.svg" loading="lazy" alt="Icon" className="feature-tags-icon" />
                     </div>
                     <div className="paragraph-small feature-tags-weight">
-                      NEXT FEATURES
+                      NEXT UP
                     </div>
                   </div>
                   <div className="paragraph-small feature-tags">
-                    Analytics Badge
+                    Verified receipts
                   </div>
                 </div>
                 <div className="feature-slider-height">

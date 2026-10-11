@@ -5,7 +5,7 @@ export default function Services() {
         <div className="container title-container top-border">
           <div className="section-title-flex">
             <h2 className="section-title">
-              SERVICES
+              ROUTES
             </h2>
             <div className="section-title section-number">
               005
@@ -39,9 +39,9 @@ export default function Services() {
                     </div>
                   </div>
                   <div className="section-info-card-text w-variant-089e873f-f357-7c1a-4a14-53d0f9af5006">
-                    {"BEST "}
+                    {"ANY TOKEN, "}
                     <br />
-                    FOR SME
+                    ANY CHAIN
                   </div>
                   <div className="section-info-card-shape" />
                 </div>
@@ -54,14 +54,14 @@ export default function Services() {
                     <a href="/solution/ai-consulting" className="service-items w-inline-block">
                       <div fade-anim="True" className="service-title-wrap">
                         <div className="service-title">
-                          Ai Consulting
+                          Direct
                         </div>
                         <div className="service-tag-flex">
                           <div className="paragraph-small service-tag">
-                            Consulting
+                            USDC
                           </div>
                           <div className="paragraph-small service-tag">
-                            Strategy
+                            AUSD
                           </div>
                         </div>
                       </div>
@@ -85,14 +85,14 @@ export default function Services() {
                     <a href="/solution/integrations" className="service-items w-inline-block">
                       <div fade-anim="True" className="service-title-wrap">
                         <div className="service-title">
-                          Integrations
+                          Swap
                         </div>
                         <div className="service-tag-flex">
                           <div className="paragraph-small service-tag">
-                            API
+                            Kuru
                           </div>
                           <div className="paragraph-small service-tag">
-                            Automation
+                            One tx
                           </div>
                         </div>
                       </div>
@@ -116,14 +116,14 @@ export default function Services() {
                     <a href="/solution/custom-ai-agents" className="service-items w-inline-block">
                       <div fade-anim="True" className="service-title-wrap">
                         <div className="service-title">
-                          Custom Ai Agents
+                          Cross-chain
                         </div>
                         <div className="service-tag-flex">
                           <div className="paragraph-small service-tag">
-                            Strategy
+                            Aurora
                           </div>
                           <div className="paragraph-small service-tag">
-                            Development
+                            Any chain
                           </div>
                         </div>
                       </div>
@@ -150,7 +150,7 @@ export default function Services() {
           <div className="service-grid">
             <div scale-up="True" className="service-section-title-box">
               <div className="service-section-title">
-                (our clients)
+                (built with)
               </div>
               <div className="utility-arrow-wrap another">
                 <div className="utility-arrow-box home">
@@ -167,22 +167,22 @@ export default function Services() {
             <div className="services-logo-wrap">
               <div fade-anim="True" className="services-logo-items">
                 <div className="services-logo-box">
-                  <img src="/assets/6a96c30846e448ccbb140924_logo_01.svg" loading="lazy" alt="Logo" className="services-logo" />
+                  <img src="/assets/6a96c30846e448ccbb140924_logo_01.svg" loading="lazy" alt="Foundry" className="services-logo" />
                 </div>
               </div>
               <div fade-anim="True" className="services-logo-items">
                 <div className="services-logo-box">
-                  <img src="/assets/6a96c307afebe800ab8fa9b7_logo_02.svg" loading="lazy" alt="Logo" className="services-logo" />
+                  <img src="/assets/6a96c307afebe800ab8fa9b7_logo_02.svg" loading="lazy" alt="OpenZeppelin" className="services-logo" />
                 </div>
               </div>
               <div fade-anim="True" className="services-logo-items">
                 <div className="services-logo-box">
-                  <img src="/assets/6a96c30788cd222acfb71817_logo_03.svg" loading="lazy" alt="Logo" className="services-logo" />
+                  <img src="/assets/6a96c30788cd222acfb71817_logo_03.svg" loading="lazy" alt="Envio" className="services-logo" />
                 </div>
               </div>
               <div fade-anim="True" className="services-logo-items">
                 <div className="services-logo-box">
-                  <img src="/assets/6a96c308afebe800ab8faa14_logo_04.svg" loading="lazy" alt="Logo" className="services-logo" />
+                  <img src="/assets/6a96c308afebe800ab8faa14_logo_04.svg" loading="lazy" alt="viem" className="services-logo" />
                 </div>
               </div>
             </div>

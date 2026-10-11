@@ -10,7 +10,7 @@ export default function Faq() {
                   Contact
                 </div>
                 <p className="faq-contact-content-text">
-                  Transform your business with intelligent AI automation
+                  Accept QR payments with proof, on Monad
                 </p>
               </div>
               <div fade-anim="True" className="faq-contact-button-box">
@@ -18,10 +18,10 @@ export default function Faq() {
                   <div className="primary-button-text-items">
                     <div className="primary-button-text-wrap">
                       <div className="primary-button-text one">
-                        JOIN US
+                        CONTACT US
                       </div>
                       <div className="primary-button-text two">
-                        JOIN US
+                        CONTACT US
                       </div>
                     </div>
                   </div>
@@ -58,7 +58,7 @@ export default function Faq() {
                 <div className="faq-items">
                   <div className="faq-title-flex">
                     <div className="faq-qus">
-                      How long does an AI project take?
+                      Do customers need gas or a wallet?
                     </div>
                     <div className="faq-qus-icon-wrap">
                       <div className="faq-qus-icon-box">
@@ -68,14 +68,14 @@ export default function Faq() {
                   </div>
                   <div className="faq-ans-box">
                     <p className="faq-ans-text">
-                      An AI project can take anywhere from a few weeks to several months, depending on its complexity and requirements.
+                      No. Customers approve with a passkey (Face ID) and a relayer submits the transaction, so there is no seed phrase, extension or gas to manage.
                     </p>
                   </div>
                 </div>
                 <div className="faq-items">
                   <div className="faq-title-flex">
                     <div className="faq-qus">
-                      Can AI work with our existing tools?
+                      Which tokens can customers pay with?
                     </div>
                     <div className="faq-qus-icon-wrap">
                       <div className="faq-qus-icon-box">
@@ -85,14 +85,14 @@ export default function Faq() {
                   </div>
                   <div className="faq-ans-box">
                     <p className="faq-ans-text">
-                      Yes, our AI solutions can integrate with your existing tools, platforms, and workflows to improve efficiency without disrupting operations.
+                      USDC or AUSD directly, another allow-listed Monad token through a swap, or a token on another chain through Aurora cross-chain intents.
                     </p>
                   </div>
                 </div>
                 <div className="faq-items">
                   <div className="faq-title-flex">
                     <div className="faq-qus">
-                      Do you build custom AI agents?
+                      What does the merchant receive?
                     </div>
                     <div className="faq-qus-icon-wrap">
                       <div className="faq-qus-icon-box">
@@ -102,14 +102,14 @@ export default function Faq() {
                   </div>
                   <div className="faq-ans-box">
                     <p className="faq-ans-text">
-                      Yes, we build custom AI agents designed around your specific workflows, business goals, processes, and operational requirements.
+                      Their chosen stablecoin, USDC or AUSD, in their payout wallet on Monad: the amount on the signed invoice, minus the protocol fee.
                     </p>
                   </div>
                 </div>
                 <div className="faq-items">
                   <div className="faq-title-flex">
                     <div className="faq-qus">
-                      How do you ensure data security?
+                      Can anyone fake a payment?
                     </div>
                     <div className="faq-qus-icon-wrap">
                       <div className="faq-qus-icon-box">
@@ -119,14 +119,14 @@ export default function Faq() {
                   </div>
                   <div className="faq-ans-box">
                     <p className="faq-ans-text">
-                      We follow secure development practices, access controls, and reliable data-handling standards to keep your business information protected and private.
+                      Settlement is checked by the vault contract, not a backend. Invoices, intents and authorizations are signed and bound to one payment, so they cannot be replayed.
                     </p>
                   </div>
                 </div>
                 <div className="faq-items">
                   <div className="faq-title-flex">
                     <div className="faq-qus">
-                      Do you provide ongoing support?
+                      What is operator-attested?
                     </div>
                     <div className="faq-qus-icon-wrap">
                       <div className="faq-qus-icon-box">
@@ -136,7 +136,7 @@ export default function Faq() {
                   </div>
                   <div className="faq-ans-box">
                     <p className="faq-ans-text">
-                      Yes, we provide ongoing support, monitoring, updates, and improvements to keep your AI systems reliable, efficient, and up to date.
+                      On cross-chain payments, which source-chain transaction funded the deposit is attested by the operator. Everything that happens on Monad is enforced by contracts.
                     </p>
                   </div>
                 </div>

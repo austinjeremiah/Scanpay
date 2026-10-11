@@ -20,7 +20,7 @@ export default function Utility() {
                 <strong>
                   {" "}
                 </strong>
-                Scale Your Team
+                Pay Without Gas
               </div>
               <div className="utility-arrow-wrap two">
                 <div className="utility-arrow-box">

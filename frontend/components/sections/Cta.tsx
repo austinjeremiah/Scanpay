@@ -9,7 +9,7 @@ export default function Cta() {
             </div>
             <div fade-anim="True" className="cta-title-box">
               <h2 className="cta-title">
-                Stay ahead with AI insights and industry updates
+                Stay in the loop as ScanPay Guard goes live on Monad
               </h2>
             </div>
             <div fade-anim="True" className="cta-newsletter-wrap">
@@ -40,7 +40,7 @@ export default function Cta() {
                   </div>
                 </div>
                 <p className="cta-newsletter-text">
-                  Get the latest insights on AI automation, intelligent agents, workflow optimization, and practical strategies to help your business grow.
+                  Get build updates on passkey payments, stablecoin routes and on-chain receipts. No spam.
                 </p>
               </div>
             </div>

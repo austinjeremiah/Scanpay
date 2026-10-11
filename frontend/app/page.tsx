@@ -1,6 +1,5 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import TemplateButtons from '@/components/TemplateButtons';
 import Hero from '@/components/sections/Hero';
 import BrandLogos from '@/components/sections/BrandLogos';
 import About from '@/components/sections/About';
@@ -41,7 +40,6 @@ export default function Home() {
         <Cta />
         <Footer />
       </div>
-      <TemplateButtons />
     </>
   );
 }

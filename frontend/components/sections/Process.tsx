@@ -10,7 +10,7 @@ export default function Process() {
         <div className="container title-container top-border">
           <div className="section-title-flex">
             <h2 className="section-title">
-              THE PROCESS
+              HOW IT WORKS
             </h2>
             <div className="section-title section-number">
               007
@@ -28,7 +28,7 @@ export default function Process() {
           <div className="process-title-flex">
             <div scale-up="True" className="process-title-box">
               <div className="process-title">
-                CUSTOM AI SYSTEM, BUILT AROUND YOUR BUSINESS
+                FOUR STEPS FROM QR TO RECEIPT
               </div>
             </div>
             <div scale-up="True" className="process-button-box">
@@ -36,10 +36,10 @@ export default function Process() {
                 <div className="primary-button-text-items w-variant-5c198abb-72b9-9083-ac28-2758d34ab69e">
                   <div className="primary-button-text-wrap w-variant-5c198abb-72b9-9083-ac28-2758d34ab69e">
                     <div className="primary-button-text one">
-                      GET STARTED
+                      TRY SCANPAY
                     </div>
                     <div className="primary-button-text two">
-                      GET STARTED
+                      TRY SCANPAY
                     </div>
                   </div>
                 </div>
@@ -64,7 +64,7 @@ export default function Process() {
             <div className="process-tabs-menu w-tab-menu">
               <a data-w-tab="Tab 1" className="process-tabs-link border-none w-inline-block w-tab-link w--current">
                 <div className="process-tabs-link-text">
-                  Discovery
+                  Scan
                 </div>
                 <div className="process-tabs-link-text">
                   01
@@ -72,7 +72,7 @@ export default function Process() {
               </a>
               <a data-w-tab="Tab 2" className="process-tabs-link border-none w-inline-block w-tab-link">
                 <div className="process-tabs-link-text">
-                  Strategy
+                  Verify
                 </div>
                 <div className="process-tabs-link-text">
                   02
@@ -80,7 +80,7 @@ export default function Process() {
               </a>
               <a data-w-tab="Tab 3" className="process-tabs-link w-inline-block w-tab-link">
                 <div className="process-tabs-link-text">
-                  Development
+                  Approve
                 </div>
                 <div className="process-tabs-link-text">
                   03
@@ -88,7 +88,7 @@ export default function Process() {
               </a>
               <a data-w-tab="Tab 4" className="process-tabs-link last w-inline-block w-tab-link">
                 <div className="process-tabs-link-text">
-                  Deployment
+                  Settle
                 </div>
                 <div className="process-tabs-link-text">
                   04
@@ -101,19 +101,19 @@ export default function Process() {
                   <div className="process-tabs-contents-wrap">
                     <div fade-anim="True" className="process-tabs-contents-flex">
                       <div className="process-tabs-title">
-                        Discovery
+                        Scan
                       </div>
                       <div className="process-tabs-contents-box">
                         <div className="process-tabs-contents-tags-flex">
                           <div className="process-tabs-contents-tags">
-                            Research
+                            QR
                           </div>
                           <div className="process-tabs-contents-tags">
-                            Analysis
+                            Invoice
                           </div>
                         </div>
                         <p className="process-contents-description">
-                          We start by understanding your business processes, pain points, and goals. Through in-depth discovery, we identify the highest-impact automation opportunities and define where AI can deliver the greatest value.
+                          The merchant shows a QR carrying a signed invoice. The customer's phone scans it and reads exactly what is being asked: merchant, amount and payout token.
                         </p>
                       </div>
                     </div>
@@ -130,19 +130,19 @@ export default function Process() {
                   <div className="process-tabs-contents-wrap">
                     <div className="process-tabs-contents-flex">
                       <div className="process-tabs-title">
-                        Strategy
+                        Verify
                       </div>
                       <div className="process-tabs-contents-box">
                         <div className="process-tabs-contents-tags-flex">
                           <div className="process-tabs-contents-tags">
-                            Planning
+                            Registry
                           </div>
                           <div className="process-tabs-contents-tags">
-                            Roadmap
+                            Signature
                           </div>
                         </div>
                         <p className="process-contents-description">
-                          Based on our findings, we create a tailored AI strategy with clear priorities, implementation phases, and measurable outcomes—ensuring every solution aligns with your business objectives.
+                          The app checks the invoice signature against the merchant's current key in the on-chain registry, so you see a verified merchant before you pay.
                         </p>
                       </div>
                     </div>
@@ -159,26 +159,26 @@ export default function Process() {
                   <div className="process-tabs-contents-wrap">
                     <div className="process-tabs-contents-flex">
                       <div className="process-tabs-title">
-                        Development
+                        Approve
                       </div>
                       <div className="process-tabs-contents-box">
                         <div className="process-tabs-contents-tags-flex">
                           <div className="process-tabs-contents-tags">
-                            Engineering
+                            Passkey
                           </div>
                           <div className="process-tabs-contents-tags">
-                            Integration
+                            Face ID
                           </div>
                         </div>
                         <p className="process-contents-description">
-                          Our team designs, develops, and integrates custom AI agents, intelligent workflows, and connected systems that fit into your existing operations without disrupting your business.
+                          Pick how to pay (USDC, AUSD, another Monad token, or a token on another chain) and approve with Face ID. No seed phrase, no gas.
                         </p>
                       </div>
                     </div>
                   </div>
                   <div className="process-tabs-banner-items">
                     <div className="process-tabs-banner-box">
-                      <img src="/assets/6abe0301de5f2f15b10a8386_discovery_modules.webp" loading="lazy" sizes="100vw" srcSet="/assets/6abe0301de5f2f15b10a8386_discovery_modules_p_500.webp 500w, /assets/6abe0301de5f2f15b10a8386_discovery_modules.webp 584w" alt="Process Tabs Banner" className="process-tabs-banner" />
+                      <img src="/assets/scanpay-routes.svg" loading="lazy" alt="Process Tabs Banner" className="process-tabs-banner" />
                     </div>
                   </div>
                 </div>
@@ -188,19 +188,19 @@ export default function Process() {
                   <div className="process-tabs-contents-wrap">
                     <div className="process-tabs-contents-flex">
                       <div className="process-tabs-title">
-                        Deployment
+                        Settle
                       </div>
                       <div className="process-tabs-contents-box">
                         <div className="process-tabs-contents-tags-flex">
                           <div className="process-tabs-contents-tags">
-                            Launch
+                            Receipt
                           </div>
                           <div className="process-tabs-contents-tags">
-                            Optimization
+                            On-chain
                           </div>
                         </div>
                         <p className="process-contents-description">
-                          After deployment, we monitor performance, optimize workflows, and provide continuous improvements to ensure your AI solutions remain scalable, reliable, and ready for future growth.
+                          The vault pays the merchant exactly what was signed, refunds any excess to the payer, and emits a receipt anyone can verify.
                         </p>
                       </div>
                     </div>

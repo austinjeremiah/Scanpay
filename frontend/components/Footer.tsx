@@ -43,23 +43,23 @@ export default function Footer() {
                       </div>
                     </div>
                   </a>
-                  <a href="/about-us" className="footer-page-link w-inline-block">
+                  <a href="/about" className="footer-page-link w-inline-block">
                     <div className="footer-page-link-box">
                       <div className="footer-page-link-text one">
-                        About Us
+                        About
                       </div>
                       <div className="footer-page-link-text two">
-                        About Us
+                        About
                       </div>
                     </div>
                   </a>
-                  <a href="/pricing" className="footer-page-link w-inline-block">
+                  <a href="/routes" className="footer-page-link w-inline-block">
                     <div className="footer-page-link-box">
                       <div className="footer-page-link-text one">
-                        Pricing
+                        Routes
                       </div>
                       <div className="footer-page-link-text two">
-                        Pricing
+                        Routes
                       </div>
                     </div>
                   </a>
@@ -82,23 +82,23 @@ export default function Footer() {
                   </div>
                 </div>
                 <div className="footer-page-wrap">
-                  <a href="/style-guide" className="footer-page-link w-inline-block">
+                  <a href="/docs" className="footer-page-link w-inline-block">
                     <div className="footer-page-link-box">
                       <div className="footer-page-link-text one">
-                        Style Guide
+                        Docs
                       </div>
                       <div className="footer-page-link-text two">
-                        Style Guide
+                        Docs
                       </div>
                     </div>
                   </a>
-                  <a href="/licenses" className="footer-page-link w-inline-block">
+                  <a href="/license" className="footer-page-link w-inline-block">
                     <div className="footer-page-link-box">
                       <div className="footer-page-link-text one">
-                        Licenses
+                        License
                       </div>
                       <div className="footer-page-link-text two">
-                        Licenses
+                        License
                       </div>
                     </div>
                   </a>
@@ -112,13 +112,13 @@ export default function Footer() {
                       </div>
                     </div>
                   </a>
-                  <a href="/instructions" className="footer-page-link w-inline-block">
+                  <a href="/deployments" className="footer-page-link w-inline-block">
                     <div className="footer-page-link-box">
                       <div className="footer-page-link-text one">
-                        Instructions
+                        Deployments
                       </div>
                       <div className="footer-page-link-text two">
-                        Instructions
+                        Deployments
                       </div>
                     </div>
                   </a>
@@ -131,23 +131,23 @@ export default function Footer() {
                   </div>
                 </div>
                 <div className="footer-page-wrap">
-                  <a href="/404" className="footer-page-link w-inline-block">
+                  <a href="/trust-model" className="footer-page-link w-inline-block">
                     <div className="footer-page-link-box">
                       <div className="footer-page-link-text one">
-                        404 Error
+                        Trust Model
                       </div>
                       <div className="footer-page-link-text two">
-                        404 Error
+                        Trust Model
                       </div>
                     </div>
                   </a>
-                  <a href="/401" className="footer-page-link w-inline-block">
+                  <a href="/license" className="footer-page-link w-inline-block">
                     <div className="footer-page-link-box">
                       <div className="footer-page-link-text one">
-                        401 Protected
+                        MIT License
                       </div>
                       <div className="footer-page-link-text two">
-                        401 Protected
+                        MIT License
                       </div>
                     </div>
                   </a>
@@ -160,33 +160,33 @@ export default function Footer() {
                   </div>
                 </div>
                 <div className="footer-page-wrap">
-                  <a href="mailto:info@avande.com" className="footer-page-link w-inline-block">
+                  <a href="mailto:hello@scanpay.example" className="footer-page-link w-inline-block">
                     <div className="footer-page-link-box">
                       <div className="footer-page-link-text one">
-                        info@avande.com
+                        hello@scanpay.example
                       </div>
                       <div className="footer-page-link-text two">
-                        info@avande.com
+                        hello@scanpay.example
                       </div>
                     </div>
                   </a>
-                  <a href="tel:+32923-254-223" className="footer-page-link w-inline-block">
+                  <a href="https://testnet.monadscan.com" className="footer-page-link w-inline-block">
                     <div className="footer-page-link-box">
                       <div className="footer-page-link-text one">
-                        +32 923-254-223
+                        testnet.monadscan.com
                       </div>
                       <div className="footer-page-link-text two">
-                        +32 923-254-223
+                        testnet.monadscan.com
                       </div>
                     </div>
                   </a>
-                  <a href="/" aria-current="page" className="footer-page-link w-inline-block w--current">
+                  <a href="https://monadscan.com" target="_blank" className="footer-page-link w-inline-block">
                     <div className="footer-page-link-box">
                       <div className="footer-page-link-text one">
-                        avande.ai
+                        monadscan.com
                       </div>
                       <div className="footer-page-link-text two">
-                        avande.ai
+                        monadscan.com
                       </div>
                     </div>
                   </a>
@@ -195,17 +195,17 @@ export default function Footer() {
             </div>
             <div fade-anim="True" className="footer-bottom-wrap">
               <a href="/" aria-current="page" className="footer-logo-box w-inline-block w--current">
-                <img loading="lazy" src="/assets/6a93d6b7ae91cff8c7fc74a7_footer_logo.svg" alt="Footer Logo" className="footer-logo" />
+                <img loading="lazy" src="/assets/scanpay_logo.svg" alt="ScanPay logo" className="footer-logo" />
               </a>
               <div className="footer-copy-right-flex">
                 <p className="footer-copy-right-text">
-                  © 2026 - AVANDE | Designed by “
-                  <a href="https://waidastudio.com/" target="_blank" className="footer-copy-right-text-link">
-                    Waida Studio
+                  © 2026 - SCANPAY GUARD | Built for “
+                  <a href="https://monad.xyz/" target="_blank" className="footer-copy-right-text-link">
+                    Monad Metropolis
                   </a>
-                  {"” | License | Powered by "}
-                  <a href="https://webflow.com/" target="_blank" className="footer-copy-right-text-link">
-                    Webflow
+                  {"” | MIT License | Powered by "}
+                  <a href="https://monad.xyz/" target="_blank" className="footer-copy-right-text-link">
+                    Monad
                   </a>
                 </p>
                 <div className="footer-copy-right-button-box">

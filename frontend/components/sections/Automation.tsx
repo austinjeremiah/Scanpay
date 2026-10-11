@@ -10,7 +10,7 @@ export default function Automation() {
         <div className="container title-container w-variant-0d7a3a05-4c6a-cab0-9e2f-7c9727c2b618 top-border">
           <div className="section-title-flex w-variant-0d7a3a05-4c6a-cab0-9e2f-7c9727c2b618">
             <h2 className="section-title w-variant-0d7a3a05-4c6a-cab0-9e2f-7c9727c2b618">
-              THE STATITICS
+              WHY MONAD
             </h2>
             <div className="section-title w-variant-0d7a3a05-4c6a-cab0-9e2f-7c9727c2b618 section-number">
               010
@@ -29,16 +29,16 @@ export default function Automation() {
             <div className="automation-content-flex">
               <div fade-anim="True" className="automation-content-box">
                 <div className="automation-content-text">
-                  AI agents help businesses automate repetitive work — faster than ever
+                  Monad makes scan-to-receipt payments fast, cheap and final, at the speed of a checkout counter
                 </div>
               </div>
               <div fade-anim="True" className="automation-card-content-flex">
                 <div className="automation-card-content-text">
-                  (I) AI Workflow Automation
+                  (I) Sub-second blocks
                 </div>
                 <div className="automation-card-content-border" />
                 <p className="automation-card-content-description">
-                  Replace repetitive tasks with intelligent workflows that save time, reduce errors, and improve operational efficiency.
+                  Blocks land in about 300 to 400 ms with fast finality, so a customer sees a confirmed receipt almost as soon as they approve.
                 </p>
               </div>
             </div>
@@ -47,10 +47,10 @@ export default function Automation() {
                 <div className="primary-button-text-items w-variant-c8937a21-aef7-f716-ecab-1c4a85c94367">
                   <div className="primary-button-text-wrap">
                     <div className="primary-button-text one">
-                      GET STARTED
+                      TRY SCANPAY
                     </div>
                     <div className="primary-button-text two">
-                      GET STARTED
+                      TRY SCANPAY
                     </div>
                   </div>
                 </div>
@@ -81,7 +81,7 @@ export default function Automation() {
                 <img src="/assets/6a9d7472fc2f667aa072b400_site_logo.svg" loading="lazy" alt="Logo" className="automation-apps-logo" />
               </div>
               <div className="automation-apps-logo-box">
-                <img src="/assets/6abe02ffa7ebb689bf01f12b_app_badge.png" loading="lazy" sizes="100vw" srcSet="/assets/6abe02ffa7ebb689bf01f12b_app_badge_p_500.png 500w, /assets/6abe02ffa7ebb689bf01f12b_app_badge.png 540w" alt="Logo" className="automation-apps-logo" />
+                <img src="/assets/scanpay-install-badge.svg" loading="lazy" alt="Logo" className="automation-apps-logo" />
               </div>
             </div>
             <div className="automation-apps-flex">
@@ -91,7 +91,7 @@ export default function Automation() {
               <div className="automation-apps-shape-flex">
                 <div className="automation-apps-shape-wrap">
                   <div scale-up="True" className="automation-apps-shape-box one">
-                    <img src="/assets/6abe02ff9593004b192126b8_agent_list.webp" loading="lazy" alt="Automation Apps Shape" className="automation-apps-shape" />
+                    <img src="/assets/scanpay-merchant-card.svg" loading="lazy" alt="Automation Apps Shape" className="automation-apps-shape" />
                   </div>
                   <div scale-up="True" className="automation-apps-shape-box two">
                     <img src="/assets/6abe02fede5f2f15b10a8115_agent_card.svg" loading="lazy" alt="Automation Apps Shape" className="automation-apps-shape" />
@@ -99,7 +99,7 @@ export default function Automation() {
                 </div>
                 <div fade-anim="True" className="automation-apps-content-box">
                   <p className="automation-apps-content-text">
-                    Our AI solutions connect with your existing tools, streamline operations, and continuously optimize workflows so your team can focus on high-value work instead of repetitive tasks.
+                    ScanPay runs as a passkey app: customers pay with Face ID, and merchants run a terminal that shows invoices and receipts live. No app store, no seed phrase.
                   </p>
                 </div>
               </div>

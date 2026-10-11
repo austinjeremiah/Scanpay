@@ -2,16 +2,14 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import WebflowRuntime from '@/components/WebflowRuntime';
 
-const TITLE = 'Avande – Webflow HTML Website Template';
+const TITLE = 'ScanPay Guard – Scan. Verify. Pay. Know it arrived.';
 const DESCRIPTION =
-  'Avande is an AI automation agency Webflow HTML template with sleek, modern layouts, built-in CMS, and everything needed to launch an AI consulting site.';
-const OG_IMAGE =
-  'https://cdn.prod.website-files.com/6a901794a3ca5e0a74527dde/6ab3d20c80b4731f8cd81039_Thumbnail%20(1).jpg';
+  'ScanPay Guard is QR payments on Monad with three proofs: proof of merchant, proof of intent and proof of settlement. Pay with a passkey, no gas, in USDC or AUSD.';
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
-  openGraph: { title: TITLE, description: DESCRIPTION, images: [OG_IMAGE], type: 'website' },
+  openGraph: { title: TITLE, description: DESCRIPTION, type: 'website' },
   twitter: { title: TITLE, description: DESCRIPTION, card: 'summary_large_image' },
   icons: {
     icon: [

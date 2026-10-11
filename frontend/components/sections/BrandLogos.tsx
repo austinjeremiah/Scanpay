@@ -5,22 +5,22 @@ export default function BrandLogos() {
         <div className="container padding-20x top-border">
           <div className="brand-logo-wrap">
             <div scale-up="True" className="brand-logo-items">
-              <img src="/assets/6a9528efb406cea7aa49926c_logomark.svg" loading="lazy" alt="Logo Icon" className="brand-logo" />
+              <img src="/assets/scanpay-partner-monad.svg" loading="lazy" alt="Monad" className="brand-logo" />
             </div>
             <div scale-up="True" className="brand-logo-items">
-              <img src="/assets/6a9528e28f9c9b325aa25206_gray.svg" loading="lazy" alt="Logo Icon" className="brand-logo" />
+              <img src="/assets/scanpay-partner-mera.svg" loading="lazy" alt="Mera" className="brand-logo" />
             </div>
             <div scale-up="True" className="brand-logo-items">
-              <img src="/assets/6a9528e97b904b23efe82e47_default.svg" loading="lazy" alt="Logo Icon" className="brand-logo" />
+              <img src="/assets/scanpay-partner-usdc.svg" loading="lazy" alt="USDC" className="brand-logo" />
             </div>
             <div scale-up="True" className="brand-logo-items">
-              <img src="/assets/6a9528e28f9c9b325aa25206_gray.svg" loading="lazy" alt="Logo Icon" className="brand-logo" />
+              <img src="/assets/scanpay-partner-ausd.svg" loading="lazy" alt="AUSD" className="brand-logo" />
             </div>
             <div scale-up="True" className="brand-logo-items">
-              <img src="/assets/6a9528f49a48748061c4bca8_logo.svg" loading="lazy" alt="Logo Icon" className="brand-logo" />
+              <img src="/assets/scanpay-partner-kuru.svg" loading="lazy" alt="Kuru" className="brand-logo" />
             </div>
             <div scale-up="True" className="brand-logo-items">
-              <img src="/assets/6a9528e97b904b23efe82e47_default.svg" loading="lazy" alt="Logo Icon" className="brand-logo" />
+              <img src="/assets/scanpay-partner-aurora.svg" loading="lazy" alt="Aurora" className="brand-logo" />
             </div>
           </div>
         </div>

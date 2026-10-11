@@ -13,7 +13,7 @@ export default function Statistics() {
           <div className="container title-container w-variant-0d7a3a05-4c6a-cab0-9e2f-7c9727c2b618 top-border">
             <div className="section-title-flex w-variant-0d7a3a05-4c6a-cab0-9e2f-7c9727c2b618">
               <h2 className="section-title w-variant-0d7a3a05-4c6a-cab0-9e2f-7c9727c2b618">
-                THE STATITICS
+                BY THE NUMBERS
               </h2>
               <div className="section-title w-variant-0d7a3a05-4c6a-cab0-9e2f-7c9727c2b618 section-number">
                 003
@@ -31,7 +31,7 @@ export default function Statistics() {
         <div className="container-2nd">
           <div fade-anim="True" className="statitics-content-box">
             <p className="statitics-content-text">
-              Businesses are replacing repetitive workflows with AI - and the fastest teams are already ahead.
+              Payments should be fast, cheap and provable, and on Monad they finally are.
             </p>
           </div>
           <div className="statitics-flex">
@@ -40,7 +40,7 @@ export default function Statistics() {
                 <div className="section-info-card-flex">
                   <div className="section-info-card-dot" />
                   <div className="section-info-card-text">
-                    BOOK A CALL
+                    WHY MONAD
                   </div>
                 </div>
                 <div className="utility-arrow-wrap another">
@@ -57,10 +57,10 @@ export default function Statistics() {
               </div>
               <div fade-anim="True" className="statitics-content-num-flex">
                 <div className="statitics-content-num">
-                  58
+                  1
                 </div>
                 <div className="statitics-content-num font-size">
-                  %
+                  tx
                 </div>
               </div>
             </div>
@@ -73,14 +73,14 @@ export default function Statistics() {
                 <div className="statitics-card-box">
                   <div className="statitics-card-num-box">
                     <div className="statitics-card-num">
-                      73
+                      0
                     </div>
                     <div className="statitics-card-num percent">
-                      %
+                      gas
                     </div>
                   </div>
                   <p className="statitics-card-description">
-                    of teams expect AI to improve daily productivity
+                    paid by the customer. A relayer submits every payment
                   </p>
                 </div>
               </div>
@@ -92,14 +92,14 @@ export default function Statistics() {
                 <div className="statitics-card-box">
                   <div className="statitics-card-num-box">
                     <div className="statitics-card-num">
-                      82
+                      400
                     </div>
                     <div className="statitics-card-num percent">
-                      %
+                      ms
                     </div>
                   </div>
                   <p className="statitics-card-description">
-                    of companies are increasing investment in AI automation
+                    or so per block on Monad, so a receipt lands almost instantly
                   </p>
                 </div>
               </div>
@@ -111,14 +111,14 @@ export default function Statistics() {
                 <div className="statitics-card-box">
                   <div className="statitics-card-num-box">
                     <div className="statitics-card-num">
-                      91
+                      37
                     </div>
                     <div className="statitics-card-num percent">
-                      %
+                      chains
                     </div>
                   </div>
                   <p className="statitics-card-description">
-                    plan to adopt AI agents within the next two years
+                    source chains reachable through Aurora cross-chain payments
                   </p>
                 </div>
               </div>

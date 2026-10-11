@@ -23,10 +23,10 @@ export default function Benefits() {
           <div className="benefits-content-flex">
             <div fade-anim="True" className="benefits-content-box">
               <div className="paragraph-small benefits-content-title">
-                MATERIAL
+                THREE PROOFS
               </div>
               <div className="paragraph-small short-description">
-                We build intelligent AI systems that streamline operations, automate repetitive workflows, and help businesses scale faster with reliable, data-driven solutions.
+                Every payment carries three proofs enforced by smart contracts on Monad: who you pay, what you approved, and where the money went.
               </div>
             </div>
             <div fade-anim="True" className="benefits-content-button-box">
@@ -34,10 +34,10 @@ export default function Benefits() {
                 <div className="primary-button-text-items w-variant-5c198abb-72b9-9083-ac28-2758d34ab69e">
                   <div className="primary-button-text-wrap w-variant-5c198abb-72b9-9083-ac28-2758d34ab69e">
                     <div className="primary-button-text one">
-                      GET STARTED
+                      TRY SCANPAY
                     </div>
                     <div className="primary-button-text two">
-                      GET STARTED
+                      TRY SCANPAY
                     </div>
                   </div>
                 </div>
@@ -62,7 +62,7 @@ export default function Benefits() {
             <div fade-anim="True" data-wf--benefits-card-items--variant="main-card" className="benefits-card-items">
               <div className="benefits-card-info-flex">
                 <div className="benefits-card-info-text">
-                  (strategy)
+                  (merchant)
                 </div>
                 <div className="benefits-card-num">
                   01
@@ -73,17 +73,17 @@ export default function Benefits() {
               </div>
               <div className="benefits-card-content-box">
                 <div className="benefits-card-content-title">
-                  AI Discovery
+                  Proof of Merchant
                 </div>
                 <p className="paragraph-small benefits-card-content-description">
-                  We analyze your business, identify automation opportunities, and define the right AI roadmap to maximize efficiency
+                  Merchants register on-chain with role-separated keys. Any key or payout change bumps a version, so stale invoices stop working.
                 </p>
               </div>
             </div>
             <div fade-anim="True" data-wf--benefits-card-items--variant="main-card" className="benefits-card-items">
               <div className="benefits-card-info-flex">
                 <div className="benefits-card-info-text">
-                  (development)
+                  (intent)
                 </div>
                 <div className="benefits-card-num">
                   02
@@ -94,17 +94,17 @@ export default function Benefits() {
               </div>
               <div className="benefits-card-content-box">
                 <div className="benefits-card-content-title">
-                  Custom AI Build
+                  Proof of Intent
                 </div>
                 <p className="paragraph-small benefits-card-content-description">
-                  From AI agents and LLM integrations to intelligent workflows, we develop tailored solutions that fit your operations seamlessly.
+                  The customer signs the exact amount, token and merchant. The vault enforces expiry, one-time nonces and one-time invoices.
                 </p>
               </div>
             </div>
             <div fade-anim="True" data-wf--benefits-card-items--variant="right-border-none" className="benefits-card-items w-variant-fd48819a-9177-0907-a45c-824c4c76c822">
               <div className="benefits-card-info-flex">
                 <div className="benefits-card-info-text">
-                  (deployment)
+                  (settlement)
                 </div>
                 <div className="benefits-card-num">
                   03
@@ -115,10 +115,10 @@ export default function Benefits() {
               </div>
               <div className="benefits-card-content-box">
                 <div className="benefits-card-content-title">
-                  {"Scale & Optimize"}
+                  Proof of Settlement
                 </div>
                 <p className="paragraph-small benefits-card-content-description">
-                  We launch, monitor, and continuously improve your AI systems with performance tracking, optimization, and ongoing support.
+                  The vault pays the merchant exactly what was signed, refunds any excess, and emits a receipt anyone can verify.
                 </p>
               </div>
             </div>

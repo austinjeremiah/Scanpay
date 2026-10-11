@@ -4,8 +4,8 @@ export default function Header() {
       <div className="section-wrap">
         <div className="main-header-flex">
           <a href="/" aria-current="page" className="main-header-logo-box w-inline-block w--current">
-            <img loading="lazy" src="/assets/6a93f25050632655e71009fd_main_logo.svg" alt="Main Logo" className="main-header-logo black" />
-            <img loading="lazy" src="/assets/6ab3a39a523bb3940add2a57_logo_white.svg" alt="Main Logo" className="main-header-logo white" />
+            <img loading="lazy" src="/assets/scanpay_logo.svg" alt="ScanPay logo" className="main-header-logo black" style={{ height: "40px", width: "auto" }} />
+            <img loading="lazy" src="/assets/scanpay_logo_white.svg" alt="ScanPay logo" className="main-header-logo white" style={{ height: "40px", width: "auto" }} />
           </a>
           <div className="main-header-navbar">
             <div className="main-header-navigation">
@@ -14,15 +14,15 @@ export default function Header() {
               </a>
               <div className="main-header-navigation-dot" />
               <a href="/solutions" className="main-header-navigation-link">
-                SOLUTION
+                ROUTES
               </a>
               <div className="main-header-navigation-dot" />
               <a href="/case-study" className="main-header-navigation-link">
-                CASE STUDY
+                PROOFS
               </a>
               <div className="main-header-navigation-dot" />
               <a href="/blogs" className="main-header-navigation-link last">
-                BLOG
+                FAQ
               </a>
             </div>
             <div className="header-button-box">
@@ -36,10 +36,10 @@ export default function Header() {
               <div className="primary-button-text-items">
                 <div className="primary-button-text-wrap">
                   <div className="primary-button-text one">
-                    GET STARTED
+                    TRY SCANPAY
                   </div>
                   <div className="primary-button-text two">
-                    GET STARTED
+                    TRY SCANPAY
                   </div>
                 </div>
               </div>

@@ -10,7 +10,7 @@ export default function Pricing() {
         <div className="container title-container top-border">
           <div className="section-title-flex">
             <h2 className="section-title">
-              PRICING
+              PAYMENT ROUTES
             </h2>
             <div className="section-title section-number">
               009
@@ -27,7 +27,7 @@ export default function Pricing() {
         <div className="container top-border">
           <div fade-anim="True" className="home-pricing-title-box">
             <div className="home-pricing-title">
-              FLEXIBLE AI SOLUTIONS FOR EVERY STAGE OF GROWTH
+              ONE PROTOCOL, THREE WAYS TO PAY
             </div>
           </div>
           <div className="home-pricing-wrap">
@@ -35,15 +35,15 @@ export default function Pricing() {
               <div scale-up="True" className="home-pricing-tabs-menu w-tab-menu">
                 <a data-w-tab="Tab 1" className="home-pricing-tabs-link w-inline-block w-tab-link w--current">
                   <div className="home-pricing-tabs-link-text">
-                    MONTHLY
+                    TESTNET
                   </div>
                 </a>
                 <a data-w-tab="Tab 2" className="home-pricing-tabs-link w-inline-block w-tab-link">
                   <div className="home-pricing-tabs-link-text">
-                    YEARLY
+                    MAINNET
                   </div>
                   <div className="home-pricing-tabs-link-discount">
-                    -10%
+                    REAL
                   </div>
                 </a>
               </div>
@@ -55,25 +55,25 @@ export default function Pricing() {
                         <div className="home-pricing-top-flex">
                           <div className="home-pricing-type-box">
                             <div className="paragraph-small home-pricing-type-text">
-                              Starter Plan
+                              Direct route
                             </div>
                             <div className="home-pricing-type-title">
-                              Launch essential AI workflows
+                              Pay in USDC or AUSD, gas-free
                             </div>
                           </div>
                           <div className="home-pricing-tag-box">
                             <div className="paragraph-small home-pricing-tag">
-                              Popular plan
+                              Fastest
                             </div>
                           </div>
                         </div>
                         <div className="home-pricing-flex">
                           <div className="home-pricing-box">
                             <div className="home-pricing">
-                              $1,000
+                              1
                             </div>
                             <div className="paragraph-small home-pricing-month">
-                              /month
+                              /transaction
                             </div>
                           </div>
                           <div className="home-pricing-button-box">
@@ -81,10 +81,10 @@ export default function Pricing() {
                               <div className="primary-button-text-items">
                                 <div className="primary-button-text-wrap">
                                   <div className="primary-button-text one">
-                                    GET STARTED
+                                    TRY SCANPAY
                                   </div>
                                   <div className="primary-button-text two">
-                                    GET STARTED
+                                    TRY SCANPAY
                                   </div>
                                 </div>
                               </div>
@@ -114,7 +114,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Workflow Automation Setup
+                              EIP-3009 signed authorization
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -123,7 +123,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Email Support
+                              Nonce bound to the intent digest
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -132,7 +132,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Up to 3 AI Workflows
+                              Relayer pays the gas
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -141,7 +141,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Basic Documentation
+                              Exact amount pulled, nothing more
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -150,7 +150,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Third-Party Integrations
+                              Merchant's snapshotted payout wallet
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -159,7 +159,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Security Best Practices
+                              Receipt event on-chain
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -168,7 +168,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Monthly Performance Review
+                              Circle USDC on testnet
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -177,7 +177,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              2 Business Day Response
+                              tAUSD mock (no AUSD faucet)
                             </div>
                           </div>
                         </div>
@@ -191,27 +191,27 @@ export default function Pricing() {
                         <div className="home-pricing-top-flex">
                           <div className="home-pricing-type-box w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
                             <div className="paragraph-small home-pricing-type-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Growth Plan
+                              Swap route
                             </div>
                             <div className="home-pricing-type-title w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              {"Scale operations with "}
+                              {"Pay with any allow-listed "}
                               <br />
-                              custom AI agents
+                              Monad token
                             </div>
                           </div>
                           <div className="home-pricing-tag-box w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
                             <div className="paragraph-small home-pricing-tag">
-                              Popular plan
+                              Flexible
                             </div>
                           </div>
                         </div>
                         <div className="home-pricing-flex">
                           <div className="home-pricing-box">
                             <div className="home-pricing w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              $2,000
+                              1
                             </div>
                             <div className="paragraph-small home-pricing-month w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              /month
+                              /transaction
                             </div>
                           </div>
                           <div className="home-pricing-button-box">
@@ -219,10 +219,10 @@ export default function Pricing() {
                               <div className="primary-button-text-items">
                                 <div className="primary-button-text-wrap">
                                   <div className="primary-button-text one">
-                                    GET STARTED
+                                    TRY SCANPAY
                                   </div>
                                   <div className="primary-button-text two">
-                                    GET STARTED
+                                    TRY SCANPAY
                                   </div>
                                 </div>
                               </div>
@@ -252,7 +252,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Unlimited AI Workflows
+                              One-time token approval
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -261,7 +261,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Performance Monitoring
+                              Intent signature authorizes the pull
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -270,7 +270,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Custom AI Agents
+                              Swapped through an adapter
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -279,7 +279,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Workflow Optimization
+                              Exact amountOut paid to merchant
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -288,7 +288,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              System Integrations
+                              Excess refunded to the payer
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -297,7 +297,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Priority Support
+                              tMON mock input token
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -306,7 +306,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              AI Strategy Consulting
+                              Mock swap adapter on testnet
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -315,7 +315,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Dedicated Success Manager
+                              Same on-chain receipt event
                             </div>
                           </div>
                         </div>
@@ -333,25 +333,25 @@ export default function Pricing() {
                         <div className="home-pricing-top-flex">
                           <div className="home-pricing-type-box">
                             <div className="paragraph-small home-pricing-type-text">
-                              Starter Plan
+                              Direct route
                             </div>
                             <div className="home-pricing-type-title">
-                              Launch essential AI workflows
+                              Real USDC and real AUSD
                             </div>
                           </div>
                           <div className="home-pricing-tag-box">
                             <div className="paragraph-small home-pricing-tag">
-                              Popular plan
+                              Fastest
                             </div>
                           </div>
                         </div>
                         <div className="home-pricing-flex">
                           <div className="home-pricing-box">
                             <div className="home-pricing">
-                              $900
+                              1
                             </div>
                             <div className="paragraph-small home-pricing-month">
-                              /month
+                              /transaction
                             </div>
                           </div>
                           <div className="home-pricing-button-box">
@@ -359,10 +359,10 @@ export default function Pricing() {
                               <div className="primary-button-text-items">
                                 <div className="primary-button-text-wrap">
                                   <div className="primary-button-text one">
-                                    GET STARTED
+                                    TRY SCANPAY
                                   </div>
                                   <div className="primary-button-text two">
-                                    GET STARTED
+                                    TRY SCANPAY
                                   </div>
                                 </div>
                               </div>
@@ -392,7 +392,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Workflow Automation Setup
+                              Real Circle USDC
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -401,7 +401,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Email Support
+                              Real Agora AUSD
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -410,7 +410,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Up to 3 AI Workflows
+                              EIP-3009, one transaction
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -419,7 +419,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Basic Documentation
+                              Relayer pays the gas
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -428,7 +428,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Third-Party Integrations
+                              Exact amount, nothing more
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -437,7 +437,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Security Best Practices
+                              Merchant's snapshotted payout wallet
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -446,7 +446,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              Monthly Performance Review
+                              Receipt event on-chain
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -455,7 +455,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text">
-                              2 Business Day Response
+                              Viewable on MonadScan
                             </div>
                           </div>
                         </div>
@@ -469,27 +469,27 @@ export default function Pricing() {
                         <div className="home-pricing-top-flex">
                           <div className="home-pricing-type-box w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
                             <div className="paragraph-small home-pricing-type-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Growth Plan
+                              Cross-chain route
                             </div>
                             <div className="home-pricing-type-title w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              {"Scale operations with "}
+                              {"Pay from a token on "}
                               <br />
-                              custom AI agents
+                              another chain
                             </div>
                           </div>
                           <div className="home-pricing-tag-box w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
                             <div className="paragraph-small home-pricing-tag">
-                              Popular plan
+                              Aurora
                             </div>
                           </div>
                         </div>
                         <div className="home-pricing-flex">
                           <div className="home-pricing-box">
                             <div className="home-pricing w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              $1,800
+                              2
                             </div>
                             <div className="paragraph-small home-pricing-month w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              /month
+                              /Monad txs
                             </div>
                           </div>
                           <div className="home-pricing-button-box">
@@ -497,10 +497,10 @@ export default function Pricing() {
                               <div className="primary-button-text-items">
                                 <div className="primary-button-text-wrap">
                                   <div className="primary-button-text one">
-                                    GET STARTED
+                                    TRY SCANPAY
                                   </div>
                                   <div className="primary-button-text two">
-                                    GET STARTED
+                                    TRY SCANPAY
                                   </div>
                                 </div>
                               </div>
@@ -530,7 +530,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Unlimited AI Workflows
+                              Commit the intent first
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -539,7 +539,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Performance Monitoring
+                              Aurora EXACT_OUTPUT quote
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -548,7 +548,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Custom AI Agents
+                              Forwarder is the recipient
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -557,7 +557,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Workflow Optimization
+                              Solver delivers USDC
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -566,7 +566,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              System Integrations
+                              Vault checks the balance
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -575,7 +575,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Priority Support
+                              Swapped to AUSD via Kuru
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -584,7 +584,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              AI Strategy Consulting
+                              Settle with one call
                             </div>
                           </div>
                           <div className="home-pricing-list-items">
@@ -593,7 +593,7 @@ export default function Pricing() {
                               <img loading="lazy" src="/assets/6a9d47e5bde9c565bba19868_5185dfa37394418713dbaebc1045e9d6_plus_black.svg" alt="Icon" className="home-pricing-list-icon w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6 hidden" />
                             </div>
                             <div className="paragraph-small home-pricing-list-text w-variant-5cbad008-4e0b-ceec-6a57-09d6b6cb33a6">
-                              Dedicated Success Manager
+                              Source tx is operator-attested
                             </div>
                           </div>
                         </div>
