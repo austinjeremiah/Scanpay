@@ -24,7 +24,8 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A8 | MerchantRegistry | ✅ | `c7ebc36` |
 | A9 | Mock tokens + MockSwapAdapter | ✅ | `cf25271` |
 | A10 | Registry + mock token tests | ✅ | `93c37f4` |
-| A11 | DepositForwarder | 🔜 | |
+| A11 | DepositForwarder | ✅ | `63bcb6a` |
+| A12 | **IntentVault** (core) | 🔜 | |
 
 **Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
@@ -284,7 +285,7 @@ Design rules confirmed present in the implementation:
 
 - one nonce counter per **owner**, shared by Registration / SignerRotation / PayoutUpdate (`_useNonce` reverts `BadNonce(expected, provided)`)
 - registration requires owner **and** payout-wallet signatures over the **same** digest — threat **T7**, nobody can name someone else's wallet as payout
-- new merchants start `e26dbc3` with `keyVersion = 1`
+- new merchants start `PENDING` with `keyVersion = 1`
 - both rotation paths bump `keyVersion`, so old invoices die — threat **T6**
 - `_live()` permits `SUSPENDED` merchants to rotate keys / fix payout, but blocks `REVOKED` (terminal, `_validTransition` returns false from `REVOKED`)
 - `getMerchant` on an unknown id returns the zero struct rather than reverting
@@ -451,3 +452,40 @@ forge coverage --ir-minimum --match-contract 'MerchantRegistryTest|MockStableTok
 ```
 
 This applies to every later coverage run, including the Part VI final checklist (Registry ≥ 95%, Vault ≥ 95%).
+
+---
+
+## A11 — DepositForwarder · `63bcb6a`
+
+`src/DepositForwarder.sol` — 27 lines, the smallest contract in the project and one of the most important. `test/DepositForwarder.t.sol`, 4 tests.
+
+**Exit checks:** ✅ 4 tests pass · ✅ `test_clone_predictableAndSweepable` proves deposit-before-deploy works
+
+Full suite after this phase: **38 tests, 0 failed** across 4 suites.
+
+### Why it exists
+
+One EIP-1167 clone per cross-chain intent at `CREATE2(salt = intentId)`. That address is what Backend B hands Aurora as the `recipient`. Because each intent gets its own address, the vault proves *which* intent a deposit belongs to **by reading a balance** — no memo, no off-chain matching, and B cannot mis-attribute a deposit even if it tried.
+
+### The property that matters
+
+`test_clone_predictableAndSweepable` tests the real Aurora race rather than a simplification: it mints tokens to the **predicted address before any contract exists there**, then deploys the clone and sweeps. Aurora's solver can deliver before our commit transaction lands, and CREATE2 means the funds are already waiting at the right address when the clone appears.
+
+### Design review
+
+- `vault` is an `immutable` baked into the implementation's runtime bytecode. Clones `delegatecall` into that code, so **every clone reports the same vault** — the access check cannot be bypassed by deploying a rogue clone.
+- `sweep` on a zero balance is a **no-op, not a revert** — needed for the rescue path, which must stay callable when nothing has arrived.
+- Guard `msg.sender != vault → OnlyVault`, covered by `test_sweep_onlyVault`.
+
+Related troubleshooting entry (ICD Part V): funds sent to the vault instead of the forwarder are lost to the vault, so **B must only ever use the address returned by `forwarderOf(intentId)`** — a contract call, not an off-chain computation.
+
+No deviations.
+
+### Process note — two self-inflicted issues this phase
+
+1. **Over-broad `sed`.** Backfilling the commit hash with `sed s/PENDING/<hash>/g` also rewrote the literal word `PENDING` inside the A8 section ("new merchants start `PENDING`"), corrupting it. Repaired here. Future phases write the hash directly rather than substituting a common word.
+2. **Failed push short-circuited an `&&` chain**, so the A11 log was never written while its commit still landed. Caught by verifying the doc after the fact.
+
+### Note — frontend work landed on main
+
+`sylesh7` pushed 158 files under `frontend/` (commits `dcad335`, `ef0100a`, `90e76a1`) while this phase was in progress. No overlap with `backend/` or `docs/`; rebased cleanly. The `frontend/` directory deleted earlier in the session is back, now owned by the frontend engineer.
