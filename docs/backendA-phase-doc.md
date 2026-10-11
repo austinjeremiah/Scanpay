@@ -39,7 +39,9 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | Deployer keystore (`cast wallet import scanpay-deployer`) | A19 | ⏸ not created |
 | Funded testnet MON | A19 | ⏸ |
 | `ENVIO_API_TOKEN` | A22 | ⏸ |
-| ~3 real MON on mainnet | A23 | ⏸ |
+| ~3 real MON on mainnet | A23 deploy gas | ⏸ |
+| ~$1 real USDC on mainnet (demo wallet) | A23 demo | ⏸ swap from MON via Kuru |
+| ~$1 real **Agora AUSD** on mainnet (demo wallet) | A23 demo | ⏸ swap from MON via Kuru |
 
 Nothing is needed before A19.
 
@@ -373,3 +375,29 @@ Testnet USDC entry: `isMock: false`, `eip712 {name:"USDC", version:"2"}`, `suppo
 **Funding model changes for A18/A19 and for Backend B:** the operator cannot mint USDC on testnet. Faucet 10 USDC / 24 h into the operator wallet; B's faucet endpoint **transfers** a small amount per demo wallet instead of minting. Minting still applies to `tAUSD` and `tMON`, where the operator holds `MINTER_ROLE`.
 
 The mock contracts from A9 all stay — they are still used for AUSD, MON, and the whole of local 31337.
+
+---
+
+## DECISION — mainnet demo uses REAL Agora AUSD
+
+Austin, 2026-10-11. The mainnet demo will include a **real Agora AUSD payment**, not just USDC.
+
+Rationale: AUSD is the most differentiated part of the submission (Agora bounty, $10K). A real AUSD transfer on mainnet, visible on monadscan.com, is a materially stronger claim than a payment in a token we minted ourselves. A2 already proved mainnet AUSD supports EIP-3009, so the one-transaction zero-gas DIRECT route works for it.
+
+**Budget (all mainnet, ~$5 total):** ~3 MON deploy gas (~$0.08) · ~$1 USDC demo wallet · ~$1 AUSD demo wallet · ~$2 buffer for re-shoots. Mainnet `amountCap` is 25 units, so small balances are sufficient.
+
+**Acquisition:** buy MON, swap small amounts to USDC and AUSD on Kuru — the same aggregator integrated at A24. Doing so doubles as a live check that Kuru routes both tokens before the adapter depends on it.
+
+**Timing: A23.** Nothing to buy before then.
+
+### Resulting demo token story
+
+| Shot | Chain | Token | Real |
+|---|---|---|---|
+| Hero payment | mainnet 143 | Circle USDC | ✅ |
+| AUSD payment | mainnet 143 | Agora AUSD | ✅ |
+| Repeatable flow | testnet 10143 | Circle USDC | ✅ |
+| SWAP route input | testnet 10143 | `tMON` | mock |
+| AUSD on testnet | testnet 10143 | `tAUSD` | mock |
+
+Every stablecoin a judge sees moving is real. Only the swap *input* token is mocked, and only on testnet. README states that testnet AUSD is mocked because Agora operates no testnet faucet — verified in the addendum to `docs/address-verification-20261011.txt`.
