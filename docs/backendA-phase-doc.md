@@ -18,7 +18,8 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A3 | Foundry project | ✅ | `9d5d8b3` |
 | A4 | ScanPayTypes.sol | ✅ | `260b7ed` |
 | A5 | Interfaces | ✅ | `e8d4002` |
-| A6 | `@scanpay/shared` package | 🔜 | |
+| A6 | `@scanpay/shared` package | ✅ | `5de4058` |
+| A7 | Golden vectors → **I0** | 🔜 | |
 
 **Checkpoints:** I0 (after A7) · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23) — none reached yet.
 
@@ -168,3 +169,34 @@ The ABIs declare **33** distinct errors; ICD §0.8 maps **31**. Unmapped:
 **Not fixed unilaterally.** §0.8 is B-owned (`packages/shared/src/errors.ts`) and the ICD requires any change to be made in *both* docs with an `ICD_VERSION` bump plus a team-chat note. Raise at I0: suggest `ZeroAddress → ZERO_ADDRESS (422)` and `InvalidFee → INVALID_FEE (422)`.
 
 No deviations — ICD §0.7.2–§0.7.4 were correct.
+
+---
+
+## A6 — `@scanpay/shared` · `5de4058`
+
+11 files extracted programmatically from the doc: `package.json`, `tsconfig.json`, `constants.ts`, `types.ts`, `eip712.ts` (201 lines), `ids.ts`, `wire.ts`, `generated/deployments.ts` (placeholder, A18 overwrites), `generated/abis.ts` (3130 lines, generated), `index.ts`, `scripts/print-deployment.ts`, plus `contracts/scripts/export-abis.ts`.
+
+`pnpm install` links 3 workspace projects. `export-abis.ts` relative paths (`../out`, `../../packages/shared/...`) resolve correctly from `backend/contracts/scripts` — the restructure holds.
+
+**Exit checks:** ✅ `abis.ts` contains `intentVaultAbi` · ✅ `typecheck` passes · ✅ 18 events (needed ≥ 16). All 7 ABIs exported.
+
+### Verification beyond the doc
+
+**TS type definitions == Solidity typehashes.** Computed the typehash from each viem type object and compared against the canonical `cast keccak` values from A4 — **6/6 byte-identical**. This is the core risk A7 exists to catch, so it is now de-risked a phase early.
+
+Worth noting: `ReceiveWithAuthorization` resolves to `0xd099cc98…`, the same value **mainnet USDC and AUSD returned live in A2**. Three independent sources agree — the TS constant, the Solidity typehash, and the real tokens.
+
+**ID helpers == Solidity.** `computeMerchantId` and `computeIntentId` compared against `cast keccak` of the same `abi.encode`:
+
+```
+merchantId  0x9a7fd51e3516636ce56cd86ca26b3582921bd8701844d7bce1514d799576abd2   (TS == SOL)
+intentId    0x9f27f3e7a9b29bd9062e88c6aa3d6251792a4817f5efe0d62d222a830d86a45e   (TS == SOL)
+```
+
+**Wire lowercasing is safe.** `toWireIntent` lowercases addresses, so a round-trip is not string-equal to checksummed input. The doc asserts this is harmless because EIP-712 encodes addresses as 20 bytes. Verified rather than assumed: the same intent signed with checksummed vs lowercase addresses produces digest `0x3e96bdeb…bfb7` **both times**.
+
+**Full ICD §0.10 surface present.** Checked all 47 promised exports resolve through `src/index.ts` — none missing (66 exports total).
+
+### Deviation
+
+`out/IERC20.sol/IERC20.json` did not exist, because nothing in our source imported OZ's `IERC20` — the doc predicted this and sanctions adding the import to `IMockStableToken.sol`. Done. Confirmed `IMockStableToken`'s own ABI is **unchanged** before and after (`authorizationState, balanceOf, decimals, mint, receiveWithAuthorization`), so the verbatim ICD extraction from A5 stays sound.
