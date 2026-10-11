@@ -1,0 +1,35 @@
+import type { FastifyInstance } from 'fastify';
+import { z } from 'zod';
+import type { Hex } from 'viem';
+import { zBytes32, zChainId, MERCHANT_STATUS } from '@scanpay/shared';
+import { chainCtx } from '../../chains.js';
+import { Merchant } from '../../db/models.js';
+import { requireAdmin } from '../auth.js';
+import { parse } from '../parse.js';
+import { setStatus } from '../../services/merchants.js';
+import { merchantView } from '../../services/views.js';
+
+const ACTIONS = { approve: MERCHANT_STATUS.ACTIVE, reactivate: MERCHANT_STATUS.ACTIVE, suspend: MERCHANT_STATUS.SUSPENDED, revoke: MERCHANT_STATUS.REVOKED } as const;
+
+export async function adminRoutes(app: FastifyInstance) {
+  app.addHook('preHandler', async (req) => {
+    if (req.url.startsWith('/v1/admin')) requireAdmin(req);
+  });
+
+  app.get('/v1/admin/merchants', async (req) => {
+    const q = parse(z.object({ chainId: zChainId, status: z.string().optional() }), req.query);
+    const docs = await Merchant.find({ chainId: q.chainId, ...(q.status ? { status: q.status } : {}) })
+      .sort({ createdAt: -1 }).limit(200).lean();
+    const ctx = chainCtx(q.chainId);
+    const merchants = (await Promise.all(docs.map((d) => merchantView(ctx, d.merchantId as Hex)))).filter(Boolean);
+    return { merchants };
+  });
+
+  app.post('/v1/admin/merchants/:chainId/:merchantId/:action', async (req) => {
+    const p = parse(
+      z.object({ chainId: zChainId, merchantId: zBytes32, action: z.enum(['approve', 'reactivate', 'suspend', 'revoke']) }),
+      req.params,
+    );
+    return setStatus(chainCtx(p.chainId), p.merchantId as any, ACTIONS[p.action], `admin:${p.action}`);
+  });
+}
