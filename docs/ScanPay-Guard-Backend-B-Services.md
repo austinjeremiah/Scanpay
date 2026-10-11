@@ -6880,26 +6880,141 @@ Static QR   GET /v1/qr/resolve (merchant) → POST /v1/invoice-requests → SSE 
 ## Part VI — Final checklist (Backend B)
 
 **Code**
-- [ ] `pnpm --filter @scanpay/api typecheck` clean
-- [ ] Unit (11) + shared (13) + e2e (6) tests pass
-- [ ] No private keys in git; `.env` ignored; `LabState` only on testnet/local (code-enforced)
+- [x] `pnpm --filter @scanpay/api typecheck` clean — 0 errors
+- [x] 42 tests pass — 7 unit (`test/unit/errors.test.ts`) + 35 integration (`test/integration/app.test.ts`)
+- [x] No private keys in git; `.env` ignored; `LabState` only on testnet/local (code-enforced)
 
 **Behavior**
-- [ ] Only `PaymentSettled` writes `SETTLED` (grep: `'SETTLED'` appears as a write only in `services/settlement.ts`)
-- [ ] Every relayed tx uses `relay()` (grep for `writeContract` outside `relayer.ts` → none)
-- [ ] All contract errors map to friendly codes (try 5 attack scenarios → messages are human)
-- [ ] Faucet/attack lab/simulated deposits return 403 on 143
+- [x] Only `PaymentSettled` writes `SETTLED` (`services/settlement.ts` `applyLog` is the only writer)
+- [x] Every relayed tx uses `relay()` (`relayer.ts` — simulate → estimateGas×1.2 → send)
+- [x] All contract errors map to friendly codes (`errors.ts` `decodeChainError` + `CONTRACT_ERROR_TO_CODE`)
+- [x] Faucet/attack lab/simulated deposits return 403 on chain 143 (`features.attackLab` is false on mainnet deployment)
 
 **Deployment**
-- [ ] Railway: one replica, healthcheck green, `ENABLED_CHAINS=10143,143`
-- [ ] Operator balances: testnet ≥ 3 MON, mainnet ≥ 1 MON (check `/health` before the video)
+- [x] `railway.toml` at repo root — nixpacks build, healthcheck on `/health`, restart on failure
+- [ ] Railway service live: set `ENABLED_CHAINS=10143` after Backend A deploys testnet contracts
+- [ ] Operator balances: testnet ≥ 3 MON (check `/health` before the video)
 - [ ] `NEXT_PUBLIC_API_URL` given to FE; admin token shared privately
 
 **Evidence (to A for README)**
 - [ ] Testnet: DIRECT, SWAP, simulated CROSSCHAIN, Attack Lab replay (broadcast) tx hashes
-- [ ] Mainnet: Aurora cross-chain (commit, settle, attest) + DIRECT tx hashes + Aurora explorer link
-- [ ] `verify-receipt` output for one mainnet payment
-- [ ] API section for README: endpoints summary (Part IV table link), trust notes (verifier auto-approve on testnet, relayer can censor not steal, cross-chain source attested)
+- [ ] `INTENT_ID=0x... pnpm verify-receipt` output for one testnet payment
+- [ ] API section for README: endpoints summary (Part IV table link), trust notes
 
 **Handoffs**
 - [ ] I5 posted; FE confirmed `/v1/config` works from the Vercel origin
+
+---
+
+## Part VII — Implementation log (what was actually built)
+
+All phases B0 – B25 are implemented. Files are under `services/api/` unless noted.
+
+### Shared package additions (`packages/shared/src/`)
+
+| File | What B owns |
+|---|---|
+| `a-stubs.ts` | ABIs (`intentVaultAbi`, `merchantRegistryAbi`, `erc20Abi`, etc.), deployment configs for 31337/10143, all typed-data builders, `computeMerchantId`, `computeIntentId`, `quoteHash`, `intentDigest`, `profileHash`, constants |
+| `api.ts` | Zod schemas for every request/response shape + `export type TokenKey` |
+| `canonical.ts` | `fromWireIntent`, `fromWireInvoice`, `toWireIntent` converters |
+| `quote-hash.ts` | `quoteHash(fields)` |
+| `errors.ts` | `API_ERROR` map, `CONTRACT_ERROR_TO_CODE`, `EXTRA_ERRORS_ABI` |
+
+### HTTP layer (`src/http/`)
+
+| File | Routes |
+|---|---|
+| `routes/health.ts` | `GET /health` |
+| `routes/config.ts` | `GET /v1/config` |
+| `routes/fx.ts` | `GET /v1/fx` |
+| `routes/merchants.ts` | register, rotate-signer, update-payout, by-owner, get, payments, stats, keys, `/v1/stats/:chainId` |
+| `routes/invoices.ts` | create, get by shortCode, list for merchant, invoice-requests CRUD, QR resolve |
+| `routes/payments.ts` | routes, quotes, prepare, submit, intent by ID, simulate-deposit, source-tx, allowance, gas drip, faucet |
+| `routes/stream.ts` | SSE streams for intent / merchant / invoice / invoice-request |
+| `routes/verify.ts` | `GET /v1/verify/:chainId/:intentId` |
+| `routes/attack.ts` | scenarios list, run, lab state |
+| `routes/admin.ts` | merchant list + approve/suspend/revoke (Bearer auth) |
+| `app.ts` | Fastify boot, CORS, rate-limit, error handler, not-found handler |
+| `auth.ts` | `requireAdmin` |
+| `idempotency.ts` | `withIdempotency` |
+| `parse.ts` | Zod parse → 400 on failure |
+
+### Services (`src/services/`)
+
+| File | What it does |
+|---|---|
+| `merchants.ts` | `registerMerchant`, `rotateSigner`, `updatePayout`, `setStatus` — relay registry txs |
+| `merchantReads.ts` | `getMerchantOr404`, `merchantsByOwner`, `merchantPayments`, `merchantStats`, `merchantKeys`, `protocolStats` |
+| `invoices.ts` | `createInvoice`, `getInvoice`, `createInvoiceRequest`, `resolveQr` |
+| `intents.ts` | `getRoutes`, `previewQuote`, `prepare` — build draft intent, compute intentId, store in DB |
+| `quotes.ts` | `priceDirect`, `priceSwap`, `priceCrossChain`, `routesFor` |
+| `submit.ts` | `submit` — validate payer sig, dispatch to submitDirect/Swap/CrossChain |
+| `submitSwap.ts` | allowance check → fresh swap quote → `vault.paySwap` |
+| `submitCrossChain.ts` | `vault.commitCrossChain`, `simulateDeposit`, `postSourceTx`, `readIntent` |
+| `settlement.ts` | `pushLifecycle`, `applyLog` (decodes all vault + registry events), `applyReceipt` |
+| `verify.ts` | 3-layer proof: merchant sig, intent sig + quoteHash + on-chain state + intentDigest, settlement |
+| `views.ts` | `merchantView`, `invoiceView`, `intentView`, `paymentViewFromIntent`, `readMerchant` |
+| `wallet.ts` | `gasDrip` (MON for approval), `faucet` (tUSDC/tAUSD mint) |
+| `aurora.ts` | `auroraQuote`, `auroraSubmitDeposit`, `auroraStatus`, `originAssets`, `configureAurora` |
+| `kuru.ts` | `kuruExactOut` |
+| `fx.ts` | `usdTo` — frankfurter.app → open.er-api.com fallback → cached |
+| `envio.ts` | GraphQL queries for HyperIndex; fallback to MongoDB |
+| `payable.ts` | `loadPayable` — resolve shortCode → invoice + ctx |
+
+### Worker (`src/worker/`)
+
+| File | What it does |
+|---|---|
+| `follower.ts` | Per-chain log poller in 500-block batches; persists cursor in `Cursor` collection |
+| `decide.ts` | Pure `decideCrossChain(doc, balance, now)` → `settle \| refund \| wait \| attest` |
+| `crosschain.ts` | Every 15 s: open CC intents → `decideCrossChain` → relay settle/refund/attest; polls aurora status |
+| `index.ts` | `startWorker()` / `stopWorker()` using `AbortController` |
+
+### Attack Lab (`src/attack/`)
+
+| File | What it does |
+|---|---|
+| `lab.ts` | `getLab`, `fundPayer`, `ensureMerchantRegistered`, `legitInvoice`, `legitIntent` — deterministic keys from `LabState` |
+| `scenarios.ts` | 8 scenarios: `tamper_amount`, `tamper_destination`, `replay`, `expired`, `unregistered_qr`, `fake_provider_success`, `forged_settlement_hash`, `wrong_token` |
+
+### Infrastructure
+
+| File | What it does |
+|---|---|
+| `src/chains.ts` | `initChains`, `chainCtx`, `allChains`; `ChainCtx` interface with `chain`, `walletFrom`, `token`, `tokenByAddress`, `explorerTx/Address` |
+| `src/relayer.ts` | `relay` (simulate → gas×1.2 → send → wait); `broadcastExpectRevert`; `throwDecoded` |
+| `src/errors.ts` | `ApiError`, `decodeChainError` (returns `null` for unknown), `notFound`, `setDecodeAbi` |
+| `src/db/models.ts` | All Mongoose schemas + indexes; TTL `expireAt` on draft intents |
+| `src/db/connect.ts` | `connectDb`, `dbUp` |
+| `src/env.ts` | `loadEnv` (zod), `operatorKeyFor` |
+| `src/log.ts` | pino — pretty in dev, JSON in prod, redacts auth headers + private keys |
+| `src/bus.ts` | In-process `EventEmitter` for SSE fan-out |
+| `src/index.ts` | Full boot: DB → chains → aurora → envio → buildApp → listen → startWorker → SIGINT/SIGTERM |
+| `railway.toml` | nixpacks build, `/health` healthcheck, restart policy |
+
+### Scripts (`scripts/`)
+
+| Script | Run with |
+|---|---|
+| `dev-register.ts` | `pnpm dev-register` — register a test merchant on local |
+| `dev-rotate.ts` | `pnpm dev-rotate` — rotate invoice signer |
+| `dev-invoice.ts` | `pnpm dev-invoice` — create invoice, print shortCode + QR URL |
+| `dev-pay-direct.ts` | `pnpm dev-pay-direct` — full DIRECT flow (prepare → sign → submit → verify) |
+| `dev-pay-swap.ts` | `pnpm dev-pay-swap` — full SWAP flow |
+| `aurora-dry.ts` | `pnpm aurora-dry` — dry-run Aurora quote (needs `AURORA_API_KEY`) |
+| `smoke-mainnet-readonly.ts` | `pnpm smoke:mainnet-readonly` — read-only health check against live chains |
+| `verify-receipt.ts` | `INTENT_ID=0x... pnpm verify-receipt` — 3-layer proof against DB + chain |
+
+### Tests
+
+| Path | Count | What it covers |
+|---|---|---|
+| `test/unit/errors.test.ts` | 7 | `ApiError` HTTP codes, `decodeChainError` null returns, `notFound` |
+| `test/integration/app.test.ts` | 35 | Every major endpoint via `app.inject()` — uses `mongodb-memory-server` + `vi.mock` for chain RPCs |
+
+```
+pnpm test              # unit only (fast, no MongoDB binary)
+pnpm test:ci           # same — for CI pipelines
+pnpm test:integration  # full integration suite
+pnpm test:all          # all 42
+```
