@@ -10,8 +10,12 @@ export function configureAurora(key?: string, jwt?: string) {
   auroraKey = key;
   oneClickJwt = jwt;
 }
-export const auroraEnabled = () => Boolean(auroraKey || oneClickJwt);
-export const providerName = (): 'aurora' | 'oneclick' | null => (auroraKey ? 'aurora' : oneClickJwt ? 'oneclick' : null);
+// 1Click's public endpoint serves /v0/tokens and /v0/quote without credentials — an
+// unauthenticated quote comes back 400 on a bad body, not 401 — so cross-chain is
+// available even with neither secret set. The Aurora key, when present, is preferred
+// because it gives higher rate limits.
+export const auroraEnabled = () => true;
+export const providerName = (): 'aurora' | 'oneclick' => (auroraKey ? 'aurora' : 'oneclick');
 
 function url(op: 'tokens' | 'quote' | 'submit' | 'status', qs = '') {
   if (auroraKey) {

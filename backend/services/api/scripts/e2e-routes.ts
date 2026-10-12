@@ -6,7 +6,7 @@
  * Testnet mints its own funds via the faucet. On mainnet the payer must already
  * hold value, so PAYER_PRIVATE_KEY must be supplied.
  */
-import { createPublicClient, createWalletClient, http, parseUnits, formatUnits, type Hex, type Address } from 'viem';
+import { createPublicClient, createWalletClient, defineChain, http, parseUnits, formatUnits, type Hex, type Address } from 'viem';
 import { privateKeyToAccount, generatePrivateKey } from 'viem/accounts';
 import {
   getDeployment, buildRegistrationTypedData, buildInvoiceTypedData, buildIntentTypedData,
@@ -22,10 +22,16 @@ const dep = getDeployment(chainId);
 const isMainnet = dep.network === 'mainnet';
 const rpc = chainId === 143 ? process.env.MONAD_MAINNET_RPC! : chainId === 10143 ? process.env.MONAD_TESTNET_RPC! : process.env.LOCAL_RPC!;
 const pub = createPublicClient({ transport: http(rpc) });
-const chain = { id: chainId, name: dep.network, nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 }, rpcUrls: { default: { http: [rpc] } } } as const;
+// A hand-rolled chain literal makes viem fall back to a transaction shape Monad's
+// RPC rejects with "Missing or invalid parameters"; defineChain fills in the rest.
+const chain = defineChain({
+  id: chainId, name: dep.network,
+  nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
+  rpcUrls: { default: { http: [rpc] } },
+});
 
 const usdc = dep.tokens.USDC!;
-const AMOUNT = parseUnits(isMainnet ? '0.05' : '1.23', usdc.decimals);
+const AMOUNT = parseUnits(process.env.E2E_AMOUNT ?? (isMainnet ? '0.02' : '1.23'), usdc.decimals);
 const now = () => BigInt(Math.floor(Date.now() / 1000));
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const say = (s: string) => console.log(s);
@@ -42,7 +48,7 @@ async function api(method: string, path: string, body?: unknown, admin = false) 
 
 // payer: generated on testnet (faucet funds it); real wallet on mainnet
 const payer = privateKeyToAccount((process.env.PAYER_PRIVATE_KEY as Hex) ?? generatePrivateKey());
-const payerWallet = createWalletClient({ account: payer, chain: chain as any, transport: http(rpc) });
+const payerWallet = createWalletClient({ account: payer, chain, transport: http(rpc) });
 
 async function newMerchant(label: string) {
   const owner = privateKeyToAccount(generatePrivateKey());
@@ -61,6 +67,8 @@ async function newMerchant(label: string) {
   });
   const merchantId = computeMerchantId(owner.address, salt);
   if (!(res.autoApproved || res.status === 'ACTIVE')) await api('POST', `/v1/admin/merchants/${chainId}/${merchantId}/approve`, {}, true);
+  console.log(`   merchant ${merchantId.slice(0, 10)}…  payout ${payout.address}`);
+  if (process.env.E2E_DUMP_KEYS) console.log(`   payoutKey ${payout.source === 'privateKey' ? '' : ''}`);
   return { merchantId, signer, payout };
 }
 
@@ -126,8 +134,8 @@ async function runSwap() {
     await api('POST', '/v1/gas/drip', { chainId, address: payer.address, tokenKey: inputKey }).catch((e) => say(`   (drip: ${String(e).slice(0, 60)})`));
     const h = await payerWallet.writeContract({
       address: inTok.address, abi: erc20Abi, functionName: 'approve',
-      args: [dep.contracts.IntentVault.address, 2n ** 256n - 1n], chain: chain as any, account: payer,
-    } as any);
+      args: [dep.contracts.IntentVault.address, 2n ** 256n - 1n], chain, account: payer,
+    });
     await pub.waitForTransactionReceipt({ hash: h });
     say(`   approved vault (${h})`);
   }
