@@ -2,6 +2,122 @@
 import type { Deployment, TokenKey, TokenInfo, Address } from '../types';
 
 export const DEPLOYMENTS: Record<number, Deployment> = {
+  "143": {
+    "schemaVersion": 1,
+    "chainId": 143,
+    "network": "mainnet",
+    "generatedAt": "2026-10-12T21:04:37.314Z",
+    "startBlock": 112857175,
+    "explorer": "https://monadscan.com",
+    "contracts": {
+      "MerchantRegistry": {
+        "address": "0x2725111582b68539df62d57f579eafcebfb870b0",
+        "deployBlock": 112857175,
+        "deployTx": "0x55bbc39917bb8cf67f962098c46d3058e5ba1ee00f100288d1a7ca3e00d15b1d"
+      },
+      "IntentVault": {
+        "address": "0xa952e8ac92bce001b5ef4ddb1a4027a7b9d2868e",
+        "deployBlock": 112857183,
+        "deployTx": "0x2957684160289cf3ee00578391a26b45ecc9650fcf0dd679c315b608ff4371d9"
+      },
+      "DepositForwarderImpl": {
+        "address": "0xacbed31d720e3792078be35ac6772a43120be585"
+      },
+      "SwapAdapter": {
+        "address": "0xa5e36c82195b38105f0918fba71e4d3f3f51a1f5",
+        "kind": "kuru",
+        "deployBlock": 112857192,
+        "deployTx": "0xc5009b1c885963a082cf14a1bb315cf4005ab287a13c3977b22afbb3be01b93a"
+      }
+    },
+    "roles": {
+      "admin": "0xcd8f91dc7929e973ddc071838904434297ab4673",
+      "operator": "0xcd8f91dc7929e973ddc071838904434297ab4673",
+      "feeRecipient": "0xcd8f91dc7929e973ddc071838904434297ab4673"
+    },
+    "config": {
+      "feeBps": 30,
+      "refundDelaySec": 3600,
+      "crossChainInputToken": "USDC",
+      "amountCaps": {
+        "USDC": "1000000",
+        "AUSD": "1000000"
+      }
+    },
+    "tokens": {
+      "USDC": {
+        "address": "0x754704bc059f8c67012fed69bc8a327a5aafb603",
+        "symbol": "USDC",
+        "displaySymbol": "USDC",
+        "decimals": 6,
+        "eip712": {
+          "name": "USDC",
+          "version": "2"
+        },
+        "supports3009": true,
+        "isMock": false,
+        "usdPrice": 1,
+        "roles": [
+          "payout",
+          "direct",
+          "swapIn",
+          "crosschainIn"
+        ]
+      },
+      "AUSD": {
+        "address": "0x00000000efe302beaa2b3e6e1b18d08d69a9012a",
+        "symbol": "AUSD",
+        "displaySymbol": "AUSD",
+        "decimals": 6,
+        "eip712": {
+          "name": "Agora Dollar",
+          "version": "1"
+        },
+        "supports3009": true,
+        "isMock": false,
+        "usdPrice": 1,
+        "roles": [
+          "payout",
+          "direct",
+          "swapIn"
+        ]
+      },
+      "WMON": {
+        "address": "0x3bd359c1119da7da1d913d1c4d2b7c461115433a",
+        "symbol": "WMON",
+        "displaySymbol": "MON",
+        "decimals": 18,
+        "eip712": null,
+        "supports3009": false,
+        "isMock": false,
+        "usdPrice": 0.025,
+        "roles": [
+          "swapIn"
+        ]
+      },
+      "WETH": {
+        "address": "0xee8c0e9f1bffb4eb878d8f15f368a02a35481242",
+        "symbol": "WETH",
+        "displaySymbol": "ETH",
+        "decimals": 18,
+        "eip712": null,
+        "supports3009": false,
+        "isMock": false,
+        "usdPrice": 2500,
+        "roles": [
+          "swapIn"
+        ]
+      }
+    },
+    "external": {
+      "kuruFlowApi": "https://ws.kuru.io",
+      "kuruTargets": [
+        "0xb3e6778480b2e488385e8205ea05e20060b813cb",
+        "0x0d3a1be29e9ded63c7a5678b31e847d68f71ffa2"
+      ],
+      "auroraMonadUsdcAssetId": "nep245:v2_1.omni.hot.tg:143_2dmLwYWkCQKyTjeUPAsGJuiVLbFx"
+    }
+  },
   "10143": {
     "schemaVersion": 1,
     "chainId": 10143,
