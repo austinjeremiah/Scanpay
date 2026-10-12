@@ -63,7 +63,7 @@ async function submitDirect(
   const msg = receiveAuthForIntent(intent, intentDigest(ctx.chainId, ctx.vault, intent), ctx.vault);
   const okAuth = await ctx.public.verifyTypedData({
     address: intent.payer, signature: req.receiveAuthSig, ...buildReceiveAuthTypedData(ctx.chainId, token, msg),
-  });
+  } as any);
   if (!okAuth) throw new ApiError('TOKEN_AUTHORIZATION_FAILED', 'Transfer authorization signature does not match');
 
   const { hash, receipt } = await relay(ctx, {

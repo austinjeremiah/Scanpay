@@ -10,7 +10,9 @@ export const zSig = z.string().regex(/^0x[0-9a-fA-F]{130}$/, '65-byte signature'
 export const zUint = z.string().regex(/^\d+$/, 'decimal integer string');
 export const zChainId = z.coerce.number().int().refine((x) => [31337, 10143, 143].includes(x), 'unknown chainId');
 export const zTokenKey = z.enum(['USDC', 'AUSD', 'MON', 'WMON', 'WETH', 'USDT0']);
-export type TokenKey = z.infer<typeof zTokenKey>;
+// TokenKey is declared in ./types (A-owned) — identical union. Keep one source of truth.
+// A compile-time proof that the zod enum and the A-owned union still agree lives in
+// test/b-owned.test.ts; if they diverge, that assertion fails rather than silently drifting.
 export const zRouteName = z.enum(['DIRECT', 'SWAP', 'CROSSCHAIN']);
 export const zMerchantStatusName = z.enum(['NONE', 'PENDING', 'ACTIVE', 'SUSPENDED', 'REVOKED']);
 export const zLifecycle = z.enum([
@@ -18,7 +20,7 @@ export const zLifecycle = z.enum([
   'RECONCILIATION_REQUIRED', 'EXPIRED', 'REFUNDED', 'FAILED',
 ]);
 export type Lifecycle = z.infer<typeof zLifecycle>;
-export type RouteName = z.infer<typeof zRouteName>;
+// RouteName is declared in ./constants (A-owned) — identical union.
 
 // ------------------------------------------------------------------ wire messages (ICD §0.10 wire rule)
 export const zWireInvoice = z.object({

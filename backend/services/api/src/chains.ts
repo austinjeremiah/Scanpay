@@ -6,6 +6,36 @@ import type { TokenKey } from '@scanpay/shared';
 import type { Env } from './env.js';
 import { operatorKeyFor } from './env.js';
 
+/**
+ * backend-b was written against a stubbed deployment that carried a `features` block.
+ * The real artifact (ICD §0.9) does not — features are derivable from what is deployed,
+ * so there is one source of truth instead of a hand-maintained flag set.
+ *
+ * TODO(wiring): confirm these semantics with backend-b before the demo.
+ *   crosschain: 'live' on mainnet (real Aurora solver), 'simulated' elsewhere (we mint
+ *   to the forwarder to stand in for the solver), 'off' when no cross-chain input token.
+ */
+export interface Features {
+  direct: boolean;
+  swap: boolean;
+  crosschain: 'live' | 'simulated' | 'off';
+  faucet: boolean;
+  attackLab: boolean;
+  indexer: boolean;
+}
+
+function deriveFeatures(dep: DeploymentConfig, adapterKind: ChainCtx['adapterKind']): Features {
+  const tokens = Object.values(dep.tokens ?? {});
+  return {
+    direct: tokens.some((t) => t?.supports3009 && t.roles.includes('direct')),
+    swap: adapterKind !== 'none',
+    crosschain: dep.config.crossChainInputToken == null ? 'off' : dep.network === 'mainnet' ? 'live' : 'simulated',
+    faucet: tokens.some((t) => t?.isMock),
+    attackLab: process.env.ATTACK_LAB_ENABLED === 'true',
+    indexer: Boolean(process.env.ENVIO_GRAPHQL_URL),
+  };
+}
+
 export interface ChainCtx {
   chainId: number;
   chain: Chain;
@@ -18,7 +48,7 @@ export interface ChainCtx {
   adapter: Address | null;
   adapterKind: 'mock' | 'kuru' | 'none';
   deployment: DeploymentConfig;
-  features: DeploymentConfig['features'];
+  features: Features;
   token(key: TokenKey): TokenConfig | undefined;
   tokenByAddress(address: string): { key: TokenKey; token: TokenConfig } | undefined;
   walletFrom(account: LocalAccount): WalletClient;
@@ -55,8 +85,12 @@ export function initChains(env: Env): void {
 
     const vaultAddr = dep.contracts.IntentVault?.address as Address;
     const registryAddr = dep.contracts.MerchantRegistry?.address as Address;
-    const adapterAddr = dep.contracts.MockSwapAdapter?.address as Address | undefined;
-    const adapterKind: ChainCtx['adapterKind'] = adapterAddr ? 'mock' : dep.features.swap ? 'kuru' : 'none';
+    // backend-a's deployment artifact names this `SwapAdapter` and states its kind explicitly
+    // ('mock' on testnet, 'kuru' on mainnet), so read it rather than inferring from a name.
+    const adapterKind: ChainCtx['adapterKind'] = dep.contracts.SwapAdapter?.kind ?? 'none';
+    const adapterAddr = adapterKind === 'none'
+      ? undefined
+      : (dep.contracts.SwapAdapter?.address as Address | undefined);
 
     const explorerBase = chainId === 10143 ? 'https://testnet.monadexplorer.com' : chainId === 143 ? 'https://monadexplorer.com' : null;
 
@@ -72,7 +106,7 @@ export function initChains(env: Env): void {
       adapter: adapterAddr ?? null,
       adapterKind,
       deployment: dep,
-      features: dep.features,
+      features: deriveFeatures(dep, adapterKind),
       token(key: TokenKey) { return dep.tokens[key]; },
       tokenByAddress(address: string) {
         const lc = address.toLowerCase();

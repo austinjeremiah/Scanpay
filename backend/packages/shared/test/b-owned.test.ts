@@ -61,3 +61,25 @@ describe('zod wire', () => {
     expect(() => zWireIntent.parse({ ...ok, amountOut: 1 })).toThrow();
   });
 });
+
+// --- A+B merge guard ---------------------------------------------------------
+// backend-b declared TokenKey/RouteName from zod enums while backend-a declares them
+// as unions. The duplicates were removed in favour of A's, so assert the zod schemas
+// still accept exactly A's unions — otherwise the two halves drift apart silently.
+import { describe as _d, it as _i, expect as _e } from 'vitest';
+import { zTokenKey, zRouteName } from '../src/api.js';
+import { ROUTE } from '../src/constants.js';
+import type { TokenKey, RouteName } from '../src/index.js';
+
+_d('A+B type agreement', () => {
+  _i('zTokenKey accepts exactly A\'s TokenKey union', () => {
+    const keys: TokenKey[] = ['USDC', 'AUSD', 'MON', 'WMON', 'WETH', 'USDT0'];
+    for (const k of keys) _e(zTokenKey.parse(k)).toBe(k);
+    _e(zTokenKey.options.slice().sort()).toEqual(keys.slice().sort());
+  });
+  _i('zRouteName accepts exactly A\'s RouteName union', () => {
+    const names = Object.keys(ROUTE) as RouteName[];
+    for (const n of names) _e(zRouteName.parse(n)).toBe(n);
+    _e(zRouteName.options.slice().sort()).toEqual(names.slice().sort());
+  });
+});

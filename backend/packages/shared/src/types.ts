@@ -145,3 +145,20 @@ export interface Deployment {
     auroraMonadUsdcAssetId: string | null;
   };
 }
+
+// ---------------------------------------------------------------- B compatibility aliases
+// backend-b was written against `a-stubs.ts`, which used these names. They are exact
+// aliases of the real types, kept so B's code compiles unchanged after the merge.
+
+/** Shape returned by `splitSignature` — the EIP-3009 authorization signature parts. */
+export interface Auth3009Like {
+  v: number;
+  r: Hex;
+  s: Hex;
+}
+
+/** @deprecated use {@link TokenInfo} */
+export type TokenConfig = TokenInfo;
+
+/** @deprecated use {@link Deployment} */
+export type DeploymentConfig = Deployment;
