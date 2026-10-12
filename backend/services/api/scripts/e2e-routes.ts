@@ -52,7 +52,9 @@ const payerWallet = createWalletClient({ account: payer, chain, transport: http(
 
 async function newMerchant(label: string) {
   const owner = privateKeyToAccount(generatePrivateKey());
-  const payout = privateKeyToAccount(generatePrivateKey());   // money lands here, not with the payer
+  // Money lands here, never back with the payer. E2E_PAYOUT_PRIVATE_KEY lets a run
+  // direct the proceeds to a wallet we keep, so a later route can spend them.
+  const payout = privateKeyToAccount((process.env.E2E_PAYOUT_PRIVATE_KEY as Hex) ?? generatePrivateKey());
   const signer = privateKeyToAccount(generatePrivateKey());
   const salt = randomBytes32();
   const profile = { displayName: label, category: 'cafe', city: 'Chennai', country: 'IN', logoUrl: '' };
@@ -152,7 +154,7 @@ async function runCrossChain() {
   const code = await newInvoice(m);
   const prep = await api('POST', '/v1/intents/prepare', {
     shortCode: code, route: 'CROSSCHAIN', payer: payer.address,
-    origin: { assetId: dep.external.auroraMonadUsdcAssetId ?? 'sim', refundTo: payer.address },
+    origin: { assetId: process.env.E2E_ORIGIN_ASSET ?? dep.external.auroraMonadUsdcAssetId ?? 'sim', refundTo: process.env.E2E_REFUND_TO ?? payer.address },
   });
   const intent = toBig(prep.intent);
   const payerSig = await payer.signTypedData(buildIntentTypedData(chainId, dep.contracts.IntentVault.address, intent) as any);
@@ -164,7 +166,11 @@ async function runCrossChain() {
     say('   simulating the solver deposit (testnet)…');
     await api('POST', `/v1/intents/${chainId}/${sub.intentId}/simulate-deposit`, {});
   } else {
-    say(`   >>> send ${formatUnits(intent.amountOut, usdc.decimals)} USDC on the origin chain to ${sub.depositAddress ?? sub.forwarder}`);
+    const st0 = await api('GET', `/v1/intents/${chainId}/${sub.intentId}`).catch(() => null);
+    const originAmt = st0?.crosschain?.originAmountIn ?? st0?.originAmountIn;
+    say(`   >>> ORIGIN CHAIN: send ${originAmt ? formatUnits(BigInt(originAmt), 6) : formatUnits(intent.amountOut, usdc.decimals)} USDC`);
+    say(`   >>> to deposit address: ${sub.depositAddress ?? sub.forwarder}`);
+    say(`   waiting for the solver to deliver on Monad…`);
   }
   for (let i = 0; i < 25; i++) {
     const st = await api('GET', `/v1/intents/${chainId}/${sub.intentId}`).catch(() => null);
