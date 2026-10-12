@@ -31,7 +31,15 @@ Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
 | A15 | CROSSCHAIN tests | ✅ | `1ab7da2` (branch gate met at A17) |
 | A16 | Attack suite | ✅ | `38fbafc` |
 | A17 | Fuzz + invariants | ✅ | `c077141` |
-| A18 | Deploy script + local chain → **I1** | 🔜 | |
+| A18 | Deploy script + local chain → **I1** | ✅ | `b3a167a` |
+| A19 | Testnet deploy → **I2** | ✅ | `a810924` |
+| A20 | Envio package + config + schema | ✅ | `a56f163` |
+| A21 | Envio handlers + seed-demo | ✅ | `9ff1ecf` |
+| A22 | Envio Cloud → **I3** | ✅ | `02334f5` |
+| A23 | Mainnet deploy → **I4** | ✅ | `a315086` |
+| A24 | Kuru quote + mainnet fork test | ✅ | `dd897e9` |
+| A25 | Envio: add mainnet | ✅ | `99f7cb6` |
+| A26 | README evidence | 🔜 | |
 
 **Checkpoints:** **I0 ✅ reached** · I1 (A18) · I2 (A19) · I3 (A22) · I4 (A23)
 
@@ -748,3 +756,57 @@ usdc.grantRole(minterRole, address(handler));
 ```
 
 Comment added in-file so it is not reintroduced.
+
+---
+
+## A18–A25 — deployment, indexing, mainnet
+
+Run back-to-back. Commits: `b3a167a` (A18) · `a810924` (A19) · `a56f163` (A20) · `9ff1ecf` (A21) · `02334f5` (A22) · `a315086` (A23) · `dd897e9` (A24) · `99f7cb6` (A25).
+
+### What is live
+
+| | Testnet 10143 | Mainnet 143 |
+|---|---|---|
+| MerchantRegistry | `0x2725111582b68539df62d57f579eafcebfb870b0` | same |
+| IntentVault | `0xa952e8ac92bce001b5ef4ddb1a4027a7b9d2868e` | same |
+| SwapAdapter | `0x36e1c5c4…` **mock** | `0xa5e36c82…` **kuru** |
+| Tokens | tUSDC / tAUSD / tMON (our mocks) | real USDC, AUSD, WMON, WETH |
+| startBlock | 70485353 | 112857175 |
+| refundDelay | 600 | 3600 |
+| amountCap | 0 (uncapped) | **1 USDC / 1 AUSD** |
+
+Addresses coincide across chains because the deployer's nonce sequence is identical on both. Expected.
+
+Testnet deploy cost 1.6 MON; mainnet 1.07 MON. Envio Cloud endpoint: `https://indexer.dev.hyperindex.xyz/247ade4/v1/graphql`.
+
+### A24 — the Kuru adapter works against the real aggregator
+
+Live quote 1.000000 USDC → 0.999900 AUSD (minOut 994900), target the allow-listed Kuru Flow entrypoint. Executed through the **deployed mainnet adapter** on a fork: `out 999484`, output forwarded to the vault, approval reset to 0, adapter retained nothing. Second quote WMON→USDC (50 WMON → 1.246602 USDC) also returned an allow-listed target. Evidence in `docs/evidence/kuru-fork.txt`.
+
+**Ordering correction:** A24 cannot precede A23. Both `kuru-quote.ts` and `KuruFork.t.sol` read `deployments/143.json` for the adapter address, and Kuru's calldata is generated for a specific `userAddress` — so the quote must target the actually-deployed adapter. The doc's A23→A24 order is correct.
+
+### Mock audit (asked for explicitly)
+
+- No `console.log`, `console2`, `forge-std` import, `vm.*`, or TESTING/DEBUG/bypass flag anywhere in `src/`.
+- Production contracts are byte-identical across testnet and mainnet; all verified on Sourcify.
+- **Testnet tokens are our own mocks** (tUSDC/tAUSD/tMON) and the swap adapter is `kind: mock` with a fixed rate — A2's deliberate choice so Monad testnet resets cannot break the demo. A payment on testnet is a real on-chain settlement of tokens we minted.
+- **Mainnet has no mocks**: every token `isMock: false`, adapter `kind: kuru`.
+- The testnet settlement `0x2f88d073…` was decoded from receipt logs: payer → vault 1.230000, vault → merchant 1.226310, vault → feeRecipient 0.003690, vault ends at zero. Events resolved against the ABI as `IntentCommitted` + `PaymentSettled`.
+
+### Deviations (7 in this block, 10 total)
+
+1. **A18** — `local-chain.sh` ends in `wait`, so it blocks; drove anvil directly instead.
+2. **A20** — envio 3.x renamed `rpc_config` → `rpc`; codegen refused the generated config. Also emits `.envio/` + `envio-env.d.ts`, not `generated/`.
+3. **A21** — `tsconfig.json` omitted `envio-env.d.ts`, so TS never loaded the `declare module "envio"` augmentation and every handler failed to typecheck with envio's own "run codegen" placeholder type.
+4. **A21** — forge ABIs are deeply readonly; `as readonly AbiItem[]` needed a cast through `unknown`.
+5. **A21** — local RPC must be `127.0.0.1`, not `host.docker.internal`: in envio 3.x only postgres+hasura are containerised, the indexer is a host process. Wrong value stalls sync at `knownHeight: 0` with no error.
+6. **A22** — `@scanpay/shared: workspace:*` in the indexer broke Envio Cloud ("Install failed"): Cloud builds only the root directory, so a workspace protocol dep is unresolvable. The handlers never needed it; moved the generator to `@scanpay/contracts`.
+7. **A22** — the generator wrote `resolve(here,'../config.yaml')`, relative to its own file, so moving it silently redirected output to `contracts/config.yaml` while printing success and leaving the indexer's copy stale.
+
+Environment, not the doc: envio reused an unrelated project's postgres on :5433 and then pointed Hasura at a non-existent `envio-postgres` host; fixed with `ENVIO_PG_PORT=5434` in a gitignored `backend/indexer/.env`.
+
+### Open
+
+- `ProtocolStat` id `"143"` appears after the first mainnet payment (A25 exit check, pending B).
+- **`OPERATOR_ADDRESS` == `ADMIN_ADDRESS` on mainnet.** B needs the operator private key to relay, and that key currently also controls admin and holds the funds. Migrate with `grantRole`/`revokeRole` to B's own wallet before any real traffic.
+- Envio Cloud indexes over RPC, not HyperSync: `ENVIO_API_TOKEN` is an env var and env vars are paid on the free Development tier. Local dev uses HyperSync. Identical results.
