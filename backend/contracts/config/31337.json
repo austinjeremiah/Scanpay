@@ -1,0 +1,32 @@
+{
+  "network": "local",
+  "explorer": null,
+  "swapAdapterKind": "mock",
+  "crossChainInputToken": "USDC",
+  "amountCaps": { "USDC": "0", "AUSD": "0" },
+  "tokens": {
+    "USDC": {
+      "address": null, "mock": "stable", "name": "ScanPay Test USDC", "symbol": "tUSDC", "displaySymbol": "USDC",
+      "decimals": 6, "eip712": { "name": "ScanPay Test USDC", "version": "1" }, "supports3009": true,
+      "isMock": true, "usdPrice": 1, "roles": ["payout", "direct", "swapIn", "crosschainIn"]
+    },
+    "AUSD": {
+      "address": null, "mock": "stable", "name": "ScanPay Test AUSD", "symbol": "tAUSD", "displaySymbol": "AUSD",
+      "decimals": 6, "eip712": { "name": "ScanPay Test AUSD", "version": "1" }, "supports3009": true,
+      "isMock": true, "usdPrice": 1, "roles": ["payout", "direct", "swapIn"]
+    },
+    "MON": {
+      "address": null, "mock": "erc20", "name": "ScanPay Test MON", "symbol": "tMON", "displaySymbol": "MON",
+      "decimals": 18, "eip712": null, "supports3009": false, "isMock": true, "usdPrice": 0.025, "roles": ["swapIn"]
+    }
+  },
+  "mockRates": [
+    { "in": "MON", "out": "USDC", "rateE18": "25000" },
+    { "in": "MON", "out": "AUSD", "rateE18": "25000" },
+    { "in": "USDC", "out": "AUSD", "rateE18": "1000000000000000000" },
+    { "in": "AUSD", "out": "USDC", "rateE18": "1000000000000000000" },
+    { "in": "USDC", "out": "MON", "rateE18": "40000000000000000000000000000000" }
+  ],
+  "mockLiquidity": { "USDC": "1000000000000", "AUSD": "1000000000000", "MON": "100000000000000000000000000" },
+  "external": { "kuruFlowApi": null, "kuruTargets": [], "auroraMonadUsdcAssetId": null }
+}

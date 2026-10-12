@@ -1,0 +1,38 @@
+{
+  "network": "mainnet",
+  "explorer": "https://monadscan.com",
+  "swapAdapterKind": "kuru",
+  "crossChainInputToken": "USDC",
+  "amountCaps": { "USDC": "25000000", "AUSD": "25000000" },
+  "tokens": {
+    "USDC": {
+      "address": "0x754704Bc059F8C67012fEd69BC8A327a5aafb603", "symbol": "USDC", "displaySymbol": "USDC",
+      "decimals": 6, "eip712": { "name": "<A2: USDC name()>", "version": "<A2: USDC version()>" },
+      "supports3009": true, "isMock": false, "usdPrice": 1,
+      "roles": ["payout", "direct", "swapIn", "crosschainIn"]
+    },
+    "AUSD": {
+      "address": "0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a", "symbol": "AUSD", "displaySymbol": "AUSD",
+      "decimals": 6, "eip712": { "name": "<A2: eip712Domain name>", "version": "<A2: eip712Domain version>" },
+      "supports3009": true, "isMock": false, "usdPrice": 1,
+      "roles": ["payout", "direct", "swapIn"]
+    },
+    "WMON": {
+      "address": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A", "symbol": "WMON", "displaySymbol": "MON",
+      "decimals": 18, "eip712": null, "supports3009": false, "isMock": false, "usdPrice": 0.025,
+      "roles": ["swapIn"]
+    },
+    "WETH": {
+      "address": "0xEE8c0E9f1BFFb4Eb878d8f15f368A02a35481242", "symbol": "WETH", "displaySymbol": "ETH",
+      "decimals": 18, "eip712": null, "supports3009": false, "isMock": false, "usdPrice": 2500,
+      "roles": ["swapIn"]
+    }
+  },
+  "mockRates": [],
+  "mockLiquidity": {},
+  "external": {
+    "kuruFlowApi": "https://ws.kuru.io",
+    "kuruTargets": ["0xb3e6778480b2E488385E8205eA05E20060B813cb", "0x0d3a1BE29E9dEd63c7a5678b31e847D68F71FFa2"],
+    "auroraMonadUsdcAssetId": "nep245:v2_1.omni.hot.tg:143_2dmLwYWkCQKyTjeUPAsGJuiVLbFx"
+  }
+}

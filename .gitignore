@@ -26,3 +26,6 @@ backend/deployments/raw/31337.json
 
 # backend-b
 backend-b/node_modules/
+
+# local anvil runtime
+backend/contracts/anvil.log
