@@ -1,0 +1,20 @@
+ScanPay Guard — Kuru Flow mainnet fork evidence (A24)
+Generated: 2026-10-12T21:08:34Z   chain 143 (Monad mainnet), forked
+Adapter (deployed mainnet): 0xa5e36c82195b38105f0918fba71e4d3f3f51a1f5  kind=kuru
+Vault:                      0xa952e8ac92bce001b5ef4ddb1a4027a7b9d2868e
+
+== Quote 1: USDC -> AUSD, 1.000000 USDC, 50bps slippage ==
+  output 999900 (0.999900 AUSD)   minOut 994900
+  target 0xb3e6778480b2E488385E8205eA05E20060B813cb (allow-listed Kuru Flow entrypoint)
+
+== Fork execution through the deployed KuruFlowAdapter ==
+  kuru out 999484  (>= minOut 994900)
+  asserts: output forwarded to vault; approval to target reset to 0; adapter retains nothing
+  [PASS] test_fork_kuru_usdcToAusd  gas 1273703
+
+== Quote 2: WMON -> USDC, 50 WMON, 50bps slippage ==
+  output 1246602 (1.246602 USDC)   minOut 1240368
+  target 0xb3e6778480b2E488385E8205eA05E20060B813cb
+
+Both quotes returned an allow-listed target and zero native value, so KuruFlowAdapter
+accepted them. This is the real aggregator on mainnet, not a mock.
