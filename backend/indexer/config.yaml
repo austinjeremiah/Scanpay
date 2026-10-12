@@ -46,4 +46,13 @@ chains:
       - name: IntentVault
         address:
           - "0xa952e8ac92bce001b5ef4ddb1a4027a7b9d2868e"
+  - id: 143
+    start_block: 112857175
+    contracts:
+      - name: MerchantRegistry
+        address:
+          - "0x2725111582b68539df62d57f579eafcebfb870b0"
+      - name: IntentVault
+        address:
+          - "0xa952e8ac92bce001b5ef4ddb1a4027a7b9d2868e"
 address_format: lowercase
