@@ -34,3 +34,6 @@ backend/contracts/anvil.log
 backend/indexer/.envio/
 backend/indexer/envio-env.d.ts
 backend/indexer/generated/
+
+# foundry broadcast recovery locks
+*.recovery.lock
