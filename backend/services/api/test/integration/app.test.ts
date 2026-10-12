@@ -49,11 +49,15 @@ const { mockPublicClient, mockWalletClient, mockCtx } = vi.hoisted(() => {
     account: { address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' },
   };
 
-  // Build dep inline (can't import @scanpay/shared here — hoisted context)
+  // Build dep inline (can't import @scanpay/shared here — hoisted context).
+  // These MUST match deployments/31337.json. Anvil addresses are deterministic
+  // (same deployer, same nonce order), so hardcoding is stable — but the order
+  // shifted once backend-a's real Deploy.s.sol replaced the stubbed deployment,
+  // so re-check these after any change to what the deploy script deploys.
   const LOCAL_VAULT = '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512';
   const LOCAL_REGISTRY = '0x5fbdb2315678afecb367f032d93f642f64180aa3';
-  const LOCAL_ADAPTER = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
-  const LOCAL_USDC = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9';
+  const LOCAL_ADAPTER = '0x5fc8d32690cc91d4c39d9d3abcbd16989f875707';
+  const LOCAL_USDC = '0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0';
 
   const mockCtx = {
     chainId: 31337,
@@ -74,8 +78,8 @@ const { mockPublicClient, mockWalletClient, mockCtx } = vi.hoisted(() => {
       },
       tokens: {
         USDC: { address: LOCAL_USDC, decimals: 6, symbol: 'USDC', roles: ['direct', 'payout', 'swapIn'], supports3009: true, isMock: true, usdPrice: 1, eip712: { name: 'ScanPay Test USDC', version: '1' } },
-        AUSD: { address: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9', decimals: 6, symbol: 'AUSD', roles: ['payout', 'swapIn'], supports3009: false, isMock: true, usdPrice: 1 },
-        MON: { address: '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707', decimals: 18, symbol: 'MON', roles: ['swapIn'], supports3009: false, isMock: true, usdPrice: 0.025 },
+        AUSD: { address: '0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9', decimals: 6, symbol: 'AUSD', roles: ['payout', 'swapIn'], supports3009: false, isMock: true, usdPrice: 1 },
+        MON: { address: '0xdc64a140aa3e981100a9beca4e685f962f0cf6c9', decimals: 18, symbol: 'MON', roles: ['swapIn'], supports3009: false, isMock: true, usdPrice: 0.025 },
       },
       config: { feeBps: 30, refundDelaySec: 3600, crossChainInputToken: 'USDC' },
       features: { direct: true, swap: true, crosschain: 'simulated', faucet: true, attackLab: true, indexer: false },
