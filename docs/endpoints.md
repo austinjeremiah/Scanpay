@@ -23,9 +23,16 @@ All 7 contracts verified (Sourcify / MonadVision).
 | Env | URL |
 |---|---|
 | local (`envio dev`) | `http://localhost:8080/v1/graphql` (admin secret `testing`) |
-| **hosted (Envio Cloud)** | _pending — paste the URL here once the dashboard shows "Synced"_ |
+| **hosted (Envio Cloud)** | `https://indexer.dev.hyperindex.xyz/247ade4/v1/graphql` (public, no auth) |
 
 Deploy branch: **`envio`** (pushed). Random pushes to `main` do not redeploy.
+
+Verified live: returns merchant `0xf749e131…` ACTIVE, paymentCount 1, netReceived 1226310, feesPaid 3690,
+and `ProtocolStat` id `10143` settled 1 / volume 1230000 / fees 3690.
+
+Data source on Cloud is **RPC**, not HyperSync: HyperSync needs `ENVIO_API_TOKEN`, and environment variables
+are a paid feature on the free Development tier. Local `envio dev` does use HyperSync (token in `.env`).
+Indexed results are identical either way.
 
 **Envio Cloud dashboard settings** — note the root directory differs from the build doc:
 
