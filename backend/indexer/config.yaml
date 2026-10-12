@@ -37,13 +37,14 @@ contracts:
           sourceTxHash, bytes32 providerRef, address indexed attester)
       - event: SwapAdapterUpdated(address adapter)
 chains:
-  - id: 10143
-    start_block: 70485353
+  - id: 31337
+    start_block: 1
     contracts:
       - name: MerchantRegistry
         address:
-          - "0x2725111582b68539df62d57f579eafcebfb870b0"
+          - "0x5fbdb2315678afecb367f032d93f642f64180aa3"
       - name: IntentVault
         address:
-          - "0xa952e8ac92bce001b5ef4ddb1a4027a7b9d2868e"
+          - "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
+    rpc: http://127.0.0.1:8545
 address_format: lowercase

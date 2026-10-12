@@ -40,9 +40,11 @@ const chainEntries = chains.map((id) => {
     ],
   };
   if (id === 31337) {
-    // local anvil has no HyperSync: index over RPC (Docker reaches the host via host.docker.internal)
+    // Local anvil has no HyperSync: index over RPC. In envio 3.x the indexer runs as a HOST
+    // process (only postgres+hasura are containerised), so this must be a host-resolvable URL —
+    // host.docker.internal does not resolve on the host and yields knownHeight: 0.
     // envio 3.x renamed `rpc_config` -> `rpc` (and it takes the url directly, or a {url,...} object).
-    entry.rpc = process.env.LOCAL_RPC_FOR_ENVIO ?? 'http://host.docker.internal:8545';
+    entry.rpc = process.env.LOCAL_RPC_FOR_ENVIO ?? 'http://127.0.0.1:8545';
   }
   return entry;
 });
@@ -51,8 +53,8 @@ const config = {
   name: 'scanpay-guard',
   description: 'ScanPay Guard — merchants, payment intents, settlements on Monad',
   contracts: [
-    { name: 'MerchantRegistry', events: eventSigs(merchantRegistryAbi as readonly AbiItem[], REGISTRY_EVENTS) },
-    { name: 'IntentVault', events: eventSigs(intentVaultAbi as readonly AbiItem[], VAULT_EVENTS) },
+    { name: 'MerchantRegistry', events: eventSigs(merchantRegistryAbi as unknown as readonly AbiItem[], REGISTRY_EVENTS) },
+    { name: 'IntentVault', events: eventSigs(intentVaultAbi as unknown as readonly AbiItem[], VAULT_EVENTS) },
   ],
   chains: chainEntries,
   address_format: 'lowercase',
