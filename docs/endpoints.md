@@ -47,12 +47,26 @@ Indexed results are identical either way.
 `pnpm deployments:build <chainId>` → `INDEX_CHAINS=<chainId> pnpm --filter @scanpay/indexer gen:config`
 → commit → `git push origin main:envio`.
 
-## Monad mainnet (143) — not deployed yet (A23)
+## Monad mainnet (143) — LIVE
 
 | Thing | Value |
 |---|---|
 | RPC | `https://rpc.monad.xyz` |
 | Explorer | https://monadscan.com |
-| USDC | `0x754704Bc059F8C67012fEd69BC8A327a5aafb603` (eip712 `USDC` / `2`) |
-| AUSD | `0x00000000eFE302BEAA2b3e6e1b18d08D69a9012a` (eip712 **`Agora Dollar`** / `1`) |
-| amountCap | 1 USDC / 1 AUSD (hard blast-radius cap) |
+| MerchantRegistry | `0x2725111582b68539df62d57f579eafcebfb870b0` |
+| IntentVault | `0xa952e8ac92bce001b5ef4ddb1a4027a7b9d2868e` |
+| DepositForwarderImpl | `0xacbed31d720e3792078be35ac6772a43120be585` |
+| **SwapAdapter (kuru)** | `0xa5e36c82195b38105f0918fba71e4d3f3f51a1f5` |
+| USDC (real, Circle) | `0x754704bc059f8c67012fed69bc8a327a5aafb603` — eip712 `USDC` / `2` |
+| AUSD (real, Agora) | `0x00000000efe302beaa2b3e6e1b18d08d69a9012a` — eip712 **`Agora Dollar`** / `1` |
+| WMON / WETH | `0x3bd359c1119da7da1d913d1c4d2b7c461115433a` / `0xee8c0e9f1bffb4eb878d8f15f368a02a35481242` |
+| startBlock | 112857175 |
+| feeBps / refundDelay | 30 / 3600 |
+| **amountCap** | **1 USDC / 1 AUSD** — hard on-chain blast-radius cap |
+
+No mocks on mainnet: every token is the real deployed asset (`isMock: false`) and the swap
+adapter is the Kuru one, validated against the live aggregator on a fork (see
+`docs/evidence/kuru-fork.txt`).
+
+Contract addresses match testnet because the deployer's nonce sequence is identical on both
+chains — same deployer, same order, so CREATE yields the same addresses. Expected, not a bug.
