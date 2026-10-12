@@ -1,0 +1,115 @@
+# ids: always `${chainId}_${lowercaseHex}` (and `${chainId}_${txHash}_${logIndex}` for event rows)
+
+type Merchant {
+  id: ID!
+  chainId: Int! @index
+  merchantId: String! @index
+  owner: String! @index
+  salt: String!
+  payoutWallet: String! @index
+  invoiceSigner: String!
+  payoutToken: String!
+  metadataHash: String!
+  status: Int!
+  statusName: String!
+  keyVersion: Int!
+  registeredAt: BigInt!
+  registeredTx: String!
+  updatedAt: BigInt!
+  paymentCount: Int!
+  settledVolume: BigInt!
+  netReceived: BigInt!
+  feesPaid: BigInt!
+  intents: [Intent!]! @derivedFrom(field: "merchant")
+  keyEvents: [MerchantKeyEvent!]! @derivedFrom(field: "merchant")
+}
+
+type MerchantKeyEvent {
+  id: ID!
+  chainId: Int! @index
+  merchant: Merchant!
+  kind: String!            # REGISTERED | STATUS | SIGNER_ROTATED | PAYOUT_UPDATED
+  keyVersion: Int!
+  invoiceSigner: String
+  payoutWallet: String
+  payoutToken: String
+  fromStatus: Int
+  toStatus: Int
+  by: String
+  timestamp: BigInt!
+  txHash: String!
+  blockNumber: Int!
+}
+
+type Intent {
+  id: ID!
+  chainId: Int! @index
+  intentId: String! @index
+  merchant: Merchant!
+  merchantId: String! @index
+  payer: String! @index
+  invoiceId: String! @index
+  route: Int!
+  routeName: String!
+  status: String! @index   # COMMITTED | SETTLED | REFUNDED
+  inputToken: String!
+  payoutToken: String!
+  amountOut: BigInt!
+  forwarder: String
+  payoutWallet: String!
+  expiresAt: BigInt!
+  quoteHash: String!
+  committedAt: BigInt! @index
+  committedTx: String!
+  committedBlock: Int!
+  settledAt: BigInt
+  settledTx: String
+  settledBlock: Int
+  fee: BigInt
+  netToMerchant: BigInt
+  inputAmount: BigInt
+  excessRefunded: BigInt
+  refundedAt: BigInt
+  refundTx: String
+  refundTo: String
+  refundAmount: BigInt
+  rescuedAmount: BigInt!
+  sourceChainId: BigInt
+  sourceTxHash: String
+  providerRef: String
+  attester: String
+  attestedTx: String
+}
+
+type MerchantDailyStat {
+  id: ID!                  # `${chainId}_${merchantId}_${dayStartUnix}`
+  chainId: Int! @index
+  merchantId: String! @index
+  dayStart: BigInt! @index
+  payments: Int!
+  volume: BigInt!
+  net: BigInt!
+}
+
+type ProtocolStat {
+  id: ID!                  # `${chainId}`
+  chainId: Int!
+  merchants: Int!
+  activeMerchants: Int!
+  intents: Int!
+  settled: Int!
+  refunded: Int!
+  volume: BigInt!          # sum of amountOut (6-dec stables)
+  fees: BigInt!
+  crossChainSettled: Int!
+}
+
+type ConfigEvent {
+  id: ID!
+  chainId: Int! @index
+  contract: String!
+  kind: String!
+  data: String!            # JSON
+  timestamp: BigInt!
+  txHash: String!
+}
