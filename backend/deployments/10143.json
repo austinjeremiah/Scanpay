@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "chainId": 10143,
+  "network": "testnet",
+  "generatedAt": "2026-10-12T19:51:46.852Z",
+  "startBlock": 70485353,
+  "explorer": "https://testnet.monadscan.com",
+  "contracts": {
+    "MerchantRegistry": {
+      "address": "0x2725111582b68539df62d57f579eafcebfb870b0",
+      "deployBlock": 70485353,
+      "deployTx": "0x1d0cf7af5d8ac9d5e71a10bad6cad1c2f0c7fcef4631e23e3dcd494a978af114"
+    },
+    "IntentVault": {
+      "address": "0xa952e8ac92bce001b5ef4ddb1a4027a7b9d2868e",
+      "deployBlock": 70485356,
+      "deployTx": "0xd9b1322effa93ae514da3e42089d34e7fa51f71f6f0707ba7e556638434b3d60"
+    },
+    "DepositForwarderImpl": {
+      "address": "0xacbed31d720e3792078be35ac6772a43120be585"
+    },
+    "SwapAdapter": {
+      "address": "0x36e1c5c4c98365e83de24f6bc15671561450064c",
+      "kind": "mock",
+      "deployBlock": 70485368,
+      "deployTx": "0x5174777b2ab53439828639c6507dc270baacbc94086ec562f79694ddf29e8f54"
+    }
+  },
+  "roles": {
+    "admin": "0xcd8f91dc7929e973ddc071838904434297ab4673",
+    "operator": "0xcd8f91dc7929e973ddc071838904434297ab4673",
+    "feeRecipient": "0xcd8f91dc7929e973ddc071838904434297ab4673"
+  },
+  "config": {
+    "feeBps": 30,
+    "refundDelaySec": 600,
+    "crossChainInputToken": "USDC",
+    "amountCaps": {
+      "USDC": "0",
+      "AUSD": "0"
+    }
+  },
+  "tokens": {
+    "USDC": {
+      "address": "0xa5e36c82195b38105f0918fba71e4d3f3f51a1f5",
+      "symbol": "tUSDC",
+      "displaySymbol": "USDC",
+      "decimals": 6,
+      "eip712": {
+        "name": "ScanPay Test USDC",
+        "version": "1"
+      },
+      "supports3009": true,
+      "isMock": true,
+      "usdPrice": 1,
+      "roles": [
+        "payout",
+        "direct",
+        "swapIn",
+        "crosschainIn"
+      ]
+    },
+    "AUSD": {
+      "address": "0x7cdf8e230f6fdf66ae50019ba9fbe3f4dddb3199",
+      "symbol": "tAUSD",
+      "displaySymbol": "AUSD",
+      "decimals": 6,
+      "eip712": {
+        "name": "ScanPay Test AUSD",
+        "version": "1"
+      },
+      "supports3009": true,
+      "isMock": true,
+      "usdPrice": 1,
+      "roles": [
+        "payout",
+        "direct",
+        "swapIn"
+      ]
+    },
+    "MON": {
+      "address": "0xf9545590ac904f767fae01565c7076e217279616",
+      "symbol": "tMON",
+      "displaySymbol": "MON",
+      "decimals": 18,
+      "eip712": null,
+      "supports3009": false,
+      "isMock": true,
+      "usdPrice": 0.025,
+      "roles": [
+        "swapIn"
+      ]
+    }
+  },
+  "external": {
+    "kuruFlowApi": null,
+    "kuruTargets": [],
+    "auroraMonadUsdcAssetId": null
+  }
+}
