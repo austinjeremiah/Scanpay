@@ -37,3 +37,6 @@ backend/indexer/generated/
 
 # foundry broadcast recovery locks
 *.recovery.lock
+
+# generator writes the indexer config; never into contracts/
+backend/contracts/config.yaml
