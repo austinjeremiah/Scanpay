@@ -1,7 +1,7 @@
 import type { Hex } from 'viem';
 import {
   buildInvoiceTypedData, buildIntentTypedData, intentVaultAbi, merchantRegistryAbi,
-  intentDigest, quoteHash as computeQuoteHash, INTENT_STATUS, fromWireIntent, fromWireInvoice,
+  intentDigest, quoteHash as computeQuoteHash, INTENT_STATUS, fromWireIntent, fromWireInvoice, computeIntentId,
 } from '@scanpay/shared';
 import { chainCtx } from '../chains.js';
 import { Intent, type IntentDoc } from '../db/models.js';
@@ -47,7 +47,7 @@ export async function verifyIntent(chainId: number, intentId: Hex): Promise<Veri
     try {
       const ok = await ctx.public.verifyTypedData({
         address: merchantOnchain.invoiceSigner, signature: d.merchantSig as Hex,
-        ...buildInvoiceTypedData(chainId, ctx.registry, invoice),
+        ...buildInvoiceTypedData(chainId, ctx.vault, invoice),
       } as any);
       merchantChecks.push(check('merchant_sig', ok, ok ? 'merchant signature valid' : 'merchant signature INVALID'));
     } catch (e) {
@@ -98,7 +98,7 @@ export async function verifyIntent(chainId: number, intentId: Hex): Promise<Veri
 
   // Intent digest consistency
   try {
-    const computed = intentDigest(chainId, ctx.vault, intent);
+    const computed = computeIntentId(intent);
     const stored = intentId;
     const match = computed.toLowerCase() === stored.toLowerCase();
     intentChecks.push(check('intent_digest', match, match ? 'intentId = keccak256(ABI-encoded intent)' : `computed=${computed} stored=${stored}`));
