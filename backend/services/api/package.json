@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --env-file=../../.env src/index.ts",
+    "dev": "tsx watch --env-file=../../../.env src/index.ts",
     "start": "tsx src/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run test/unit",
@@ -12,8 +12,8 @@
     "test:integration": "vitest run test/integration --no-file-parallelism",
     "test:all": "vitest run --no-file-parallelism",
     "test:e2e": "vitest run test/e2e --no-file-parallelism",
-    "smoke:mainnet-readonly": "tsx --env-file=../../.env scripts/smoke-mainnet-readonly.ts",
-    "verify-receipt": "tsx --env-file=../../.env scripts/verify-receipt.ts"
+    "smoke:mainnet-readonly": "tsx --env-file=../../../.env scripts/smoke-mainnet-readonly.ts",
+    "verify-receipt": "tsx --env-file=../../../.env scripts/verify-receipt.ts"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.1",

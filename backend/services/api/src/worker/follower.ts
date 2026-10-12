@@ -5,7 +5,10 @@ import { applyLog } from '../services/settlement.js';
 import { log } from '../log.js';
 import { sleep } from '../util/time.js';
 
-const BATCH = 500n;
+// Monad's public RPCs reject eth_getLogs spanning more than 100 blocks
+// ("eth_getLogs is limited to a 100 range"), and the range here is inclusive,
+// so from..from+99 is exactly 100 blocks.
+const BATCH = 99n;
 const POLL_MS = 3_000;
 
 export async function runFollower(ctx: ChainCtx, signal: AbortSignal) {
