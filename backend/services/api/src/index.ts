@@ -19,7 +19,7 @@ async function main() {
   log.info({ chains: env.ENABLED_CHAINS }, 'chains initialized');
 
   setPublicAppUrl(env.PUBLIC_APP_URL);
-  if (env.ENVIO_GRAPHQL_URL) setEnvioUrl(env.ENVIO_GRAPHQL_URL);
+  if (env.ENVIO_GRAPHQL_URL) setEnvioUrl(env.ENVIO_GRAPHQL_URL, env.ENVIO_ADMIN_SECRET);
   configureAurora(env.AURORA_API_KEY, env.ONECLICK_JWT);
 
   const app = await buildApp(env);
