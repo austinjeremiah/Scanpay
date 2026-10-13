@@ -2,14 +2,25 @@ import type { Hex } from 'viem';
 import { log } from '../log.js';
 
 let url: string | undefined;
-export const setEnvioUrl = (u?: string) => (url = u);
+let adminSecret: string | undefined;
+
+export function setEnvioUrl(u?: string, secret?: string) {
+  url = u;
+  adminSecret = secret;
+}
 export const envioEnabled = () => Boolean(url);
+
+function gqlHeaders(): Record<string, string> {
+  const h: Record<string, string> = { 'content-type': 'application/json' };
+  if (adminSecret) h['x-hasura-admin-secret'] = adminSecret;
+  return h;
+}
 
 export async function gql<T>(query: string, variables: Record<string, unknown>): Promise<T> {
   if (!url) throw new Error('envio disabled');
   const r = await fetch(url, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: gqlHeaders(),
     body: JSON.stringify({ query, variables }),
     signal: AbortSignal.timeout(6000),
   });
