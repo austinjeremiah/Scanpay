@@ -41,9 +41,12 @@ export async function routesFor(ctx: ChainCtx, invoice: InvoiceMessage) {
   const ccKey = ctx.deployment.config.crossChainInputToken;
   const ccSameToken = ccKey !== null && ctx.token(ccKey)?.address.toLowerCase() === invoice.payoutToken.toLowerCase();
   const ccMode = ctx.features.crosschain;
-  const ccAvailable = ccMode !== 'off' && (ccSameToken || ctx.adapterKind !== 'none');
+  // Aurora bridge minimum is ~0.15 USDC; block cross-chain for amounts too small
+  const CC_MIN = 200000n; // 0.20 USDC (6 decimals) — safe buffer above Aurora's ~0.15 minimum
+  const ccTooSmall = ccMode === 'live' && invoice.amount < CC_MIN;
+  const ccAvailable = ccMode !== 'off' && (ccSameToken || ctx.adapterKind !== 'none') && !ccTooSmall;
   let assets: OriginAsset[] = [];
-  let ccReason: string | null = ccAvailable ? null : ccMode === 'off' ? 'Cross-chain provider not configured' : 'No swap path to payout token';
+  let ccReason: string | null = ccAvailable ? null : ccTooSmall ? 'Minimum for cross-chain is $0.20 USDC' : ccMode === 'off' ? 'Cross-chain provider not configured' : 'No swap path to payout token';
   if (ccAvailable) {
     try {
       assets = ccMode === 'live' ? await originAssets() : SIMULATED_ORIGINS;

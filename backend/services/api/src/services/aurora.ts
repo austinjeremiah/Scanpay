@@ -38,6 +38,20 @@ async function call<T>(u: string, init?: RequestInit): Promise<T> {
   if (!r.ok) {
     log.warn({ status: r.status, body: text.slice(0, 500) }, 'intents api error');
     if (r.status === 429) throw new ApiError('RATE_LIMITED', 'Cross-chain provider rate limit');
+    if (r.status === 400) {
+      try {
+        const j = JSON.parse(text) as { message?: string };
+        const m = j.message ?? '';
+        const low = m.match(/too low.*?(\d+)/i);
+        if (low) {
+          const minUsdc = (Number(low[1]) / 1e6).toFixed(2);
+          throw new ApiError('QUOTE_FAILED', `Amount too small for cross-chain — minimum is $${minUsdc} USDC`);
+        }
+        if (m) throw new ApiError('PROVIDER_UNAVAILABLE', m);
+      } catch (e) {
+        if (e instanceof ApiError) throw e;
+      }
+    }
     throw new ApiError('PROVIDER_UNAVAILABLE', `intents api ${r.status}: ${text.slice(0, 200)}`);
   }
   return JSON.parse(text) as T;
