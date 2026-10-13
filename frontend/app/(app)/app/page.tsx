@@ -128,15 +128,14 @@ export default function HomePage() {
       )}
 
       {/* 6 — why it's safe */}
-      <Link href="/attack-lab" className="card">
+      <div className="card">
         <div className="label" style={{ marginBottom: 8 }}>Why it&apos;s safe</div>
         <div className="col gap-s">
           <div className="row"><BadgeCheck size={18} /> Every shop is verified</div>
           <div className="row"><Lock size={18} /> The amount is locked when you confirm</div>
           <div className="row"><CheckCircle2 size={18} /> You get proof the money arrived</div>
         </div>
-        <div className="small" style={{ marginTop: 10, fontWeight: 600 }}><ShieldCheck size={14} style={{ verticalAlign: -2 }} /> See attacks we block →</div>
-      </Link>
+      </div>
 
       <Link href="/activity" className="row small muted"><Receipt size={16} /> Payment history</Link>
       <InstallBanner />
