@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: scanpay-api
+    runtime: node
+    region: singapore
+    plan: free
+    rootDir: backend/services/api
+    buildCommand: cd ../../.. && pnpm install --frozen-lockfile
+    startCommand: pnpm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: ENABLED_CHAINS
+        value: 10143,143
+      - key: MONAD_TESTNET_RPC
+        value: https://testnet-rpc.monad.xyz
+      - key: MONAD_MAINNET_RPC
+        value: https://rpc.monad.xyz
+      - key: PUBLIC_APP_URL
+        value: https://scanpay-gamma.vercel.app
+      - key: CORS_ORIGINS
+        value: https://scanpay-gamma.vercel.app
+      - key: ATTACK_LAB_ENABLED
+        value: false
+      - key: LOG_LEVEL
+        value: info
+      - key: MONGODB_URI
+        sync: false
+      - key: ADMIN_TOKEN
+        sync: false
+      - key: OPERATOR_PRIVATE_KEY_TESTNET
+        sync: false
+      - key: OPERATOR_PRIVATE_KEY_MAINNET
+        sync: false
+      - key: AURORA_API_KEY
+        sync: false
+      - key: ONECLICK_JWT
+        sync: false
+      - key: ENVIO_GRAPHQL_URL
+        sync: false
+      - key: ENVIO_ADMIN_SECRET
+        sync: false
