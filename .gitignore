@@ -40,3 +40,7 @@ backend/indexer/generated/
 
 # generator writes the indexer config; never into contracts/
 backend/contracts/config.yaml
+
+.agents/skills
+.claude/skills
+brag-output/
