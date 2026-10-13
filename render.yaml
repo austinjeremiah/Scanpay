@@ -19,6 +19,8 @@ services:
         value: https://testnet-rpc.monad.xyz
       - key: MONAD_MAINNET_RPC
         value: https://rpc.monad.xyz
+      - key: BASE_RPC
+        value: https://mainnet.base.org
       - key: PUBLIC_APP_URL
         value: https://scanpay-gamma.vercel.app
       - key: CORS_ORIGINS
@@ -38,6 +40,8 @@ services:
       - key: AURORA_API_KEY
         sync: false
       - key: ONECLICK_JWT
+        sync: false
+      - key: ORIGIN_RELAYER_PRIVATE_KEY
         sync: false
       - key: ENVIO_GRAPHQL_URL
         sync: false
