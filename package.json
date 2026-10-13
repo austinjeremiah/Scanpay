@@ -16,6 +16,8 @@
     "shared:test": "pnpm --filter @scanpay/shared test",
     "indexer:config": "pnpm --filter @scanpay/contracts gen:indexer-config",
     "api:dev": "pnpm --filter @scanpay/api dev",
-    "api:test": "pnpm --filter @scanpay/api test:all"
+    "api:test": "pnpm --filter @scanpay/api test:all",
+    "frontend:dev": "pnpm --filter avande-next dev",
+    "frontend:build": "pnpm --filter avande-next build"
   }
 }
