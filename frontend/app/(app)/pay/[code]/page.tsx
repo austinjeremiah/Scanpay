@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Hex } from 'viem';
 import {
-  AlertTriangle, ArrowLeftRight, CheckCircle2, Clock, Globe, Info, Loader2, Lock, ScanFace, SearchX, ShieldAlert,
+  AlertTriangle, ArrowLeftRight, CheckCircle2, Clock, Globe, Info, Loader2, Lock, RefreshCw, ScanFace, SearchX, ShieldAlert,
   ShieldCheck, StickyNote, Zap, FlaskConical, ReceiptText,
 } from 'lucide-react';
 import { AppShell } from '@/components/app/shell';
@@ -428,12 +428,14 @@ export default function PayPage() {
             const t = dep?.tokens[key];
             const q = quotes[`SWAP:${key}`];
             const enough = typeof q === 'object' ? balanceOf(key) >= BigInt(q.maxAmountIn) : true;
+            const failed = q === 'error';
+            const retry = () => profile && loadQuote(`SWAP:${key}`, { shortCode: code, route: 'SWAP', inputTokenKey: key, payer: profile.addresses.pay as Hex });
             return (
-              <button key={key} className="opt" disabled={!enough || q === 'error'} onClick={() => pickToken(key)}>
+              <button key={key} className="opt" disabled={!failed && (!enough)} onClick={() => failed ? retry() : pickToken(key)}>
                 <TokenChip symbol={t?.displaySymbol ?? key} />
                 <span className="grow small muted">You have {formatToken(balanceOf(key), t?.decimals ?? 18)}</span>
                 <span className="small">
-                  {q === 'loading' || q === undefined ? <Spinner size={14} /> : q === 'error' ? 'Unavailable' : enough ? `≈ ${formatToken(q.estimatedIn, t?.decimals ?? 18)}` : 'Not enough'}
+                  {q === 'loading' || q === undefined ? <Spinner size={14} /> : failed ? <><RefreshCw size={14} /> Retry</> : enough ? `≈ ${formatToken(q.estimatedIn, t?.decimals ?? 18)}` : 'Not enough'}
                 </span>
               </button>
             );

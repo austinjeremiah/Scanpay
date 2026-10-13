@@ -24,7 +24,7 @@ async function getKuruToken(ctx: ChainCtx): Promise<string> {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ user_address: ctx.adapter }),
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(20000),
     }),
   );
   if (!r.ok) throw new ApiError('QUOTE_FAILED', `kuru token ${r.status}`);
@@ -46,7 +46,7 @@ export async function kuruQuote(ctx: ChainCtx, tokenIn: Address, tokenOut: Addre
         userAddress: ctx.adapter, tokenIn: getAddress(tokenIn), tokenOut: getAddress(tokenOut),
         amount: amountIn.toString(), slippageTolerance: slippageBps,
       }),
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(20000),
     }),
   );
   if (!r.ok) throw new ApiError('QUOTE_FAILED', `kuru quote ${r.status}`);
