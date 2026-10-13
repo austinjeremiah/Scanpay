@@ -32,7 +32,7 @@ function deriveFeatures(dep: DeploymentConfig, adapterKind: ChainCtx['adapterKin
     crosschain: dep.config.crossChainInputToken == null ? 'off' : dep.network === 'mainnet' ? 'live' : 'simulated',
     faucet: tokens.some((t) => t?.isMock),
     attackLab: process.env.ATTACK_LAB_ENABLED === 'true',
-    indexer: Boolean(process.env.ENVIO_GRAPHQL_URL),
+    indexer: Boolean(process.env.ENVIO_GRAPHQL_URL) && dep.network !== 'mainnet',
   };
 }
 
