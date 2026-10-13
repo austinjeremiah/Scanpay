@@ -12,21 +12,28 @@ import { useSession } from '@/lib/session';
 import { readReceipts } from '@/lib/vault';
 import type { ReceiptEntry } from '@/lib/store';
 import { useMounted } from '@/lib/hooks';
+import { useMerchant } from '@/lib/useMerchant';
 
 type Status = 'PAID' | 'PENDING' | 'REFUNDED' | 'FAILED' | undefined;
 
 const statusOf = (l: string): Status =>
   l === 'SETTLED' ? 'PAID' : l === 'REFUNDED' ? 'REFUNDED' : l === 'FAILED' ? 'FAILED' : 'PENDING';
 
-/** P7 — the customer's private history, encrypted on this device with the vault key. */
+/** P7 — the customer's private history, encrypted on this device with the vault key.
+ *  Redirects to merchant history if the user has a merchant account on the current chain. */
 export default function ActivityPage() {
   const session = useSession();
   const { report } = useApp();
   const router = useRouter();
   const mounted = useMounted();
+  const { local, resolved } = useMerchant();
   const [rows, setRows] = useState<ReceiptEntry[] | null>(null);
   const [status, setStatus] = useState<Record<string, Status>>({});
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (resolved && local) router.replace('/merchant/history');
+  }, [resolved, local, router]);
 
   const unlock = async () => {
     setBusy(true);
