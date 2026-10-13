@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import QRCode from 'qrcode';
 import { toast } from 'sonner';
 import {
@@ -45,7 +46,7 @@ export function Sheet({ open, onClose, title, icon: Icon, children }: { open: bo
     return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose]);
   if (!open) return null;
-  return (
+  const content = (
     <div className="scrim" onClick={onClose}>
       <div className="sheet" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
         <div className="grab" />
@@ -59,6 +60,7 @@ export function Sheet({ open, onClose, title, icon: Icon, children }: { open: bo
       </div>
     </div>
   );
+  return typeof document !== 'undefined' ? createPortal(content, document.body) : content;
 }
 
 export function StateBlock({

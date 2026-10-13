@@ -59,12 +59,10 @@ export async function registerMerchant(ctx: ChainCtx, req: z.infer<typeof zRegis
 
   let approveTxHash: Hex | null = null;
   let status: (typeof MERCHANT_STATUS_NAME)[number] = 'PENDING';
-  if (!ctx.isMainnet) {
-    const r = await setStatus(ctx, merchantId, MERCHANT_STATUS.ACTIVE, 'auto-approve (testnet policy)');
-    approveTxHash = r.txHash;
-    status = 'ACTIVE';
-  }
-  return { merchantId, txHash: hash, status, autoApproved: !ctx.isMainnet, approveTxHash };
+  const r = await setStatus(ctx, merchantId, MERCHANT_STATUS.ACTIVE, 'auto-approve');
+  approveTxHash = r.txHash;
+  status = 'ACTIVE';
+  return { merchantId, txHash: hash, status, autoApproved: true, approveTxHash };
 }
 
 export async function setStatus(ctx: ChainCtx, merchantId: Hex, newStatus: number, reason: string) {

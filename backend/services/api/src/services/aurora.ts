@@ -79,7 +79,8 @@ export function evmChainIdOfAsset(assetId: string | null | undefined): number {
 }
 
 export interface AuroraQuote {
-  depositAddress: string | null; amountIn: bigint | null; maxAmountIn: bigint | null; deadline: number; correlationId: string | null; raw: unknown;
+  depositAddress: string | null; amountIn: bigint | null; maxAmountIn: bigint | null;
+  deadline: number; timeWhenInactive: number | null; correlationId: string | null; raw: unknown;
 }
 
 export async function auroraQuote(p: {
@@ -94,10 +95,12 @@ export async function auroraQuote(p: {
   };
   const r = await call<any>(url('quote'), { method: 'POST', body: JSON.stringify(body) });
   const q = r.quote ?? {};
+  const deadlineSec = q.deadline ? Math.floor(Date.parse(q.deadline) / 1000) : Math.floor(Date.parse(deadlineIso) / 1000);
+  const timeWhenInactive = q.timeWhenInactive ? Math.floor(Date.parse(q.timeWhenInactive) / 1000) : null;
   return {
     depositAddress: q.depositAddress ?? null, amountIn: q.amountIn ? BigInt(q.amountIn) : null,
     maxAmountIn: q.maxAmountIn ? BigInt(q.maxAmountIn) : null,
-    deadline: q.deadline ? Math.floor(Date.parse(q.deadline) / 1000) : Math.floor(Date.parse(deadlineIso) / 1000),
+    deadline: deadlineSec, timeWhenInactive,
     correlationId: r.correlationId ?? null, raw: r,
   };
 }

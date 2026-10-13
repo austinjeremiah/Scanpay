@@ -24,6 +24,7 @@ const EnvSchema = z.object({
   AURORA_API_KEY: optStr,
   ONECLICK_JWT: optStr,
   ENVIO_GRAPHQL_URL: optStr,
+  ENVIO_ADMIN_SECRET: optStr,
   ATTACK_LAB_ENABLED: z
     .string()
     .default('true')

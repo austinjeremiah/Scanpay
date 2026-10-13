@@ -18,6 +18,16 @@ const nextConfig: NextConfig = {
       zod: './node_modules/zod',
     },
   },
+  // Mirror the turbopack resolveAlias for webpack (next build / Railway).
+  webpack(config) {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@scanpay/shared': path.join(root, 'backend/packages/shared/src/index.ts'),
+      viem: path.join(__dirname, 'node_modules/viem'),
+      zod: path.join(__dirname, 'node_modules/zod'),
+    };
+    return config;
+  },
   async headers() {
     return [
       {
