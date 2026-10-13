@@ -19,6 +19,10 @@ export async function tokenBalance(chainId: number, token: Hex, owner: Hex): Pro
   return publicClient(chainId).readContract({ address: token, abi: erc20Abi, functionName: 'balanceOf', args: [owner] });
 }
 
+export async function nativeBalance(chainId: number, owner: Hex): Promise<bigint> {
+  return publicClient(chainId).getBalance({ address: owner });
+}
+
 export async function ownerNonce(chainId: number, registry: Hex, owner: Hex): Promise<bigint> {
   return publicClient(chainId).readContract({
     address: registry,

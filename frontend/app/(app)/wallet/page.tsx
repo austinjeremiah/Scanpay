@@ -1,12 +1,13 @@
 'use client';
 import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, Droplets, KeyRound, Plus, User, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 import { AppShell } from '@/components/app/shell';
 import { useApp } from '@/components/app/providers';
 import { CopyButton, QrView, Sheet, Skeleton, Spinner, StateBlock, TokenChip } from '@/components/app/ui';
 import { api } from '@/lib/api';
+import { nativeBalance } from '@/lib/chain';
 import { useConfig } from '@/lib/config';
 import { formatFiat, formatToken, shortHex } from '@/lib/format';
 import { useFx, useMounted } from '@/lib/hooks';
@@ -23,9 +24,16 @@ export default function WalletPage() {
   const fx = useFx();
   const profile = mounted ? session.profile : null;
   const bal = useBalances(cfg.chain, profile?.addresses.pay);
+  const monBal = useQuery({
+    queryKey: ['native-balance', cfg.chainId, profile?.addresses.pay],
+    enabled: !!profile,
+    refetchInterval: 15_000,
+    queryFn: () => nativeBalance(cfg.chainId, profile!.addresses.pay as `0x${string}`),
+  });
   const [add, setAdd] = useState(false);
   const [busy, setBusy] = useState(false);
   const testMode = cfg.chainId !== 143;
+  const nativeMon = monBal.data ?? 0n;
   const total = totalUsd(bal.data);
 
   const faucet = async () => {
@@ -69,22 +77,33 @@ export default function WalletPage() {
             {bal.isLoading ? (
               <div className="col" style={{ padding: 16 }}><Skeleton h={28} /><Skeleton h={28} /></div>
             ) : (
-              (bal.data ?? []).map((r) => (
-                <div key={r.key} className="kv" style={{ padding: '14px 16px' }}>
-                  <span className="row">
-                    <TokenChip symbol={r.token.displaySymbol} />
-                    <span className="small muted">{r.token.isMock ? 'Test token' : r.token.symbol}</span>
-                  </span>
-                  <span className="v">
-                    {formatToken(r.balance, r.token.decimals)}
-                    {fx.rate !== null && r.token.usdPrice > 0 && (
-                      <div className="small muted">
-                        {formatFiat((Number(r.balance) / 10 ** r.token.decimals) * r.token.usdPrice, fx.rate, fx.currency)}
-                      </div>
-                    )}
-                  </span>
-                </div>
-              ))
+              <>
+                {nativeMon > 0n && (
+                  <div className="kv" style={{ padding: '14px 16px' }}>
+                    <span className="row">
+                      <TokenChip symbol="MON" />
+                      <span className="small muted">MON</span>
+                    </span>
+                    <span className="v">{formatToken(nativeMon, 18)}</span>
+                  </div>
+                )}
+                {(bal.data ?? []).map((r) => (
+                  <div key={r.key} className="kv" style={{ padding: '14px 16px' }}>
+                    <span className="row">
+                      <TokenChip symbol={r.token.displaySymbol} />
+                      <span className="small muted">{r.token.isMock ? 'Test token' : r.token.symbol}</span>
+                    </span>
+                    <span className="v">
+                      {formatToken(r.balance, r.token.decimals)}
+                      {fx.rate !== null && r.token.usdPrice > 0 && (
+                        <div className="small muted">
+                          {formatFiat((Number(r.balance) / 10 ** r.token.decimals) * r.token.usdPrice, fx.rate, fx.currency)}
+                        </div>
+                      )}
+                    </span>
+                  </div>
+                ))}
+              </>
             )}
           </div>
 
