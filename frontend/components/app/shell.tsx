@@ -157,7 +157,10 @@ export function AppShell({
     };
   }, []);
 
-  const items = nav === 'merchant' ? MERCHANT_NAV : CUSTOMER_NAV;
+  const customerNav = CUSTOMER_NAV.map((it) =>
+    it.href === '/activity' && mode === 'merchant' ? { ...it, href: '/merchant/history', label: 'History' } : it,
+  );
+  const items = nav === 'merchant' ? MERCHANT_NAV : customerNav;
   const isActive = (href: string) => (href === '/app' || href === '/merchant' ? path === href : path.startsWith(href));
   const homeHref = nav === 'merchant' ? '/merchant' : '/app';
 
