@@ -44,3 +44,7 @@ backend/contracts/config.yaml
 .agents/skills
 .claude/skills
 brag-output/
+
+# never commit anything that could hold a key
+backend/services/api/scripts/send-*.mjs
+*.key
