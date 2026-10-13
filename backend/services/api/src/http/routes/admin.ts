@@ -8,6 +8,7 @@ import { requireAdmin } from '../auth.js';
 import { parse } from '../parse.js';
 import { setStatus } from '../../services/merchants.js';
 import { merchantView } from '../../services/views.js';
+import { pushLifecycle } from '../../services/settlement.js';
 
 const ACTIONS = { approve: MERCHANT_STATUS.ACTIVE, reactivate: MERCHANT_STATUS.ACTIVE, suspend: MERCHANT_STATUS.SUSPENDED, revoke: MERCHANT_STATUS.REVOKED } as const;
 
@@ -31,5 +32,12 @@ export async function adminRoutes(app: FastifyInstance) {
       req.params,
     );
     return setStatus(chainCtx(p.chainId), p.merchantId as any, ACTIONS[p.action], `admin:${p.action}`);
+  });
+
+  app.post('/v1/admin/intents/:chainId/:intentId/abandon', async (req) => {
+    const p = parse(z.object({ chainId: zChainId, intentId: zBytes32 }), req.params);
+    const updated = await pushLifecycle(p.chainId, p.intentId as string, 'FAILED', 'admin:abandon');
+    if (!updated) return { ok: false, reason: 'Intent not found or already terminal' };
+    return { ok: true, intentId: p.intentId };
   });
 }
