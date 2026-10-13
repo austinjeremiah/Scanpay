@@ -2,22 +2,30 @@ import { ApiError } from '../errors.js';
 import { log } from '../log.js';
 
 const AURORA = 'https://intents-api.aurora.dev';
+const ONECLICK = 'https://1click.chaindefuser.com';
 
 let auroraKey: string | undefined;
-export function configureAurora(key?: string, _jwt?: string) {
+let oneClickJwt: string | undefined;
+export function configureAurora(key?: string, jwt?: string) {
   auroraKey = key;
+  oneClickJwt = jwt;
 }
-export const auroraEnabled = () => Boolean(auroraKey);
-export const providerName = (): 'aurora' => 'aurora';
+export const auroraEnabled = () => true;
+export const providerName = (): 'aurora' | 'oneclick' => (auroraKey ? 'aurora' : 'oneclick');
 
 function url(op: 'tokens' | 'quote' | 'submit' | 'status', qs = '') {
-  if (!auroraKey) throw new ApiError('PROVIDER_UNAVAILABLE', 'AURORA_API_KEY not configured');
+  if (auroraKey) {
+    const path = { tokens: 'tokens', quote: 'quote', submit: 'deposit/submit', status: 'status' }[op];
+    return `${AURORA}/api/${path}/${auroraKey}${qs}`;
+  }
   const path = { tokens: 'tokens', quote: 'quote', submit: 'deposit/submit', status: 'status' }[op];
-  return `${AURORA}/api/${path}/${auroraKey}${qs}`;
+  return `${ONECLICK}/v0/${path}${qs}`;
 }
 
 function headers(): Record<string, string> {
-  return { 'content-type': 'application/json' };
+  const h: Record<string, string> = { 'content-type': 'application/json' };
+  if (!auroraKey && oneClickJwt) h.authorization = `Bearer ${oneClickJwt}`;
+  return h;
 }
 
 async function call<T>(u: string, init?: RequestInit): Promise<T> {
