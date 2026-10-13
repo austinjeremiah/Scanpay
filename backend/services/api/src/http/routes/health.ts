@@ -5,6 +5,8 @@ import { dbUp } from '../../db/connect.js';
 const started = Date.now();
 
 export async function healthRoutes(app: FastifyInstance) {
+  app.get('/healthz', async () => ({ ok: true }));
+
   app.get('/health', async () => {
     const chains = await Promise.all(
       allChains().map(async (c) => {
