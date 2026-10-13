@@ -88,6 +88,9 @@ export const api = {
   submit: (b: z.input<typeof zSubmitReq>) => call('POST', '/v1/intents/submit', zSubmitRes, b, { 'idempotency-key': b.draftId }),
   intent: (chainId: number, id: string) => call('GET', `/v1/intents/${chainId}/${id}`, zIntentView),
   sourceTx: (chainId: number, id: string, txHash: string) => call('POST', `/v1/intents/${chainId}/${id}/source-tx`, null, { txHash }),
+  /** Relay a customer-signed EIP-3009 authorization on the origin chain; we pay that chain's gas. */
+  originPay: (chainId: number, id: string, body: unknown) =>
+    call('POST', `/v1/intents/${chainId}/${id}/origin-pay`, null, body as Record<string, unknown>),
   simulateDeposit: (chainId: number, id: string, amount?: string) =>
     call('POST', `/v1/intents/${chainId}/${id}/simulate-deposit`, zTxRes, amount ? { amount } : {}),
   verify: (chainId: number, id: string) => call('GET', `/v1/verify/${chainId}/${id}`, zVerifyRes),

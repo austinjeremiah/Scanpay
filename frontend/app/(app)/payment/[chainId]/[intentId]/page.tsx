@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AlertTriangle, ArrowDownToLine, CheckCircle2, Link2, Loader2, Lock, Receipt, RefreshCw, Send,
-  ShieldAlert, ShieldCheck, Sparkles, Timer, Undo2, XCircle,
+  ShieldAlert, ShieldCheck, Sparkles, Timer, Undo2, Wallet, XCircle,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { AppShell } from '@/components/app/shell';
@@ -18,6 +18,8 @@ import { formatToken, when } from '@/lib/format';
 import { vibrate } from '@/lib/hooks';
 import { useSse } from '@/lib/sse';
 import type { IntentView } from '@/lib/shared';
+import { ORIGIN_CHAINS, originBalance, signOriginAuth } from '@/lib/originPay';
+import { useSession } from '@/lib/session';
 
 type Origin = { symbol?: string; blockchain?: string; decimals?: number; evmChainId?: number | null; contractAddress?: string | null; amount?: string | null };
 
@@ -59,6 +61,8 @@ export default function PaymentStatusPage() {
 
   const [txInput, setTxInput] = useState('');
   const [busy, setBusy] = useState<string | null>(null);
+  const [originHeld, setOriginHeld] = useState<bigint>(0n);
+  const session = useSession();
   const payout = findToken(dep, i?.payoutToken);
   const symbol = payout?.token.displaySymbol ?? 'USDC';
   const dec = payout?.token.decimals ?? 6;
@@ -141,6 +145,46 @@ export default function PaymentStatusPage() {
   const refundAt = i.refundableAt;
   const simulated = cc?.mode === 'simulated';
 
+  const originChainIdForBal = origin?.evmChainId ?? null;
+  const payAddress = session.profile?.addresses.pay ?? null;
+  useEffect(() => {
+    if (!originChainIdForBal || !payAddress || !ORIGIN_CHAINS[originChainIdForBal]) return;
+    let live = true;
+    const read = () =>
+      originBalance(originChainIdForBal, payAddress as `0x${string}`)
+        .then((b) => live && setOriginHeld(b))
+        .catch(() => undefined);
+    read();
+    const t = setInterval(read, 15_000);
+    return () => { live = false; clearInterval(t); };
+  }, [originChainIdForBal, payAddress]);
+
+  // The customer can settle the origin leg from their own passkey wallet when that wallet
+  // holds enough of the origin stablecoin. They sign; the relayer pays the origin gas, so
+  // the wallet never needs native currency on that chain.
+  const originChainId = origin?.evmChainId ?? null;
+  const originSupported = !!originChainId && !!ORIGIN_CHAINS[originChainId];
+  const canPayFromWallet =
+    originSupported && !!originAmount && originHeld >= BigInt(originAmount) && l === 'AWAITING_DEPOSIT';
+
+  const payFromWallet = async () => {
+    if (!originChainId || !deposit || !originAmount) return;
+    setBusy('origin');
+    try {
+      await session.withKeys(`Pay ${formatToken(originAmount, originDec)} ${originSym}`, async (ring) => {
+        const acct = await ring.account('pay');
+        const auth = await signOriginAuth(originChainId, acct, deposit as `0x${string}`, BigInt(originAmount));
+        await api.originPay(chainId, intentId, auth);
+      });
+      toast.success('Sent — waiting for it to arrive');
+      qc.invalidateQueries({ queryKey: ['intent', chainId, intentId] });
+    } catch (e) {
+      toast.error(e instanceof ApiError ? e.message : 'Could not pay from your wallet');
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const hashFrom = (s: string) => s.match(/0x[0-9a-fA-F]{64}/)?.[0] ?? s.trim();
 
   return (
@@ -218,6 +262,20 @@ export default function PaymentStatusPage() {
       )}
 
       {/* ------- deposit panel ------- */}
+      {showDeposit && deposit && canPayFromWallet && (
+        <div className="card col">
+          <div className="label row"><Wallet size={14} /> Pay from your wallet</div>
+          <div>
+            Your account holds <b>{formatToken(originHeld, originDec)} {originSym}</b> on{' '}
+            <b>{ORIGIN_CHAINS[originChainId!]!.name}</b>. Pay straight from it — you sign, we cover the gas.
+          </div>
+          <button className="btn neon big block" disabled={busy === 'origin'} onClick={payFromWallet}>
+            {busy === 'origin' ? <Spinner /> : <Wallet size={18} />} Pay {formatToken(originAmount!, originDec)} {originSym}
+          </button>
+          <div className="help">No gas needed on {ORIGIN_CHAINS[originChainId!]!.name}. Your wallet only holds {originSym}.</div>
+        </div>
+      )}
+
       {showDeposit && deposit && (
         <div className="card col">
           <div className="label row"><Send size={14} /> Send</div>

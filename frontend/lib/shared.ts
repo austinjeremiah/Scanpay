@@ -4,6 +4,7 @@ export {
   buildIntentTypedData, buildInvoiceTypedData, buildPayoutUpdateTypedData, buildReceiveAuthTypedData,
   buildRegistrationTypedData, buildSignerRotationTypedData, fromWireIntent, intentDigest, receiveAuthForIntent,
   toWireInvoice, toWireRegistration, toWireSignerRotation, toWirePayoutUpdate, randomBytes32, merchantRegistryAbi,
+  buildTransferAuthTypedData,
   profileHash,
 } from '@scanpay/shared';
 export type {
