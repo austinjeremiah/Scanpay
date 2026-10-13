@@ -2,34 +2,22 @@ import { ApiError } from '../errors.js';
 import { log } from '../log.js';
 
 const AURORA = 'https://intents-api.aurora.dev';
-const ONECLICK = 'https://1click.chaindefuser.com';
 
 let auroraKey: string | undefined;
-let oneClickJwt: string | undefined;
-export function configureAurora(key?: string, jwt?: string) {
+export function configureAurora(key?: string, _jwt?: string) {
   auroraKey = key;
-  oneClickJwt = jwt;
 }
-// 1Click's public endpoint serves /v0/tokens and /v0/quote without credentials — an
-// unauthenticated quote comes back 400 on a bad body, not 401 — so cross-chain is
-// available even with neither secret set. The Aurora key, when present, is preferred
-// because it gives higher rate limits.
-export const auroraEnabled = () => true;
-export const providerName = (): 'aurora' | 'oneclick' => (auroraKey ? 'aurora' : 'oneclick');
+export const auroraEnabled = () => Boolean(auroraKey);
+export const providerName = (): 'aurora' => 'aurora';
 
 function url(op: 'tokens' | 'quote' | 'submit' | 'status', qs = '') {
-  if (auroraKey) {
-    const path = { tokens: 'tokens', quote: 'quote', submit: 'deposit/submit', status: 'status' }[op];
-    return `${AURORA}/api/${path}/${auroraKey}${qs}`;
-  }
+  if (!auroraKey) throw new ApiError('PROVIDER_UNAVAILABLE', 'AURORA_API_KEY not configured');
   const path = { tokens: 'tokens', quote: 'quote', submit: 'deposit/submit', status: 'status' }[op];
-  return `${ONECLICK}/v0/${path}${qs}`;
+  return `${AURORA}/api/${path}/${auroraKey}${qs}`;
 }
 
 function headers(): Record<string, string> {
-  const h: Record<string, string> = { 'content-type': 'application/json' };
-  if (!auroraKey && oneClickJwt) h.authorization = `Bearer ${oneClickJwt}`;
-  return h;
+  return { 'content-type': 'application/json' };
 }
 
 async function call<T>(u: string, init?: RequestInit): Promise<T> {

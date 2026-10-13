@@ -42,7 +42,7 @@ export async function routesFor(ctx: ChainCtx, invoice: InvoiceMessage) {
   const ccSameToken = ccKey !== null && ctx.token(ccKey)?.address.toLowerCase() === invoice.payoutToken.toLowerCase();
   const ccMode = ctx.features.crosschain;
   // Aurora bridge minimum is ~0.15 USDC; block cross-chain for amounts too small
-  const CC_MIN = 200000n; // 0.20 USDC (6 decimals) — safe buffer above Aurora's ~0.15 minimum
+  const CC_MIN = 160000n; // 0.16 USDC (6 decimals) — safe buffer above Aurora's ~0.15 minimum
   const ccTooSmall = ccMode === 'live' && invoice.amount < CC_MIN;
   const ccAvailable = ccMode !== 'off' && (ccSameToken || ctx.adapterKind !== 'none') && !ccTooSmall;
   let assets: OriginAsset[] = [];
