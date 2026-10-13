@@ -49,7 +49,9 @@ export async function applyLog(ctx: ChainCtx, log_: Log, meta: Meta) {
     }
     case 'PaymentSettled': {
       const fee = BigInt(a.fee);
-      const d = await pushLifecycle(ctx.chainId, a.intentId, 'SETTLED', `settled on-chain (block ${meta.blockNumber})`, {
+      const ROUTE_NAMES = ['DIRECT', 'SWAP', 'CROSSCHAIN'] as const;
+      const routeName = ROUTE_NAMES[Number(a.route)] ?? 'DIRECT';
+      let d = await pushLifecycle(ctx.chainId, a.intentId, 'SETTLED', `settled on-chain (block ${meta.blockNumber})`, {
         'txs.settle': meta.txHash,
         'onchain.fee': fee.toString(),
         'onchain.inputAmount': BigInt(a.inputAmount).toString(),
@@ -59,6 +61,41 @@ export async function applyLog(ctx: ChainCtx, log_: Log, meta: Meta) {
         'onchain.settledBlock': Number(meta.blockNumber),
         error: null,
       }, ['DRAFT', 'SUBMITTED', ...OPEN_CC]);
+      // Intent was committed via a different backend instance — upsert from on-chain data so it appears in merchant history.
+      if (!d) {
+        const intentIdLow = String(a.intentId).toLowerCase();
+        d = await Intent.findOneAndUpdate(
+          { chainId: ctx.chainId, intentId: intentIdLow },
+          {
+            $setOnInsert: {
+              draftId: `onchain:${intentIdLow}`,
+              chainId: ctx.chainId,
+              intentId: intentIdLow,
+              route: routeName,
+              merchantId: String(a.merchantId).toLowerCase(),
+              invoiceId: String(a.invoiceId).toLowerCase(),
+              payer: String(a.payer).toLowerCase(),
+              intent: { amountOut: BigInt(a.amountOut).toString(), payoutToken: String(a.payoutToken).toLowerCase() },
+              invoice: {},
+              merchantSig: '',
+              expiresAt: meta.timestamp,
+              draftExpiresAt: meta.timestamp,
+            },
+            $set: {
+              lifecycle: 'SETTLED',
+              'txs.settle': meta.txHash,
+              'onchain.fee': fee.toString(),
+              'onchain.inputAmount': BigInt(a.inputAmount).toString(),
+              'onchain.excessRefunded': BigInt(a.excessRefunded).toString(),
+              'onchain.netToMerchant': (BigInt(a.amountOut) - fee).toString(),
+              'onchain.settledAt': meta.timestamp,
+              'onchain.settledBlock': Number(meta.blockNumber),
+            },
+            $push: { timeline: { at: meta.timestamp, status: 'SETTLED', note: `settled on-chain (block ${meta.blockNumber})` } },
+          },
+          { upsert: true, new: true },
+        ).lean() as unknown as IntentDoc | null;
+      }
       const inv = await Invoice.findOneAndUpdate(
         { chainId: ctx.chainId, merchantId: String(a.merchantId).toLowerCase(), invoiceId: String(a.invoiceId).toLowerCase() },
         { $set: { state: 'PAID', paidIntentId: String(a.intentId).toLowerCase() } },
