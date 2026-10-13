@@ -2,6 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "npx --yes pnpm@9.12.0 install --no-frozen-lockfile",
   "buildCommand": "npx --yes pnpm@9.12.0 --filter avande-next build",
-  "outputDirectory": "frontend/.next",
+  "outputDirectory": ".next",
   "framework": "nextjs"
 }
