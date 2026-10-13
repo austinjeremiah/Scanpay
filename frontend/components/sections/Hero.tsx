@@ -17,7 +17,7 @@ export default function Hero() {
               QR payments on Monad with three proofs: who you are paying, what you approved, and where the money went, all enforced on-chain.
             </p>
             <div className="hero-banner-button-box">
-              <a data-wf--primary-button--variant="3rd-button" href="/contact" className="primary-button w-variant-5c198abb-72b9-9083-ac28-2758d34ab69e w-inline-block">
+              <a data-wf--primary-button--variant="3rd-button" href="/app" className="primary-button w-variant-5c198abb-72b9-9083-ac28-2758d34ab69e w-inline-block">
                 <div className="primary-button-text-items w-variant-5c198abb-72b9-9083-ac28-2758d34ab69e">
                   <div className="primary-button-text-wrap w-variant-5c198abb-72b9-9083-ac28-2758d34ab69e">
                     <div className="primary-button-text one">

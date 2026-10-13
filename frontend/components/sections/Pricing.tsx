@@ -77,7 +77,7 @@ export default function Pricing() {
                             </div>
                           </div>
                           <div className="home-pricing-button-box">
-                            <a data-wf--primary-button--variant="main-button" href="/contact" className="primary-button w-inline-block">
+                            <a data-wf--primary-button--variant="main-button" href="/app" className="primary-button w-inline-block">
                               <div className="primary-button-text-items">
                                 <div className="primary-button-text-wrap">
                                   <div className="primary-button-text one">
@@ -215,7 +215,7 @@ export default function Pricing() {
                             </div>
                           </div>
                           <div className="home-pricing-button-box">
-                            <a data-wf--primary-button--variant="2nd-button" href="/contact" className="primary-button w-variant-343503ab-2e9e-7956-3a30-bcb84afd9be7 w-inline-block">
+                            <a data-wf--primary-button--variant="2nd-button" href="/app" className="primary-button w-variant-343503ab-2e9e-7956-3a30-bcb84afd9be7 w-inline-block">
                               <div className="primary-button-text-items">
                                 <div className="primary-button-text-wrap">
                                   <div className="primary-button-text one">
@@ -355,7 +355,7 @@ export default function Pricing() {
                             </div>
                           </div>
                           <div className="home-pricing-button-box">
-                            <a data-wf--primary-button--variant="main-button" href="/contact" className="primary-button w-inline-block">
+                            <a data-wf--primary-button--variant="main-button" href="/app" className="primary-button w-inline-block">
                               <div className="primary-button-text-items">
                                 <div className="primary-button-text-wrap">
                                   <div className="primary-button-text one">
@@ -493,7 +493,7 @@ export default function Pricing() {
                             </div>
                           </div>
                           <div className="home-pricing-button-box">
-                            <a data-wf--primary-button--variant="2nd-button" href="/contact" className="primary-button w-variant-343503ab-2e9e-7956-3a30-bcb84afd9be7 w-inline-block">
+                            <a data-wf--primary-button--variant="2nd-button" href="/app" className="primary-button w-variant-343503ab-2e9e-7956-3a30-bcb84afd9be7 w-inline-block">
                               <div className="primary-button-text-items">
                                 <div className="primary-button-text-wrap">
                                   <div className="primary-button-text one">

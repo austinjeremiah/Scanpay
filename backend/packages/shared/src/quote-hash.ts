@@ -1,5 +1,5 @@
 import { keccak256, toBytes, type Address, type Hex } from 'viem';
-import { canonicalJson } from './canonical.js';
+import { canonicalJson } from './canonical';
 
 export interface QuoteHashFields {
   v: 1;

@@ -43,7 +43,7 @@ export default function Automation() {
               </div>
             </div>
             <div fade-anim="True" className="automation-content-button-box">
-              <a data-wf--primary-button--variant="4th-button" href="/contact" className="primary-button w-variant-c8937a21-aef7-f716-ecab-1c4a85c94367 w-inline-block">
+              <a data-wf--primary-button--variant="4th-button" href="/app" className="primary-button w-variant-c8937a21-aef7-f716-ecab-1c4a85c94367 w-inline-block">
                 <div className="primary-button-text-items w-variant-c8937a21-aef7-f716-ecab-1c4a85c94367">
                   <div className="primary-button-text-wrap">
                     <div className="primary-button-text one">

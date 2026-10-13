@@ -32,7 +32,7 @@ export default function Header() {
             </div>
           </div>
           <div className="main-header-btn-box">
-            <a data-wf--primary-button--variant="main-button" href="/contact" className="primary-button w-inline-block">
+            <a data-wf--primary-button--variant="main-button" href="/app" className="primary-button w-inline-block">
               <div className="primary-button-text-items">
                 <div className="primary-button-text-wrap">
                   <div className="primary-button-text one">
