@@ -56,7 +56,7 @@ export default function Blogs() {
                             Stablecoins
                           </div>
                           <div>
-                            <img src="/assets/6a9940ff24dccd963980ad93_blog_01.avif" loading="lazy" alt="USDC and AUSD on Monad" />
+                            <img src="/assets/scanpay-blog-stablecoins.svg" loading="lazy" alt="USDC and AUSD on Monad" />
                           </div>
                           <div className="paragraph-small blogs-collection-content-text">
                             Circle USDC and Agora AUSD both support EIP-3009 on Monad, so a payment is one gasless transaction.
@@ -91,7 +91,7 @@ export default function Blogs() {
                             Network
                           </div>
                           <div>
-                            <img src="/assets/6a99441ad6c253a6c88fb8b2_blog_02.avif" loading="lazy" alt="Why Monad" />
+                            <img src="/assets/scanpay-blog-monad.svg" loading="lazy" alt="Why Monad" />
                           </div>
                           <div className="paragraph-small blogs-collection-content-text">
                             Sub-second blocks and cheap transactions make a scan-to-receipt payment feel instant at the counter.

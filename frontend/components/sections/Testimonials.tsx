@@ -27,7 +27,7 @@ export default function Testimonials() {
                   <div className="testimonials-slide w-slide">
                     <div className="testimonials-flex">
                       <div className="testimonials-author-img-box">
-                        <img sizes="100vw" srcSet="/assets/6a96cc449de4c5aea8ccaae8_testimonial_banner_01_p_500.avif 500w, /assets/6a96cc449de4c5aea8ccaae8_testimonial_banner_01.avif 662w" alt="Principle" src="/assets/6a96cc449de4c5aea8ccaae8_testimonial_banner_01.avif" loading="lazy" className="testimonials-author-img" />
+                        <img alt="Principle" src="/assets/scanpay-principle-settlement.svg" loading="lazy" className="testimonials-author-img" />
                       </div>
                       <div className="testimonials-content-wrap">
                         <div className="testimonials-content-box">
@@ -67,7 +67,7 @@ export default function Testimonials() {
                   <div className="testimonials-slide w-slide">
                     <div className="testimonials-flex">
                       <div className="testimonials-author-img-box">
-                        <img sizes="100vw" srcSet="/assets/6a96cc441318a121e56e4c5c_testimonial_banner_02_p_500.avif 500w, /assets/6a96cc441318a121e56e4c5c_testimonial_banner_02.avif 662w" alt="Principle" src="/assets/6a96cc441318a121e56e4c5c_testimonial_banner_02.avif" loading="lazy" className="testimonials-author-img" />
+                        <img alt="Principle" src="/assets/scanpay-principle-merchant.svg" loading="lazy" className="testimonials-author-img" />
                       </div>
                       <div className="testimonials-content-wrap">
                         <div className="testimonials-content-box">
@@ -107,7 +107,7 @@ export default function Testimonials() {
                   <div className="testimonials-slide w-slide">
                     <div className="testimonials-flex">
                       <div className="testimonials-author-img-box">
-                        <img sizes="100vw" srcSet="/assets/6a96cc442f3c028d69be436e_testimonial_banner_03_p_500.avif 500w, /assets/6a96cc442f3c028d69be436e_testimonial_banner_03.avif 662w" alt="Principle" src="/assets/6a96cc442f3c028d69be436e_testimonial_banner_03.avif" loading="lazy" className="testimonials-author-img" />
+                        <img alt="Principle" src="/assets/scanpay-principle-replay.svg" loading="lazy" className="testimonials-author-img" />
                       </div>
                       <div className="testimonials-content-wrap">
                         <div className="testimonials-content-box">

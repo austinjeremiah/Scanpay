@@ -54,7 +54,7 @@ export default function About() {
                 </div>
                 <div fade-anim="True" className="home-about-author-wrap">
                   <div className="home-about-author-img-box">
-                    <img src="/assets/6a954c6537abe1493e1d4092_about_banner.avif" loading="lazy" alt="Home About Author" className="home-about-author-img" />
+                    <img src="/assets/scanpay-monad-mark.svg" loading="lazy" alt="Built on Monad" className="home-about-author-img" />
                   </div>
                   <div className="home-about-author-info-box">
                     <div className="home-about-author-name">
