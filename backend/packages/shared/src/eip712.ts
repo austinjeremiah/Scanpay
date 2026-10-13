@@ -80,6 +80,24 @@ export const payoutUpdateTypes = {
   ],
 } as const;
 
+/**
+ * EIP-3009 transferWithAuthorization. Unlike ReceiveWithAuthorization — which the token
+ * only honours when the recipient itself submits it — anyone may relay this one, so it is
+ * what lets our relayer move a customer's USDC on an ORIGIN chain (Base) to a 1Click
+ * deposit address the customer never has to touch. The destination is inside the signature,
+ * so relaying it cannot redirect the funds.
+ */
+export const transferWithAuthorizationTypes = {
+  TransferWithAuthorization: [
+    { name: 'from', type: 'address' },
+    { name: 'to', type: 'address' },
+    { name: 'value', type: 'uint256' },
+    { name: 'validAfter', type: 'uint256' },
+    { name: 'validBefore', type: 'uint256' },
+    { name: 'nonce', type: 'bytes32' },
+  ],
+} as const;
+
 export const receiveWithAuthorizationTypes = {
   ReceiveWithAuthorization: [
     { name: 'from', type: 'address' },
@@ -142,6 +160,19 @@ export function buildReceiveAuthTypedData(
     domain: tokenDomain(chainId, token),
     types: receiveWithAuthorizationTypes,
     primaryType: 'ReceiveWithAuthorization' as const,
+    message,
+  };
+}
+
+export function buildTransferAuthTypedData(
+  chainId: number,
+  token: Pick<TokenInfo, 'address' | 'eip712'>,
+  message: ReceiveAuthMessage,
+) {
+  return {
+    domain: tokenDomain(chainId, token),
+    types: transferWithAuthorizationTypes,
+    primaryType: 'TransferWithAuthorization' as const,
     message,
   };
 }

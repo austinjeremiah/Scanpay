@@ -5,6 +5,7 @@ import {
 } from '@scanpay/shared';
 import type { Address, Hex } from 'viem';
 import { z } from 'zod';
+import { relayOriginTransfer } from '../../services/originChains.js';
 import { chainCtx } from '../../chains.js';
 import { parse } from '../parse.js';
 import { erc20Abi } from '@scanpay/shared';
@@ -53,6 +54,36 @@ export const paymentRoutes: FastifyPluginAsync = async (app) => {
     );
     const body = parse(zSimulateDepositReq, (req as any).body ?? {});
     return simulateDeposit(chainId, intentId as Hex, body.amount ? BigInt(body.amount) : undefined);
+  });
+
+  // POST /v1/intents/:chainId/:intentId/origin-pay
+  // The customer's own passkey wallet pays from the ORIGIN chain without ever holding gas
+  // there: they sign an EIP-3009 transferWithAuthorization and we relay it on Base.
+  app.post('/v1/intents/:chainId/:intentId/origin-pay', async (req) => {
+    const { chainId, intentId } = parse(
+      z.object({ chainId: zChainId, intentId: z.string().regex(/^0x[0-9a-fA-F]{64}$/) }),
+      (req as any).params,
+    );
+    const b = parse(
+      z.object({
+        originChainId: z.number().int().positive(),
+        from: zAddress,
+        to: zAddress,
+        value: z.string().regex(/^\d+$/),
+        validAfter: z.string().regex(/^\d+$/),
+        validBefore: z.string().regex(/^\d+$/),
+        nonce: z.string().regex(/^0x[0-9a-fA-F]{64}$/),
+        signature: z.string().regex(/^0x[0-9a-fA-F]{130}$/),
+      }),
+      (req as any).body,
+    );
+    const res = await relayOriginTransfer(b.originChainId, {
+      from: b.from as Hex, to: b.to as Hex, value: BigInt(b.value),
+      validAfter: BigInt(b.validAfter), validBefore: BigInt(b.validBefore),
+      nonce: b.nonce as Hex, signature: b.signature as Hex,
+    });
+    await postSourceTx(chainId, intentId as Hex, res.hash).catch(() => undefined);
+    return res;
   });
 
   // POST /v1/intents/:chainId/:intentId/source-tx
