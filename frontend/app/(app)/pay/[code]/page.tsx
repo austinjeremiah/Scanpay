@@ -14,7 +14,7 @@ import {
   VerifiedBadge,
 } from '@/components/app/ui';
 import { api, ApiError, streams } from '@/lib/api';
-import { approveMax } from '@/lib/chain';
+import { approveMax, nativeBalance } from '@/lib/chain';
 import { findToken, useConfig, explorerAddr } from '@/lib/config';
 import { CHAIN_NAMES, formatToken, shortHex } from '@/lib/format';
 import { useFx, useMounted, useNow, vibrate } from '@/lib/hooks';
@@ -57,6 +57,12 @@ export default function PayPage() {
   const symbol = payout?.token.displaySymbol ?? 'USDC';
   const profile = mounted ? session.profile : null;
   const bal = useBalances(chain, profile?.addresses.pay);
+  const nativeMon = useQuery({
+    queryKey: ['native-balance', chainId, profile?.addresses.pay],
+    enabled: !!profile,
+    refetchInterval: 15_000,
+    queryFn: () => nativeBalance(chainId, profile!.addresses.pay as `0x${string}`),
+  });
   const fx = useFx(invoice?.fiat?.currency);
 
   const [choice, setChoice] = useState<Choice | null>(null);
@@ -69,7 +75,12 @@ export default function PayPage() {
   const [refundDraft, setRefundDraft] = useState('');
   const [quotes, setQuotes] = useState<Record<string, QuoteRes | 'loading' | 'error'>>({});
 
-  const balanceOf = (key: TokenKey) => bal.data?.find((r) => r.key === key)?.balance ?? 0n;
+  const balanceOf = (key: TokenKey) => {
+    const erc20 = bal.data?.find((r) => r.key === key)?.balance ?? 0n;
+    // WMON on mainnet: native MON can also be used (add to show real available balance)
+    if (key === 'WMON' && nativeMon.data) return erc20 + nativeMon.data;
+    return erc20;
+  };
   const amount = invoice ? BigInt(invoice.invoice.amount) : 0n;
   const expiresAt = invoice ? Number(invoice.invoice.expiresAt) : 0;
   const expired = invoice ? invoice.state === 'EXPIRED' || (expiresAt > 0 && now >= expiresAt) : false;
