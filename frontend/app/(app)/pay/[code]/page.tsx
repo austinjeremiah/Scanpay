@@ -14,7 +14,7 @@ import {
   VerifiedBadge,
 } from '@/components/app/ui';
 import { api, ApiError, streams } from '@/lib/api';
-import { approveMax, nativeBalance } from '@/lib/chain';
+import { approveMax, nativeBalance, tokenBalance, wrapNativeMon } from '@/lib/chain';
 import { findToken, useConfig, explorerAddr } from '@/lib/config';
 import { CHAIN_NAMES, formatToken, shortHex } from '@/lib/format';
 import { useFx, useMounted, useNow, vibrate } from '@/lib/hooks';
@@ -176,6 +176,21 @@ export default function PayPage() {
       const merchantName = merchant?.profile?.displayName ?? 'the shop';
       await session.withKeys(`Pay ${amountLabel} to ${merchantName}`, async (ring) => {
         const acct = await ring.account('pay');
+        // If paying with WMON but user has native MON instead, wrap the shortfall first
+        if (choice.route === 'SWAP' && dep?.tokens.WMON) {
+          const wmonAddr = dep.tokens.WMON.address as Hex;
+          if (prep.intent.inputToken.toLowerCase() === wmonAddr.toLowerCase()) {
+            const needed = BigInt(prep.intent.maxAmountIn);
+            const [wmonBal, natBal] = await Promise.all([
+              tokenBalance(prep.chainId, wmonAddr, acct.address as Hex),
+              nativeBalance(prep.chainId, acct.address as Hex),
+            ]);
+            if (wmonBal < needed) {
+              const shortfall = needed - wmonBal;
+              if (natBal >= shortfall) await wrapNativeMon(prep.chainId, acct, wmonAddr, shortfall);
+            }
+          }
+        }
         if (prep.swap?.needsApproval) {
           if (prep.swap.dripAvailable) await api.drip(prep.chainId, acct.address, (choice as { tokenKey: TokenKey }).tokenKey);
           await approveMax(prep.chainId, acct, prep.intent.inputToken as Hex, prep.swap.spender as Hex);

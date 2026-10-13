@@ -23,6 +23,19 @@ export async function nativeBalance(chainId: number, owner: Hex): Promise<bigint
   return publicClient(chainId).getBalance({ address: owner });
 }
 
+const wrapAbi = [{ name: 'deposit', type: 'function', stateMutability: 'payable', inputs: [], outputs: [] }] as const;
+
+/** Wraps native MON into WMON by calling deposit() with the given value. */
+export async function wrapNativeMon(chainId: number, account: LocalAccount, wmon: Hex, amount: bigint): Promise<Hex> {
+  const chain = CHAINS[chainId as keyof typeof CHAINS];
+  const pub = publicClient(chainId);
+  const wallet = createWalletClient({ account, chain, transport: http(ENV.RPC[chainId]) });
+  const gas = await pub.estimateContractGas({ address: wmon, abi: wrapAbi, functionName: 'deposit', value: amount, account });
+  const hash = await wallet.writeContract({ address: wmon, abi: wrapAbi, functionName: 'deposit', value: amount, gas: (gas * 12n) / 10n, chain, account });
+  await pub.waitForTransactionReceipt({ hash });
+  return hash;
+}
+
 export async function ownerNonce(chainId: number, registry: Hex, owner: Hex): Promise<bigint> {
   return publicClient(chainId).readContract({
     address: registry,
