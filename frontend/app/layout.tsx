@@ -8,7 +8,8 @@ export const metadata: Metadata = {
   description: 'Scan. Verify. Pay. Know it arrived.',
   applicationName: 'ScanPay',
   manifest: '/manifest.webmanifest',
-  appleWebApp: { capable: true, title: 'ScanPay', statusBarStyle: 'default' },
+  appleWebApp: { capable: true, title: 'ScanPay', statusBarStyle: 'default', startupImage: '/apple-touch-icon.png' },
+  icons: { apple: '/apple-touch-icon.png' },
   other: { 'mobile-web-app-capable': 'yes' },
 };
 
