@@ -413,7 +413,7 @@ Everything that happens on Monad is enforced by contracts. There is exactly one 
 | Shared SDK (golden vectors Solidity ↔ TypeScript) | `pnpm shared:test` | 15 |
 | API (unit + integration) | `pnpm api:test` | 42 |
 
-Contract coverage is about 97% of lines (`docs/test-summary.txt`). Gas measurements live in `docs/gas.md`.
+Contract coverage is about 97% of lines (`docs/txt/test-summary.txt`). Gas measurements live in `docs/gas.md`.
 
 ---
 

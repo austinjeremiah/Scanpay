@@ -1261,7 +1261,7 @@ code WMON_test          0xFb8bf4c1CC7a94c73D209a149eA2AbEa852BC541 "$T"
 
 ```bash
 set -a; source .env; set +a
-bash contracts/script/VerifyAddresses.sh | tee docs/address-verification-$(date +%Y%m%d).txt
+bash contracts/script/VerifyAddresses.sh | tee docs/txt/address-verification-$(date +%Y%m%d).txt
 ```
 
 **How to read the output → what to write in `contracts/config/143.json` (Phase A18 creates that file):**
@@ -1279,7 +1279,7 @@ bash contracts/script/VerifyAddresses.sh | tee docs/address-verification-$(date 
 > = `0xd099cc98ef71107a616c4f0f941f04c322d8e254fe26b3c6668db87aae413de8`. If the token returns this exact value, it is the standard EIP-3009.
 
 **Exit checks**
-- [ ] File `docs/address-verification-YYYYMMDD.txt` committed
+- [ ] File `docs/txt/address-verification-YYYYMMDD.txt` committed
 - [ ] You know the 6 decisions in the table above (write them down; A18 uses them)
 
 **Commit:** `chore: phase-0 on-chain address verification output`
@@ -5763,7 +5763,7 @@ cd contracts && forge test --match-contract "FuzzTest|InvariantTest" -vv
 **Exit checks**
 - [ ] 4 fuzz tests pass at 512 runs
 - [ ] 3 invariants hold (64 runs × depth 64)
-- [ ] `forge test` overall → **0 failed**; paste the summary line into `docs/test-summary.txt`
+- [ ] `forge test` overall → **0 failed**; paste the summary line into `docs/txt/test-summary.txt`
 
 **Commit:** `test(contracts): fuzz (fee split, tamper any field, deposits) + vault invariants`
 
@@ -7469,7 +7469,7 @@ read the revert trace (`-vvvv`), find the `transferFrom` caller, and set it once
 **Exit checks**
 - [ ] Fork test passes with a fresh quote for USDC→AUSD 1.00
 - [ ] Same for WMON→USDC (`kuru:quote <WMON> <USDC> 50000000000000000000`)
-- [ ] Output pasted into `docs/evidence/kuru-fork.txt`
+- [ ] Output pasted into `docs/txt/evidence/kuru-fork.txt`
 
 **Commit:** `test(fork): kuru flow quote executes through deployed adapter`
 

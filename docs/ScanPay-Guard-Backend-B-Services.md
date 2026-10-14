@@ -6544,7 +6544,7 @@ pnpm --filter @scanpay/api test:e2e   # terminal 2
 **Exit checks**
 - [ ] 6 e2e tests pass on a fresh anvil
 - [ ] Run twice in a row without restarting anvil → still pass (no state assumptions)
-- [ ] Paste the summary into `docs/test-summary.txt` (A puts the totals in the README)
+- [ ] Paste the summary into `docs/txt/test-summary.txt` (A puts the totals in the README)
 
 **Commit:** `test(api): end-to-end flows + attack lab against anvil`
 

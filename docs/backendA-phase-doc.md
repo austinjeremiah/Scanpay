@@ -92,7 +92,7 @@ Consequence for every later phase: doc commands that say `cd contracts` mean `cd
 
 ## A2 — On-chain address verification · `b8c1bf1`
 
-Ran `backend/contracts/script/VerifyAddresses.sh` against live Monad mainnet + testnet. Full output: `docs/address-verification-20261011.txt`.
+Ran `backend/contracts/script/VerifyAddresses.sh` against live Monad mainnet + testnet. Full output: `docs/txt/address-verification-20261011.txt`.
 
 **Finding 1 — AUSD supports EIP-3009.** The doc assumed it might not ("AUSD stays payout-only"). It returns the exact standard typehash `0xd099cc98…`, so AUSD is a first-class *payment* token on the DIRECT route. Strengthens the Agora bounty.
 
@@ -417,7 +417,7 @@ Rationale: AUSD is the most differentiated part of the submission (Agora bounty,
 | SWAP route input | testnet 10143 | `tMON` | mock |
 | AUSD on testnet | testnet 10143 | `tAUSD` | mock |
 
-Every stablecoin a judge sees moving is real. Only the swap *input* token is mocked, and only on testnet. README states that testnet AUSD is mocked because Agora operates no testnet faucet — verified in the addendum to `docs/address-verification-20261011.txt`.
+Every stablecoin a judge sees moving is real. Only the swap *input* token is mocked, and only on testnet. README states that testnet AUSD is mocked because Agora operates no testnet faucet — verified in the addendum to `docs/txt/address-verification-20261011.txt`.
 
 ---
 
@@ -704,7 +704,7 @@ No deviations.
 
 `test/Fuzz.t.sol` (81 lines, 4 fuzz tests) and `test/Invariant.t.sol` (162 lines, 3 invariants).
 
-**Exit checks:** ✅ 4 fuzz tests at **512 runs** each · ✅ 3 invariants hold (64 runs × depth 64) · ✅ `forge test` → **134 passed, 0 failed**, summary in `docs/test-summary.txt`
+**Exit checks:** ✅ 4 fuzz tests at **512 runs** each · ✅ 3 invariants hold (64 runs × depth 64) · ✅ `forge test` → **134 passed, 0 failed**, summary in `docs/txt/test-summary.txt`
 
 ### The two money properties, now randomised
 
@@ -781,7 +781,7 @@ Testnet deploy cost 1.6 MON; mainnet 1.07 MON. Envio Cloud endpoint: `https://in
 
 ### A24 — the Kuru adapter works against the real aggregator
 
-Live quote 1.000000 USDC → 0.999900 AUSD (minOut 994900), target the allow-listed Kuru Flow entrypoint. Executed through the **deployed mainnet adapter** on a fork: `out 999484`, output forwarded to the vault, approval reset to 0, adapter retained nothing. Second quote WMON→USDC (50 WMON → 1.246602 USDC) also returned an allow-listed target. Evidence in `docs/evidence/kuru-fork.txt`.
+Live quote 1.000000 USDC → 0.999900 AUSD (minOut 994900), target the allow-listed Kuru Flow entrypoint. Executed through the **deployed mainnet adapter** on a fork: `out 999484`, output forwarded to the vault, approval reset to 0, adapter retained nothing. Second quote WMON→USDC (50 WMON → 1.246602 USDC) also returned an allow-listed target. Evidence in `docs/txt/evidence/kuru-fork.txt`.
 
 **Ordering correction:** A24 cannot precede A23. Both `kuru-quote.ts` and `KuruFork.t.sol` read `deployments/143.json` for the adapter address, and Kuru's calldata is generated for a specific `userAddress` — so the quote must target the actually-deployed adapter. The doc's A23→A24 order is correct.
 

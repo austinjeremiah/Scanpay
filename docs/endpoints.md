@@ -66,7 +66,7 @@ Indexed results are identical either way.
 
 No mocks on mainnet: every token is the real deployed asset (`isMock: false`) and the swap
 adapter is the Kuru one, validated against the live aggregator on a fork (see
-`docs/evidence/kuru-fork.txt`).
+`docs/txt/evidence/kuru-fork.txt`).
 
 Contract addresses match testnet because the deployer's nonce sequence is identical on both
 chains — same deployer, same order, so CREATE yields the same addresses. Expected, not a bug.
