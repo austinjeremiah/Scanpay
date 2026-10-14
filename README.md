@@ -225,6 +225,21 @@ flowchart LR
     V & REG -->|events| ENV --> HTTP
 ```
 
+### Where each sponsor sits in the stack
+
+<table>
+  <tr><th></th><th>Sponsor</th><th>In the diagram</th><th>What ScanPay uses it for</th><th>Code</th></tr>
+  <tr><td align="center"><img src="docs/assets/sponsors/monad.png" width="44" height="44" alt="Monad"></td><td><b>Monad</b></td><td>Monad mainnet (143)</td><td>Settlement chain for <code>MerchantRegistry</code>, <code>IntentVault</code> and the deposit forwarders. Sub-second blocks make the receipt feel instant.</td><td><code>backend/contracts/</code></td></tr>
+  <tr><td align="center"><img src="docs/assets/sponsors/mera.png" width="44" height="44" alt="Mera by Category Labs"></td><td><b>Mera</b><br><sub>Category Labs</sub></td><td>Frontend → Mera passkey</td><td>Passkey PRF output becomes on-device HD keys and the vault key; Mera signing sessions sign EIP-712 messages.</td><td><code>frontend/lib/mera.ts</code><br><code>frontend/lib/keys.ts</code></td></tr>
+  <tr><td align="center"><img src="docs/assets/sponsors/circle.png" width="44" height="44" alt="Circle"></td><td><b>Circle USDC</b></td><td>Monad tokens · Base USDC</td><td>Payout token. EIP-3009 makes DIRECT payments gasless, and pays the origin-chain leg on Base.</td><td><code>IntentVault.sol</code><br><code>services/originChains.ts</code></td></tr>
+  <tr><td align="center"><img src="docs/assets/sponsors/agora.png" width="44" height="44" alt="Agora"></td><td><b>Agora AUSD</b></td><td>Monad tokens</td><td>Payout stablecoin with EIP-3009 DIRECT payments; cross-chain payments can settle into AUSD.</td><td><code>backend/deployments/143.json</code></td></tr>
+  <tr><td align="center"><img src="docs/assets/sponsors/kuru.png" width="44" height="44" alt="Kuru Labs"></td><td><b>Kuru Flow</b></td><td>KuruFlowAdapter · Quote engine → Kuru Flow aggregator</td><td>SWAP route: exact-output quotes and the on-chain swap into the payout token.</td><td><code>adapters/KuruFlowAdapter.sol</code><br><code>services/kuru.ts</code></td></tr>
+  <tr><td align="center"><img src="docs/assets/sponsors/aurora.png" width="44" height="44" alt="Aurora"> <img src="docs/assets/sponsors/near.png" width="44" height="44" alt="NEAR"></td><td><b>Aurora Intents</b><br><sub>NEAR 1Click</sub></td><td>Quote engine → Aurora / 1Click · solver delivery → DepositForwarder</td><td>CROSSCHAIN route: quote, deposit address and solver delivery into the per-intent forwarder.</td><td><code>services/aurora.ts</code><br><code>worker/crosschain.ts</code></td></tr>
+  <tr><td align="center"><img src="docs/assets/sponsors/envio.png" width="44" height="44" alt="Envio"></td><td><b>Envio HyperIndex</b></td><td>Envio HyperIndex → REST API</td><td>Indexes vault and registry events for payment history, daily stats and key history.</td><td><code>backend/indexer/</code><br><code>services/envio.ts</code></td></tr>
+</table>
+
+<sub>Logos are the sponsors' own (from their GitHub organisations and agora.finance), used here only to show where each integration sits.</sub>
+
 ### Components
 
 | Layer | Path | What it does |
