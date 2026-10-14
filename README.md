@@ -327,9 +327,15 @@ The same contracts are deployed on Monad testnet at the same addresses (same dep
 ## Sponsors and integrations
 
 ### Monad — the settlement chain
+
+<img src="docs/assets/sponsors/monad.png" width="40" height="40" alt="Monad">
+
 All contracts live on Monad mainnet. Sub-second blocks make a scan-to-receipt payment feel instant at a counter, and low fees make it practical for the relayer to pay gas for every customer. The deploy uses Foundry's Monad network profile, and the relayer sets `gas = estimate × 1.2` on every transaction because Monad charges on the gas limit, not gas used.
 
 ### Mera — passkey wallets
+
+<img src="docs/assets/sponsors/mera.png" width="40" height="40" alt="Mera by Category Labs">
+
 The frontend uses [`@category-labs/mera`](https://www.npmjs.com/package/@category-labs/mera) for onboarding and signing (`frontend/lib/mera.ts`, `frontend/lib/keys.ts`):
 - `createPasskeyWithPrfOutput` creates the passkey on the first Face ID and returns its PRF output.
 - `getPasskeyPrfOutput` re-derives the same secret on later visits, so the wallet is recovered from the passkey alone, with no seed phrase.
@@ -346,18 +352,33 @@ This is what lets a web2 user go from "scan" to "paid" with Face ID only.
 </p>
 
 ### Circle USDC — payout and gasless payments
+
+<img src="docs/assets/sponsors/circle.png" width="40" height="40" alt="Circle">
+
 USDC is a first-class payout token and the cross-chain input. Its EIP-3009 `receiveWithAuthorization` powers the one-transaction DIRECT route: the authorization's nonce is the intent digest, so a signature can only ever fund that one payment. On Base, USDC's `transferWithAuthorization` lets the relayer move the customer's cross-chain deposit without the customer holding Base gas.
 
 ### Agora AUSD — payout stablecoin
+
+<img src="docs/assets/sponsors/agora.png" width="40" height="40" alt="Agora">
+
 AUSD is the second first-class payout token and also supports EIP-3009 on Monad, so DIRECT payments in AUSD are gasless too. Its EIP-712 domain name is `Agora Dollar`, not `AUSD`; getting it wrong makes every payment revert inside the token, so the domain separators were reconstructed and compared against the live contract. Merchants can choose AUSD as payout and receive it even when the customer pays from another chain: the vault swaps to AUSD at settlement.
 
 ### Kuru Flow — swaps
+
+<img src="docs/assets/sponsors/kuru.png" width="40" height="40" alt="Kuru Labs">
+
 `KuruFlowAdapter` executes Kuru Flow aggregator quotes on behalf of the vault. The API asks Kuru for an exact-output quote with the adapter as the user address, encodes the returned `(target, calldata)` as `swapData`, and the adapter only calls allow-listed Kuru targets. The vault measures output by balance delta and reverts if the merchant would receive less than the invoice. Used by the SWAP route and by cross-chain settlement when the payout token differs from USDC.
 
 ### Aurora Intents (NEAR 1Click) — cross-chain
+
+<img src="docs/assets/sponsors/aurora.png" width="40" height="40" alt="Aurora"> <img src="docs/assets/sponsors/near.png" width="40" height="40" alt="NEAR">
+
 The API requests an `EXACT_OUTPUT` quote whose recipient is the intent's CREATE2 deposit forwarder on Monad, relays the customer's deposit on the origin chain, polls provider status, and lets the vault settle only from the forwarder's real balance. The 1Click API is supported as a fallback provider. The operator's attestation of the source transaction is recorded on-chain but can never move funds or change status.
 
 ### Envio HyperIndex — history and analytics
+
+<img src="docs/assets/sponsors/envio.png" width="40" height="40" alt="Envio">
+
 `backend/indexer/` indexes every `MerchantRegistry` and `IntentVault` event into merchants, intents, daily stats, key-history and protocol-stat entities. The API reads merchant payment history, charts, key history and protocol stats from Envio's GraphQL, and falls back to MongoDB when the indexer is unavailable. A hosted deployment runs on Envio Cloud (see `docs/endpoints.md`).
 
 ### Also used
