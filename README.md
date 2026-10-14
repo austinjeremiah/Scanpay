@@ -13,6 +13,10 @@ A customer scans a merchant's QR code, sees exactly who they are paying and what
 
 Built for **Monad Metropolis · Track 02 — Consumer Products & Payments**.
 
+<p align="center">
+  <img src="docs/assets/scanpay-hero.jpg" alt="Scan. Face ID. Paid. No seed phrase, no extension, no gas." width="100%">
+</p>
+
 | | |
 |---|---|
 | Live app | https://scanpay-gamma.vercel.app |
