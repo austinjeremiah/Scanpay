@@ -238,3 +238,55 @@ passkey (Face ID) ──PRF──▶ 32 bytes ──▶ BIP-39 entropy ──▶
 ```
 
 Signing runs inside a Mera secp256k1 signing session that is ended immediately after use.
+
+---
+
+## Mainnet deployment
+
+**Monad mainnet · chain ID 143 · explorer [monadscan.com](https://monadscan.com) · start block 112857175**
+
+### Contracts
+
+| Contract | Address | Deploy tx |
+|---|---|---|
+| MerchantRegistry | [`0x2725111582b68539df62d57f579eafcebfb870b0`](https://monadscan.com/address/0x2725111582b68539df62d57f579eafcebfb870b0) | [`0x55bbc399…`](https://monadscan.com/tx/0x55bbc39917bb8cf67f962098c46d3058e5ba1ee00f100288d1a7ca3e00d15b1d) |
+| IntentVault | [`0xa952e8ac92bce001b5ef4ddb1a4027a7b9d2868e`](https://monadscan.com/address/0xa952e8ac92bce001b5ef4ddb1a4027a7b9d2868e) | [`0x29576841…`](https://monadscan.com/tx/0x2957684160289cf3ee00578391a26b45ecc9650fcf0dd679c315b608ff4371d9) |
+| DepositForwarder (implementation) | [`0xacbed31d720e3792078be35ac6772a43120be585`](https://monadscan.com/address/0xacbed31d720e3792078be35ac6772a43120be585) | deployed by IntentVault |
+| KuruFlowAdapter (swap adapter) | [`0xa5e36c82195b38105f0918fba71e4d3f3f51a1f5`](https://monadscan.com/address/0xa5e36c82195b38105f0918fba71e4d3f3f51a1f5) | [`0xc5009b1c…`](https://monadscan.com/tx/0xc5009b1c885963a082cf14a1bb315cf4005ab287a13c3977b22afbb3be01b93a) |
+
+### Tokens (all real assets, no mocks on mainnet)
+
+| Token | Address | Role | EIP-712 domain |
+|---|---|---|---|
+| Circle USDC | [`0x754704bc059f8c67012fed69bc8a327a5aafb603`](https://monadscan.com/address/0x754704bc059f8c67012fed69bc8a327a5aafb603) | payout · direct · swap input · cross-chain input | `USDC` / `2` |
+| Agora AUSD | [`0x00000000efe302beaa2b3e6e1b18d08d69a9012a`](https://monadscan.com/address/0x00000000efe302beaa2b3e6e1b18d08d69a9012a) | payout · direct · swap input | **`Agora Dollar`** / `1` |
+| WMON | [`0x3bd359c1119da7da1d913d1c4d2b7c461115433a`](https://monadscan.com/address/0x3bd359c1119da7da1d913d1c4d2b7c461115433a) | swap input | — |
+| WETH | [`0xee8c0e9f1bffb4eb878d8f15f368a02a35481242`](https://monadscan.com/address/0xee8c0e9f1bffb4eb878d8f15f368a02a35481242) | swap input | — |
+
+### Configuration
+
+| Setting | Value |
+|---|---|
+| Protocol fee | 30 bps (0.30%), capped on-chain at 100 bps |
+| Cross-chain refund delay | 3600 s after intent expiry |
+| Cross-chain input token | USDC |
+| Amount cap | 1 USDC / 1 AUSD per payment (hackathon blast-radius limit, enforced by the vault) |
+| Kuru allow-listed targets | `0xb3e6778480b2e488385e8205ea05e20060b813cb` (Flow entrypoint), `0x0d3a1be29e9ded63c7a5678b31e847d68f71ffa2` (Flow router) |
+| Aurora destination asset | `nep245:v2_1.omni.hot.tg:143_2dmLwYWkCQKyTjeUPAsGJuiVLbFx` (USDC on Monad) |
+| Admin / operator / fee recipient | `0xcd8f91dc7929e973ddc071838904434297ab4673` |
+
+### Proven on mainnet
+
+Every route was run end to end through the API against the live contracts and re-verified with `GET /v1/verify/:chainId/:intentId`. The merchant payout wallet was a fresh address each time. Full details: [`docs/evidence/proof-transactions.md`](docs/evidence/proof-transactions.md).
+
+| Route | Amount | Merchant received | Verdict | Transaction |
+|---|---|---|---|---|
+| DIRECT | 0.05 USDC | 0.04985 USDC | VERIFIED | [`0x623eaa04…`](https://monadscan.com/tx/0x623eaa049e1868b16e80dfbd3ed05778140fc8604ef6e89748084aa268405e92) |
+| SWAP (real Kuru) | 0.816 WMON → 0.02 USDC | 0.01994 USDC | VERIFIED | [`0x7054d8d5…`](https://monadscan.com/tx/0x7054d8d5337f548c9b6278300c842a2f31370a728ce1738e9e1d741e0522c1ed) |
+| CROSSCHAIN (Base → Monad via Aurora/1Click) | 0.2 USDC | 0.1994 USDC | VERIFIED | commit [`0x89316949…`](https://monadscan.com/tx/0x89316949d6b44a71f95f46a46dbd0904b711e39b41e752f74b5da45f883c7bb3) · settle [`0x9634d8b0…`](https://monadscan.com/tx/0x9634d8b08dac7a0a2042fb76fcabd7dbdedede5aee68bef0ca155486ee602be7) |
+
+DIRECT and SWAP settle in about a second. The cross-chain leg is dominated by the external solver; commit and settle on Monad are one transaction each.
+
+### Testnet (chain 10143)
+
+The same contracts are deployed on Monad testnet at the same addresses (same deployer, same nonce order), all verified on Sourcify / MonadVision. Testnet uses ScanPay's own mock tokens so a testnet reset cannot break the demo, a mock swap adapter (`0x36e1c5c4c98365e83de24f6bc15671561450064c`) and a simulated cross-chain solver, because Agora, Kuru and Aurora have no testnet deployments. See [`docs/endpoints.md`](docs/endpoints.md).
