@@ -1,4 +1,11 @@
-# ScanPay — Scan. Verify. Pay. Know it arrived.
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/scanpay-logo-white.png">
+    <img src="docs/assets/scanpay-logo.png" alt="ScanPay" width="420">
+  </picture>
+</p>
+
+<h1 align="center">Scan. Verify. Pay. Know it arrived.</h1>
 
 **ScanPay turns a QR scan into a payment you can prove.**
 
