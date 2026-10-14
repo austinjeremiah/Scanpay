@@ -1,7 +1,7 @@
 # Backend A — Phase Log
 
 Running record of the chain layer build. One entry per phase, written after the phase is committed.
-Source of truth for the spec: `docs/ScanPay-Guard-Backend-A-Chain.md`.
+Source of truth for the spec: `docs/md/ScanPay-Guard-Backend-A-Chain.md`.
 
 **Legend:** ✅ done · 🔜 next · ⏸ blocked
 
@@ -553,7 +553,7 @@ No deviations.
 
 `test/utils/VaultBase.sol` (128 lines, extends `RegistryBase` — live merchant, funded payer, configured vault) and `test/IntentVault.Direct.t.sol` (340 lines).
 
-**Exit checks:** ✅ **30 DIRECT tests** pass (needed ≥ 28) · ✅ gas recorded in `docs/gas.md`
+**Exit checks:** ✅ **30 DIRECT tests** pass (needed ≥ 28) · ✅ gas recorded in `docs/md/gas.md`
 
 Full suite: **68 tests, 0 failed** across 5 suites. The vault now has real coverage for the first time.
 
@@ -573,13 +573,13 @@ Filtering to calls that actually settle:
 |---|---|---|---|
 | successful settlements only | **505,484** | **529,784** | **554,084** |
 
-The doc's exit check says to record "the `payDirect` median" in `docs/gas.md`. Recording 108,604 would be actively harmful: **Monad bills the gas limit**, B sets `gas = estimate × 1.2`, and a 108k fallback would make every real payment run out of gas.
+The doc's exit check says to record "the `payDirect` median" in `docs/md/gas.md`. Recording 108,604 would be actively harmful: **Monad bills the gas limit**, B sets `gas = estimate × 1.2`, and a 108k fallback would make every real payment run out of gas.
 
-`docs/gas.md` therefore records the **successful-path** figures, with the trap written out explicitly, and recommends a **700,000** fallback for `payDirect` (554,084 × 1.2 ≈ 665k, rounded up). `paySwap` and the cross-chain calls get measured in A14/A15.
+`docs/md/gas.md` therefore records the **successful-path** figures, with the trap written out explicitly, and recommends a **700,000** fallback for `payDirect` (554,084 × 1.2 ≈ 665k, rounded up). `paySwap` and the cross-chain calls get measured in A14/A15.
 
 ### Deviation
 
-The doc asks for the median; recorded the successful-path max/avg instead, with the reasoning in `docs/gas.md`. Recording the literal median would have handed B a number that breaks payments.
+The doc asks for the median; recorded the successful-path max/avg instead, with the reasoning in `docs/md/gas.md`. Recording the literal median would have handed B a number that breaks payments.
 
 ---
 
@@ -607,7 +607,7 @@ Successful settlements only, 4 calls:
 |---|---|---|---|
 | 550,887 | 638,768 | 619,497 | **765,193** |
 
-Wider spread than DIRECT because the cost depends on the path: same-token (no swap) at the low end, Kuru-via-adapter with a surplus refund at the high end. `docs/gas.md` recommends a **950,000** fallback (765,193 × 1.2), sized off the max for the same reason as A13.
+Wider spread than DIRECT because the cost depends on the path: same-token (no swap) at the low end, Kuru-via-adapter with a surplus refund at the high end. `docs/md/gas.md` recommends a **950,000** fallback (765,193 × 1.2), sized off the max for the same reason as A13.
 
 No deviations.
 

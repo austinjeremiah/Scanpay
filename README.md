@@ -308,7 +308,7 @@ Signing runs inside a Mera secp256k1 signing session that is ended immediately a
 
 ### Proven on mainnet
 
-Every route was run end to end through the API against the live contracts and re-verified with `GET /v1/verify/:chainId/:intentId`. The merchant payout wallet was a fresh address each time. Full details: [`docs/evidence/proof-transactions.md`](docs/evidence/proof-transactions.md).
+Every route was run end to end through the API against the live contracts and re-verified with `GET /v1/verify/:chainId/:intentId`. The merchant payout wallet was a fresh address each time. Full details: [`docs/md/evidence/proof-transactions.md`](docs/md/evidence/proof-transactions.md).
 
 | Route | Amount | Merchant received | Verdict | Transaction |
 |---|---|---|---|---|
@@ -320,7 +320,7 @@ DIRECT and SWAP settle in about a second. The cross-chain leg is dominated by th
 
 ### Testnet (chain 10143)
 
-The same contracts are deployed on Monad testnet at the same addresses (same deployer, same nonce order), all verified on Sourcify / MonadVision. Testnet uses ScanPay's own mock tokens so a testnet reset cannot break the demo, a mock swap adapter (`0x36e1c5c4c98365e83de24f6bc15671561450064c`) and a simulated cross-chain solver, because Agora, Kuru and Aurora have no testnet deployments. See [`docs/endpoints.md`](docs/endpoints.md).
+The same contracts are deployed on Monad testnet at the same addresses (same deployer, same nonce order), all verified on Sourcify / MonadVision. Testnet uses ScanPay's own mock tokens so a testnet reset cannot break the demo, a mock swap adapter (`0x36e1c5c4c98365e83de24f6bc15671561450064c`) and a simulated cross-chain solver, because Agora, Kuru and Aurora have no testnet deployments. See [`docs/md/endpoints.md`](docs/md/endpoints.md).
 
 ---
 
@@ -379,7 +379,7 @@ The API requests an `EXACT_OUTPUT` quote whose recipient is the intent's CREATE2
 
 <img src="docs/assets/sponsors/envio.png" width="40" height="40" alt="Envio">
 
-`backend/indexer/` indexes every `MerchantRegistry` and `IntentVault` event into merchants, intents, daily stats, key-history and protocol-stat entities. The API reads merchant payment history, charts, key history and protocol stats from Envio's GraphQL, and falls back to MongoDB when the indexer is unavailable. A hosted deployment runs on Envio Cloud (see `docs/endpoints.md`).
+`backend/indexer/` indexes every `MerchantRegistry` and `IntentVault` event into merchants, intents, daily stats, key-history and protocol-stat entities. The API reads merchant payment history, charts, key history and protocol stats from Envio's GraphQL, and falls back to MongoDB when the indexer is unavailable. A hosted deployment runs on Envio Cloud (see `docs/md/endpoints.md`).
 
 ### Also used
 - **OpenZeppelin Contracts v5** — AccessControl, EIP712, SignatureChecker (EOA + ERC-1271), Clones, SafeERC20, Pausable, ReentrancyGuard.
@@ -413,7 +413,7 @@ Everything that happens on Monad is enforced by contracts. There is exactly one 
 | Shared SDK (golden vectors Solidity ↔ TypeScript) | `pnpm shared:test` | 15 |
 | API (unit + integration) | `pnpm api:test` | 42 |
 
-Contract coverage is about 97% of lines (`docs/txt/test-summary.txt`). Gas measurements live in `docs/gas.md`.
+Contract coverage is about 97% of lines (`docs/txt/test-summary.txt`). Gas measurements live in `docs/md/gas.md`.
 
 ---
 
@@ -442,7 +442,7 @@ cd backend/services/api
 pnpm exec tsx --env-file=../../../.env scripts/e2e-routes.ts 10143 all
 ```
 
-More detail in [`docs/RUNBOOK.md`](docs/RUNBOOK.md).
+More detail in [`docs/md/RUNBOOK.md`](docs/md/RUNBOOK.md).
 
 ---
 

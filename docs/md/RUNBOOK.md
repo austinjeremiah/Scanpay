@@ -15,7 +15,7 @@ Everything below has been run end-to-end on Monad testnet **and** mainnet.
 | Routes | **DIRECT, SWAP, CROSSCHAIN all settled and verified on both chains** |
 | Tests | 192 passing — 135 contracts, 42 API, 15 shared |
 
-Proof transactions with explorer links: [`docs/evidence/proof-transactions.md`](evidence/proof-transactions.md).
+Proof transactions with explorer links: [`docs/md/evidence/proof-transactions.md`](evidence/proof-transactions.md).
 
 Nothing is stubbed. Testnet uses our own mock ERC-20s (so a Monad testnet reset can't
 break the demo); mainnet uses real USDC, real AUSD, real Kuru, real Aurora.

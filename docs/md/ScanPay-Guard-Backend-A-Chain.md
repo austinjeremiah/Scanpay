@@ -4545,7 +4545,7 @@ forge test --match-contract IntentVaultDirectTest --gas-report | grep -A3 payDir
 
 **Exit checks**
 - [ ] All DIRECT tests pass (≥ 28)
-- [ ] Gas report: `payDirect` median recorded in `docs/gas.md` (B needs a sane fallback gas figure; Monad bills the **limit**)
+- [ ] Gas report: `payDirect` median recorded in `docs/md/gas.md` (B needs a sane fallback gas figure; Monad bills the **limit**)
 
 **Commit:** `test(contracts): DIRECT route — happy path, replay, tamper, expiry, key rotation, caps, pause`
 
@@ -7268,7 +7268,7 @@ commit → `git push origin main:envio`.
 **Exit checks**
 - [ ] Cloud deployment status "Synced"
 - [ ] curl returns the seed merchant
-- [ ] URL pasted in team chat and in `docs/endpoints.md`
+- [ ] URL pasted in team chat and in `docs/md/endpoints.md`
 
 **Commit:** `chore(indexer): envio cloud deployment for monad testnet`
 
@@ -7671,7 +7671,7 @@ it — capped by our own runbook); mainnet amounts capped at 25.
 - [ ] Mainnet caps set; refund delay 3600
 
 **Indexer**
-- [ ] Envio Cloud synced on 10143 + 143; URL in `docs/endpoints.md`
+- [ ] Envio Cloud synced on 10143 + 143; URL in `docs/md/endpoints.md`
 - [ ] Q1–Q6 work against Cloud
 
 **Handoffs**
