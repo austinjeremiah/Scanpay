@@ -10,6 +10,7 @@
 **ScanPay turns a QR scan into a payment you can prove.**
 
 A customer scans a merchant’s QR code, sees exactly who they’re paying and what they’re paying for, and approves the payment with Face ID. Web2 merchants can accept crypto without learning about crypto, while passkey-based onboarding makes it easy for Web2 users to get started with familiar device authentication—no seed phrases, browser extensions, gas fees, or complicated blockchain terminology. The merchant receives USDC or AUSD on Monad, while blockchain works behind the scenes to keep payments secure and enforce the rules, delivering a simple, familiar payment experience for everyone.
+
 Built for **Monad Metropolis · Track 02 — Consumer Products & Payments**.
 
 <p align="center">
