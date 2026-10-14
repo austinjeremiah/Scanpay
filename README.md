@@ -246,9 +246,14 @@ passkey (Face ID) ──PRF──▶ 32 bytes ──▶ BIP-39 entropy ──▶
    m/44'/60'/0'/0/1        merchant owner     (registration, rotation)
    m/44'/60'/0'/0/2        payout wallet      (receives stablecoins)
    m/44'/60'/0'/0/100+v    invoice signer v   (rotated by bumping the key version)
+32 bytes ──HKDF-SHA256 (info "scanpay/receipts/v1")──▶ AES-GCM-256 history vault key
 ```
 
-Signing runs inside a Mera secp256k1 signing session that is ended immediately after use.
+<p align="center">
+  <img src="docs/assets/key-derivation.jpg" alt="One passkey's PRF output feeds an HD tree (pay, owner, payout, checkout keys) and HKDF (vault key). The checkout and vault keys do non-account work." width="100%">
+</p>
+
+Signing runs inside a Mera secp256k1 signing session that is ended immediately after use. Two of the five keys never sign a blockchain transaction: the invoice signer (checkout key) only signs EIP-712 invoices and holds no funds, and the vault key only encrypts the receipt history stored on the device (`frontend/lib/keys.ts`, `frontend/lib/vault.ts`).
 
 ---
 
