@@ -83,3 +83,81 @@ ScanPay replaces each blind assumption with an **on-chain proof that anyone can 
 - **Customers** who want to pay by scanning, with Face ID and no wallet setup, and want to see a verified merchant before they pay.
 - **Merchants** who want stablecoin settlement in their own wallet, a live feed of invoices and receipts, and no chargeback-style surprises: a payment either settles exactly as signed or does not happen.
 - **Cross-border payers** who hold a stablecoin on another chain and need the merchant to still receive a stablecoin on Monad.
+
+---
+
+## Market context
+
+- **QR is already the checkout.** Account-to-account QR systems such as UPI in India, Pix in Brazil and the large wallet apps in China made "scan and pay" an everyday behaviour. Users already understand the gesture; what they lack is a way to verify what happens after the scan.
+- **Stablecoins are becoming a settlement rail.** Dollar stablecoins like Circle USDC and Agora AUSD move value in seconds, settle globally and do not depend on card networks. Merchants that accept them get final settlement with no chargebacks.
+- **Onboarding is the bottleneck.** The technology works; the user experience does not. Seed phrases, extensions and gas are where mainstream users drop off. Passkeys are already built into every modern phone, which makes them the natural way to bring web2 users on-chain.
+- **Cross-border is where proof matters most.** When payer and merchant are on different chains, or in different countries, "trust me, it arrived" is not good enough. A receipt that can be checked on-chain is.
+- **Why Monad.** Blocks land in roughly 300–400 ms with fast finality, so a scan-to-receipt payment feels instant at a counter. Cheap transactions make fully relayed, gasless payments practical. The contracts accept plain EOA signatures and ERC-1271, so Mera passkey accounts work with no special handling, and Monad's 128 KB contract-size limit leaves room for a full settlement contract.
+
+---
+
+## How a payment flows
+
+### DIRECT payment (one Face ID, one transaction)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor M as Merchant app
+    actor C as Customer app (Mera passkey)
+    participant API as ScanPay API + relayer
+    participant REG as MerchantRegistry
+    participant V as IntentVault
+    participant T as USDC / AUSD (EIP-3009)
+    participant IDX as Envio indexer
+
+    M->>M: Build invoice (merchantId, invoiceId, payoutToken, amount, expiry, keyVersion)
+    M->>M: Sign invoice with invoice-signer key (EIP-712)
+    M->>API: POST /v1/invoices
+    API->>REG: getMerchant() — status ACTIVE, keyVersion matches?
+    API-->>M: shortCode + QR payload
+    C->>API: Scan QR → GET /v1/invoices/:code, /v1/routes
+    API-->>C: Verified merchant, amount, available routes
+    C->>API: POST /v1/intents/prepare (route = DIRECT)
+    API-->>C: PaymentIntent + EIP-3009 typed data
+    C->>C: Face ID → sign PaymentIntent and ReceiveWithAuthorization (nonce = intent digest)
+    C->>API: POST /v1/intents/submit (signatures only)
+    API->>API: Verify signatures, simulate, gas = estimate × 1.2
+    API->>V: payDirect(intent, invoice, merchantSig, payerSig, auth)
+    V->>REG: getMerchant() — active, key version, payout wallet
+    V->>V: Check shape, expiry, signatures, payer nonce, one-time invoice
+    V->>T: receiveWithAuthorization(payer → vault, amountOut)
+    V->>T: transfer(payoutWallet, amount − fee), transfer(feeRecipient, fee)
+    V-->>IDX: emit PaymentSettled
+    API-->>C: SSE intent.updated → SETTLED
+    API-->>M: SSE payment.settled → screen turns green
+    C->>API: GET /v1/verify/:chainId/:intentId
+    API-->>C: Proof of merchant ✓ · intent ✓ · settlement ✓
+```
+
+### CROSSCHAIN payment (paid on Base, settled on Monad)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Customer app (passkey wallet)
+    participant API as ScanPay API + relayer
+    participant V as IntentVault (Monad)
+    participant F as DepositForwarder (CREATE2, per intent)
+    participant AUR as Aurora Intents / NEAR 1Click
+    participant BASE as USDC on Base (EIP-3009)
+
+    C->>API: POST /v1/intents/prepare (route = CROSSCHAIN, origin = Base USDC)
+    API->>V: forwarderOf(intentId) — deterministic address
+    API->>AUR: Quote EXACT_OUTPUT, recipient = forwarder
+    AUR-->>API: Deposit address on Base + amount in
+    C->>C: Face ID → sign PaymentIntent + USDC transferWithAuthorization on Base
+    C->>API: POST /v1/intents/submit
+    API->>V: commitCrossChain(intent, invoice, sigs) — invoice reserved, forwarder deployed
+    API->>BASE: Relay transferWithAuthorization → Aurora deposit address (relayer pays Base gas)
+    AUR->>F: Solver delivers USDC to the forwarder on Monad
+    API->>V: settleCrossChain(intentId) — permissionless
+    V->>F: Balance ≥ required? sweep → swap if needed → pay merchant
+    V-->>API: emit PaymentSettled
+    Note over V,F: If nothing arrives: refundCrossChain() after expiry + delay returns funds to refundTo
+```
