@@ -161,3 +161,80 @@ sequenceDiagram
     V-->>API: emit PaymentSettled
     Note over V,F: If nothing arrives: refundCrossChain() after expiry + delay returns funds to refundTo
 ```
+
+---
+
+## Architecture
+
+```mermaid
+flowchart LR
+    subgraph Client["Frontend — Next.js PWA (Vercel)"]
+        CU["Customer app<br/>scan · pay · receipt · wallet"]
+        ME["Merchant terminal<br/>setup · QR · live feed · keys"]
+        PK["Mera passkey<br/>PRF → HD keys on device"]
+    end
+
+    subgraph API["Backend services — Fastify (Render)"]
+        HTTP["REST API<br/>invoices · routes · quotes · intents · verify"]
+        REL["Relayer<br/>simulate → gas ×1.2 → send"]
+        Q["Quote engine<br/>Kuru · Aurora/1Click"]
+        W["Workers<br/>chain follower · cross-chain watcher"]
+        SSE["SSE streams<br/>intent · merchant · invoice"]
+        DB[("MongoDB<br/>drafts · invoices · lifecycle")]
+    end
+
+    subgraph Monad["Monad mainnet (143)"]
+        REG["MerchantRegistry"]
+        V["IntentVault"]
+        FWD["DepositForwarder clones"]
+        KA["KuruFlowAdapter"]
+        TOK["USDC · AUSD · WMON · WETH"]
+    end
+
+    subgraph Ext["External"]
+        KURU["Kuru Flow aggregator"]
+        AUR["Aurora Intents / NEAR 1Click"]
+        BASE["Base USDC"]
+        ENV["Envio HyperIndex<br/>GraphQL"]
+    end
+
+    PK --> CU & ME
+    CU & ME -->|signed messages| HTTP
+    HTTP --> REL --> V & REG
+    HTTP --> Q
+    Q --> KURU & AUR
+    REL --> BASE
+    V --> FWD & KA & TOK
+    KA --> KURU
+    AUR -->|solver delivery| FWD
+    W -->|getLogs| V & REG
+    W --> DB
+    HTTP --> DB
+    W --> SSE --> CU & ME
+    V & REG -->|events| ENV --> HTTP
+```
+
+### Components
+
+| Layer | Path | What it does |
+|---|---|---|
+| Smart contracts | `backend/contracts/` | Foundry project (Solidity 0.8.28, via-IR, OpenZeppelin v5). `MerchantRegistry`, `IntentVault`, `DepositForwarder`, `KuruFlowAdapter`, plus `MockStableToken` / `MockSwapAdapter` for testnet. |
+| Shared SDK | `backend/packages/shared/` | EIP-712 type definitions, typed-data builders, `computeIntentId` / `computeMerchantId`, wire converters, generated ABIs and per-chain deployments. Golden test vectors prove Solidity and TypeScript produce identical digests and signatures. |
+| API + relayer | `backend/services/api/` | Fastify + MongoDB. Invoices and QR short codes, route discovery, quotes, intent prepare/submit, gasless relaying, settlement state machine, 3-layer proof verifier, SSE streams, admin approval, Attack Lab. |
+| Workers | `backend/services/api/src/worker/` | Chain follower (logs → MongoDB → SSE; only an on-chain `PaymentSettled` can mark a payment SETTLED) and cross-chain watcher (poll provider, settle / refund / attest). |
+| Indexer | `backend/indexer/` | Envio HyperIndex schema and handlers for merchants, intents, daily stats, key history and protocol stats. |
+| Frontend | `frontend/` | Next.js 16 PWA: landing site plus the app (`/scan`, `/pay/[code]`, `/payment`, `/receipt`, `/wallet`, `/merchant/*`, `/admin`, `/attack-lab`). |
+| Deployments | `backend/deployments/` | Generated `143.json` (mainnet) and `10143.json` (testnet) consumed by every layer. |
+| Docs | `docs/` | Build specs per layer, runbook, endpoints, gas reference, on-chain evidence. |
+
+### Key derivation (one passkey, many roles)
+
+```
+passkey (Face ID) ──PRF──▶ 32 bytes ──▶ BIP-39 entropy ──▶ HD root (kept in memory for one operation)
+   m/44'/60'/0'/0/0        payer key          (customer payments)
+   m/44'/60'/0'/0/1        merchant owner     (registration, rotation)
+   m/44'/60'/0'/0/2        payout wallet      (receives stablecoins)
+   m/44'/60'/0'/0/100+v    invoice signer v   (rotated by bumping the key version)
+```
+
+Signing runs inside a Mera secp256k1 signing session that is ended immediately after use.
