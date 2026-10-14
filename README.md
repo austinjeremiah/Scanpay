@@ -290,3 +290,117 @@ DIRECT and SWAP settle in about a second. The cross-chain leg is dominated by th
 ### Testnet (chain 10143)
 
 The same contracts are deployed on Monad testnet at the same addresses (same deployer, same nonce order), all verified on Sourcify / MonadVision. Testnet uses ScanPay's own mock tokens so a testnet reset cannot break the demo, a mock swap adapter (`0x36e1c5c4c98365e83de24f6bc15671561450064c`) and a simulated cross-chain solver, because Agora, Kuru and Aurora have no testnet deployments. See [`docs/endpoints.md`](docs/endpoints.md).
+
+---
+
+## Sponsors and integrations
+
+### Monad — the settlement chain
+All contracts live on Monad mainnet. Sub-second blocks make a scan-to-receipt payment feel instant at a counter, and low fees make it practical for the relayer to pay gas for every customer. The deploy uses Foundry's Monad network profile, and the relayer sets `gas = estimate × 1.2` on every transaction because Monad charges on the gas limit, not gas used.
+
+### Mera — passkey wallets
+The frontend uses [`@category-labs/mera`](https://www.npmjs.com/package/@category-labs/mera) for onboarding and signing (`frontend/lib/mera.ts`, `frontend/lib/keys.ts`):
+- `createPasskeyWithPrfOutput` creates the passkey on the first Face ID and returns its PRF output.
+- `getPasskeyPrfOutput` re-derives the same secret on later visits, so the wallet is recovered from the passkey alone, with no seed phrase.
+- The PRF output seeds an HD wallet with separate payer, owner, payout and invoice-signer keys.
+- `createSecp256k1SigningSession` + `toViemAccount` sign EIP-712 messages inside a short-lived session that is ended immediately after use.
+
+This is what lets a web2 user go from "scan" to "paid" with Face ID only.
+
+### Circle USDC — payout and gasless payments
+USDC is a first-class payout token and the cross-chain input. Its EIP-3009 `receiveWithAuthorization` powers the one-transaction DIRECT route: the authorization's nonce is the intent digest, so a signature can only ever fund that one payment. On Base, USDC's `transferWithAuthorization` lets the relayer move the customer's cross-chain deposit without the customer holding Base gas.
+
+### Agora AUSD — payout stablecoin
+AUSD is the second first-class payout token and also supports EIP-3009 on Monad, so DIRECT payments in AUSD are gasless too. Its EIP-712 domain name is `Agora Dollar`, not `AUSD`; getting it wrong makes every payment revert inside the token, so the domain separators were reconstructed and compared against the live contract. Merchants can choose AUSD as payout and receive it even when the customer pays from another chain: the vault swaps to AUSD at settlement.
+
+### Kuru Flow — swaps
+`KuruFlowAdapter` executes Kuru Flow aggregator quotes on behalf of the vault. The API asks Kuru for an exact-output quote with the adapter as the user address, encodes the returned `(target, calldata)` as `swapData`, and the adapter only calls allow-listed Kuru targets. The vault measures output by balance delta and reverts if the merchant would receive less than the invoice. Used by the SWAP route and by cross-chain settlement when the payout token differs from USDC.
+
+### Aurora Intents (NEAR 1Click) — cross-chain
+The API requests an `EXACT_OUTPUT` quote whose recipient is the intent's CREATE2 deposit forwarder on Monad, relays the customer's deposit on the origin chain, polls provider status, and lets the vault settle only from the forwarder's real balance. The 1Click API is supported as a fallback provider. The operator's attestation of the source transaction is recorded on-chain but can never move funds or change status.
+
+### Envio HyperIndex — history and analytics
+`backend/indexer/` indexes every `MerchantRegistry` and `IntentVault` event into merchants, intents, daily stats, key-history and protocol-stat entities. The API reads merchant payment history, charts, key history and protocol stats from Envio's GraphQL, and falls back to MongoDB when the indexer is unavailable. A hosted deployment runs on Envio Cloud (see `docs/endpoints.md`).
+
+### Also used
+- **OpenZeppelin Contracts v5** — AccessControl, EIP712, SignatureChecker (EOA + ERC-1271), Clones, SafeERC20, Pausable, ReentrancyGuard.
+- **Foundry** — build, tests, fuzzing, invariants, deploy; contracts verified on **Sourcify / MonadVision**.
+- **Base** — first supported origin chain for cross-chain payments.
+
+---
+
+## Security and trust model
+
+Everything that happens on Monad is enforced by contracts. There is exactly one trusted statement: on the cross-chain route, which source-chain transaction funded a deposit is attested by the operator. That attestation cannot move funds or change a payment's status; settlement is decided by the vault checking the forwarder's balance.
+
+| Threat | Defence |
+|---|---|
+| Replay | Payer nonce, one-time invoice and the EIP-3009 nonce bound to the intent digest each block a second use. |
+| Tampering | Changing any field of the intent or invoice breaks the signatures; fuzz tests cover every field. |
+| Fake or swapped QR | The invoice must be signed by the merchant's current invoice signer in the registry, and the merchant must be ACTIVE. |
+| Stale merchant keys | A key rotation or payout change bumps the key version and invalidates old invoices. |
+| Fake "payment arrived" | Only tokens actually sitting in the forwarder can settle a cross-chain intent; the backend can only mark SETTLED after an on-chain `PaymentSettled`. |
+| Stuck funds | Late or wrong-token deposits to a forwarder can always be rescued to the payer's refund address. |
+| Emergency | The vault can be paused; the cross-chain refund path keeps working while paused. |
+| Blast radius | Per-token amount caps on mainnet. |
+
+---
+
+## Testing
+
+| Suite | Command | Tests |
+|---|---|---|
+| Contracts (unit, attack suite, fuzz, invariants) | `pnpm contracts:test` | 135 |
+| Shared SDK (golden vectors Solidity ↔ TypeScript) | `pnpm shared:test` | 15 |
+| API (unit + integration) | `pnpm api:test` | 42 |
+
+Contract coverage is about 97% of lines (`docs/test-summary.txt`). Gas measurements live in `docs/gas.md`.
+
+---
+
+## Running it locally
+
+**Requirements:** Node 22+, pnpm 9+, Foundry ≥ 1.8, MongoDB on `:27017`, Docker (only for a local indexer).
+
+```bash
+git clone https://github.com/austinjeremiah/Scanpay.git
+cd Scanpay
+pnpm install
+cp .env.example .env            # fill in operator keys, MongoDB, provider keys
+```
+
+```bash
+pnpm contracts:test             # Solidity tests
+pnpm chain:local                # optional: anvil + full local deploy
+pnpm api:dev                    # API on :8787 (testnet by default)
+pnpm frontend:dev               # app on :3000
+```
+
+End-to-end proof of every route against testnet:
+
+```bash
+cd backend/services/api
+pnpm exec tsx --env-file=../../../.env scripts/e2e-routes.ts 10143 all
+```
+
+More detail in [`docs/RUNBOOK.md`](docs/RUNBOOK.md).
+
+---
+
+## Team
+
+| | Role | Built |
+|---|---|---|
+| [@austinjeremiah](https://github.com/austinjeremiah) | Chain layer | Smart contracts, shared SDK, deployments, indexer, tests |
+| [@Suganthan96](https://github.com/Suganthan96) | Services layer | API, gasless relayer, quote engine, settlement watcher, Attack Lab |
+| [@sylesh7](https://github.com/sylesh7) | Frontend | Passkey app and ScanPay site |
+
+---
+
+## AI tools disclosure
+
+AI coding assistants were used during development. This README and the project showreel video were produced with Claude Code. The team should list any other AI tools used here, as required by the hackathon rules (§4.1.4).
+
+## License
+
+MIT
