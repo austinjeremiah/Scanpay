@@ -320,8 +320,15 @@ The frontend uses [`@category-labs/mera`](https://www.npmjs.com/package/@categor
 - `getPasskeyPrfOutput` re-derives the same secret on later visits, so the wallet is recovered from the passkey alone, with no seed phrase.
 - The PRF output seeds an HD wallet with separate payer, owner, payout and invoice-signer keys.
 - `createSecp256k1SigningSession` + `toViemAccount` sign EIP-712 messages inside a short-lived session that is ended immediately after use.
+- The same PRF output also derives a non-account key: an AES-GCM vault key (via HKDF) that encrypts the merchant's receipt history on the device.
 
 This is what lets a web2 user go from "scan" to "paid" with Face ID only.
+
+<p align="center">
+  <img src="docs/assets/merchant-keys-page.png" alt="The merchant Keys page in the live app: owner key, payout account, checkout key, personal pay account and history vault key, all from one passkey." width="520">
+  <br>
+  <sub>The merchant Keys page in the live app. All five keys come from one passkey; ScanPay never sees or stores any of them.</sub>
+</p>
 
 ### Circle USDC — payout and gasless payments
 USDC is a first-class payout token and the cross-chain input. Its EIP-3009 `receiveWithAuthorization` powers the one-transaction DIRECT route: the authorization's nonce is the intent digest, so a signature can only ever fund that one payment. On Base, USDC's `transferWithAuthorization` lets the relayer move the customer's cross-chain deposit without the customer holding Base gas.
